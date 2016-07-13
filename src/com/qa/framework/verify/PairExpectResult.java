@@ -1,0 +1,135 @@
+package com.qa.framework.verify;
+
+import com.qa.framework.bean.Pair;
+import com.qa.framework.library.base.JsonHelper;
+import com.qa.framework.library.base.StringHelper;
+import org.apache.log4j.Logger;
+import org.testng.Assert;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+/**
+ * Created by apple on 15/11/20.
+ */
+public class PairExpectResult implements IExpectResult {
+    protected static final Logger logger = Logger.getLogger(PairExpectResult.class);
+    private String pairsStatement;
+    private List<Pair> pairs;
+    private String[] containKeys;
+
+    public List<Pair> getPairs() {
+        return pairs;
+    }
+
+    public void setPairs(List<Pair> pairs) {
+        this.pairs = pairs;
+    }
+
+    public void setContainKeys(String containKeysString) {
+        this.containKeys = StringHelper.getTokensArray(containKeysString, ",");
+
+    }
+
+    public void addPair(Pair pair) {
+        if (pairs == null) {
+            pairs = new ArrayList<Pair>();
+        }
+        pairs.add(pair);
+    }
+
+    public void setPairsStatement(String pairsStatement) {
+        this.pairsStatement = pairsStatement;
+        Pair pair = new Pair();
+        pair.setMapStatement(pairsStatement);
+        addPair(pair);
+
+    }
+
+    public void setContainKeys(String[] containKeys) {
+        this.containKeys = containKeys;
+    }
+
+    public void compareReal(String content) {
+        Map<String, Object> jsonObject = JsonHelper.getJsonMapString(content);
+        String expectCode = null;
+        String code = null;
+        for (Pair pair : pairs) {
+            expectCode = pair.findValue(pair.getKey());
+            Object data = jsonObject.get(pair.getKey());
+            if (data instanceof String) {
+                code = (String) data;
+            } else if (data instanceof Map) {
+                Map<String, Object> contentMap = (Map<String, Object>) data;
+                compareMap(contentMap, expectCode);
+                continue;
+            } else if (data instanceof List) {
+                List<Map<String, Object>> contentList = (List<Map<String, Object>>) data;
+                for (Map<String, Object> contentMap : contentList) {
+                    compareMap(contentMap, true);
+                }
+            }
+            logger.debug("需验证的正则表达式：" + pair.getValue());
+            Pattern pattern = Pattern.compile(pair.getValue());
+            Matcher matcher = pattern.matcher(code);
+            logger.info(matcher.matches());
+            Assert.assertTrue(matcher.matches(), String.format("实际返回:%s, 期望返回:%s", pairsStatement.toString(), content));
+        }
+    }
+
+    public void compareMap(Map<String, Object> objectMap, String expectMsg) {
+        Map<String, Object> expectMap = JsonHelper.getJsonMapString(expectMsg);
+        Set<String> expectMapSet = expectMap.keySet();
+        for (String key : expectMapSet) {
+            Assert.assertTrue(objectMap.containsKey(key), String.format("期望包含：%s,实际结果未包含", key));
+            Assert.assertEquals(objectMap.get(key), expectMap.get(key), String.format("实际返回:%s, 期望返回:%s" + key + "->, ", objectMap.get(key), expectMap.get(key)));
+            Object object = objectMap.get(key);
+            if (object instanceof Map) {
+                Map<String, Object> contentMap = (Map<String, Object>) object;
+                compareMap(contentMap, expectMap.get(key).toString());   //进行递归比较的是, compareKey就需要设置成true
+            } else if (object instanceof List) {
+                List<Map<String, Object>> contentList = (List<Map<String, Object>>) object;
+                for (Map<String, Object> contetMap : contentList) {
+                    compareMap(contetMap, true);
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public void compareMap(Map<String, Object> objectMap, boolean keyCompare) {
+        if (keyCompare) {
+            if (containKeys != null) {
+                for (String containKey : containKeys) {
+                    Assert.assertTrue(objectMap.containsKey(containKey), String.format("期望包含字段%s", containKey));
+                }
+            }
+          /*  if (notContainKeys != null) {
+                for (int i = 0; i < notContainKeys.length; i++) {
+                    String notContainKey = notContainKeys[i];
+                    Assert.assertFalse(objectMap.containsKey(notContainKey), String.format("期望不应该包含字段%s", notContainKey));
+                }
+            }*/
+        } else {
+            Set<String> objectMapSet = objectMap.keySet();
+            for (String key : objectMapSet) {
+                Object object = objectMap.get(key);
+                if (object instanceof Map) {
+                    Map<String, Object> contentMap = (Map<String, Object>) object;
+                    compareMap(contentMap, true);   //进行递归比较的是, compareKey就需要设置成true
+                } else if (object instanceof List) {
+                    List<Map<String, Object>> contentList = (List<Map<String, Object>>) object;
+                    for (Map<String, Object> contetMap : contentList) {
+                        compareMap(contetMap, true);
+                    }
+                }
+
+            }
+        }
+    }
+}
+
