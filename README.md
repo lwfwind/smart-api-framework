@@ -1,12 +1,24 @@
-一个依靠testng的测试框架，通过配置测试用例的测试数据，实现数据驱动模式
-xml配置结构
-DataConfig
-	WebPath	-- 配置接口路径
-	TestData
-		Setup -- 调用其他接口
-			WebPath	-- 其他接口的路径
-			Param	-- 配置其他接口参数
-		Param -- 配置接口参数
-		ExpectResult -- 期望返回结果
-			Contain	适用返回结果包含哪些字段
-			Pair	适用返回结果包含key-value配对
+## Smart-api-framework - a light, robust http api automation framework
+
+Smart-api-framework is a light, robust http api automation framework based on [TestNG](http://testng.org/doc/index.html) and [HttpClient](http://hc.apache.org/httpcomponents-client-ga/).
+
+* Tags: TestNG, HttpClient, XML, API, Automation, Test
+
+## Features
+
+* No Coding and easy to config
+* Support get, post and put http method
+* Support concurrent testing with testng
+* Re-run failed test cases
+
+## XML Structure
+```xml
+DataConfig -- config test url and httpMethod
+    TestData
+        Setup -- config setup url and httpMethod
+            Param	-- config setup parameters
+        Param -- config test parameters
+        ExpectResult -- config expect result
+            Contain	-- assert actual result contain specify string
+            Pair -- assert actual result contain specify key-value
+```

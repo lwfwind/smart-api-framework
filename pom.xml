@@ -8,7 +8,7 @@
     <artifactId>smart-api-framework</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
-    <description>Support web service api automaton test based on testng and xml</description>
+    <description>Support web service api automaton test based on testng and httpclient</description>
     <url>https://github.com/lwfwind/smart-ui-framework</url>
 
     <parent>
@@ -108,16 +108,6 @@
             <version>1.2.17</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>3.8</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-scratchpad</artifactId>
-            <version>3.8</version>
-        </dependency>
         <dependency>
             <groupId>commons-dbutils</groupId>
             <artifactId>commons-dbutils</artifactId>

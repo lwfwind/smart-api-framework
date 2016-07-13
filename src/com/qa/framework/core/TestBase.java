@@ -4,7 +4,6 @@ import com.qa.framework.bean.*;
 import com.qa.framework.exception.NoSuchSetupException;
 import com.qa.framework.library.base.JsonHelper;
 import com.qa.framework.library.httpclient.HttpMethod;
-import com.qa.framework.testcase.abc360.Commmon.ComFuncation;
 import com.qa.framework.verify.ContainExpectResult;
 import com.qa.framework.verify.IExpectResult;
 import com.qa.framework.verify.PairExpectResult;
@@ -34,7 +33,7 @@ public abstract class TestBase {
      * @param useCookie   the use cookie
      * @return the string
      */
-    public String getContent(List<Param> params, String url, String httpMethod, boolean storeCookie, boolean useCookie) {
+    public String request(String url, List<Param> params, String httpMethod, boolean storeCookie, boolean useCookie) {
         String content = null;
         switch (httpMethod) {
             case "get":
@@ -48,42 +47,15 @@ public abstract class TestBase {
                 break;
         }
 
-        if (content != null && content.contains("<div id=\"think_page_trace\"")) {
-            content = content.substring(0, content.indexOf("<div id=\"think_page_trace\""));
-        }
         content = JsonHelper.decodeUnicode(content);
         logger.info("返回的信息:" + content);
         Assert.assertNotNull(content, "response返回空");
         return content;
     }
 
-
-    /**
-     * Process single setup. 处理一个前置步骤
-     *
-     * @param setup the setups
-     */
-    @SuppressWarnings("unchecked")
-  /*  public void processSingleSetup(Setup setup) {
-        //获得调用的类名
-        String clsName = setup.getClsName();
-        String methodName = setup.getClsMethod();
-        try {
-            Class clz = Class.forName(clsName);
-            Method method = clz.getDeclaredMethod(methodName, List.class, String.class, String.class, boolean.class, boolean.class);
-            Object obj = clz.newInstance();
-            String content = (String) method.invoke(obj, setup.getParams(), setup.getWebPath().getUrl(), setup.getWebPath().getHttpMethod(), setup.isStoreCookie(), setup.isUseCookie());
-            setup.setValue(content);
-        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-    }*/
-    public void processSingleSetup1(Setup setup) {
-        //获得调用的类名
-        ComFuncation comFuncation = new ComFuncation();
-        String content = comFuncation.comFuncation(setup.getParams(), setup.getUrl(), setup.getHttpMethod(), setup.isStoreCookie(), setup.isUseCookie());
+    public void processSetup(Setup setup) {
+        String content = request(setup.getUrl(),setup.getParams(), setup.getHttpMethod(), setup.isStoreCookie(), setup.isUseCookie());
         Map<String, Object> jsonObject = JsonHelper.getJsonMapString(content);
-        ;
         setup.setValue(jsonObject.get("data").toString());
     }
 
@@ -96,7 +68,7 @@ public abstract class TestBase {
             Map<String, String> setupMap = new HashMap<String, String>();
             testData.setUseCookie(true);
             for (Setup setup : testData.getSetups()) {
-                processSingleSetup1(setup);
+                processSetup(setup);
                 if (setup.getValue() != null && !"".equalsIgnoreCase(setup.getValue())) {
                     setupMap.put(setup.getName(), setup.getValue());
                 }

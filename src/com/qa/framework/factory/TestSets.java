@@ -31,7 +31,7 @@ public class TestSets extends TestBase {
     @Test(dataProvider = "data")
     public void testcase(TestData testData, String url, String httpMethod) {
         processParam(testData);
-        String content = getContent(testData.getParams(), url, httpMethod, testData.isStoreCookie(), testData.isUseCookie());
+        String content = request(url,testData.getParams(), httpMethod, testData.isStoreCookie(), testData.isUseCookie());
         verifyResult(testData, content, this.paramValueGenerator);
     }
 }
