@@ -51,8 +51,8 @@ public class ParamValueGenerator {
         processParam();
     }
 
-    //处理sql中的#{}
-    public static String handleSql(String sql, String[] replacedStr) {
+    //处理sql/value中的#{}
+    public static String handleSpecialChar(String sql, String[] replacedStr) {
         StringBuilder newSql = new StringBuilder();
         String[] sqlContent = sql.split("#\\{[a-zA-Z0-9._]*\\}");
         if (sqlContent.length == 0) {
@@ -74,58 +74,6 @@ public class ParamValueGenerator {
         return newSql.toString();
     }
 
-    /**
-     * Sort sqls list. 按照sqls中的依赖关系排序, 没有依赖关系的sql排前面
-     *
-     * @return the list
-     */
-    public List<Sql> sortSqls(Collection<Sql> sqls) {
-        List<Sql> sortedSqls = new ArrayList<Sql>();         //sql的执行顺序
-        List<Sql> unSortedSqls = new ArrayList<Sql>();       //未排序的sql
-        for (Sql sql : sqls) {
-            if (sql.getSqlStatement() != null) {
-                //按照依赖给sql语句进行排序, 没有依赖的排前面
-                if (sql.getDependOnsql() != null) {
-                    unSortedSqls.add(sql);
-                } else {
-                    sortedSqls.add(sql);
-                }
-            }
-        }
-        //给sql按照sql依赖排序
-        while (unSortedSqls.size() != 0) {
-            Iterator<Sql> unSortedSqlsIter = unSortedSqls.iterator();
-            while (unSortedSqlsIter.hasNext()) {
-                Sql unSortedsql = unSortedSqlsIter.next();
-                List<String> unSortedSqlList = new ArrayList<String>(Arrays.asList(unSortedsql.getDependOnsql()));     //将数组临时转为list对象, 方便去除对象
-                if (unSortedsql.getDependOnsql() == null) {           //如果没有依赖其他sql
-                    sortedSqls.add(unSortedsql);                    //将该sql放入sortedSql中去
-                    unSortedSqlsIter.remove();              //并在unsorted中除去该sql
-                } else {
-                    for (Sql sortedSql : sortedSqls) {
-                        Iterator<String> unSortedSqlListIter = unSortedSqlList.iterator();
-                        while (unSortedSqlListIter.hasNext()) {
-                            String sqlName = unSortedSqlListIter.next();
-                            if (sqlName.equals(sortedSql.getName())) {   //如果unsql的名字出现在sortedSql中的话,则除去
-                                unSortedSqlListIter.remove();
-                            }
-                        }
-                    }
-                    if (unSortedSqlList.size() != 0) {
-                        String[] newDependOnsql = new String[unSortedSqlList.size()];
-                        unSortedSqlList.toArray(newDependOnsql);
-                        unSortedsql.setDependOnsql(newDependOnsql);
-                    } else {
-                        unSortedsql.setDependOnsql(null);
-                        sortedSqls.add(unSortedsql);
-                        unSortedSqlsIter.remove();
-                    }
-                }
-            }
-        }
-        return sortedSqls;
-    }
-
     //处理setup中param的占位
     public void processSetup() {
         for (TestData testData : testDataList) {
@@ -133,10 +81,8 @@ public class ParamValueGenerator {
             if (setupList != null) {
                 for (Setup setup : setupList) {
                     List<Param> setupParamList = setup.getParams();
-                    Map<String, Param> setupParamMap = setup.getParamMap();
                     if (setupParamList != null) {
                         for (Param param : setupParamList) {
-                            processParamDate(param);
                             processFunction(param, setup, testData);
                             processParam(param, setup, testData);
                             processParamFromSetup(testData, param);
@@ -147,10 +93,11 @@ public class ParamValueGenerator {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void processBefore() {
         for (TestData testData : testDataList) {
             if (testData.getBefore() != null) try {
-                logger.info("Process Before in TestData-" + testData.getName());
+                logger.info("Process Before in xml-"+testData.getCurrentFileName()+" TestData-" + testData.getName());
                 Class cls = Class.forName(testData.getBefore().getClsName());
                 Method method = cls.getDeclaredMethod(testData.getBefore().getMethodName());
                 Object object = cls.newInstance();
@@ -166,9 +113,7 @@ public class ParamValueGenerator {
         for (TestData testData : testDataList) {
             List<Param> paramList = testData.getParams();
             if (paramList != null) {
-                Map<String, Param> paramMap = testData.getParamMap();
                 for (Param param : paramList) {
-                    processParamDate(param);
                     processFunction(param, null, testData);
                     processParam(param, null, testData);
                     processParamFromSetup(testData, param);
@@ -242,126 +187,23 @@ public class ParamValueGenerator {
         }
     }
 
-    /**
-     * Process param date. 处理时间格式
-     *
-     * @param param the param
-     */
-    public void processParamDate(Param param) {
-        if (param.getDateStamp() != null) {
-            DateStamp dateStamp = param.getDateStamp();
-            Calendar c = Calendar.getInstance();
-            Field[] fields = dateStamp.getClass().getDeclaredFields(); //遍历成员变量, 寻找哪些属性不为空
-            if (dateStamp.getBaseTime() == null || "".equalsIgnoreCase(dateStamp.getBaseTime())) {
-                c.setTime(new Date());
-            } else {
-                SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                try {
-                    Date date = dateFormater.parse(dateStamp.getBaseTime());
-                    c.setTime(date);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-            }
-            List<Field> setFields = new ArrayList<Field>();
-            List<Field> addFields = new ArrayList<Field>();
-            for (Field field : fields) {
-                Object obj = ReflectHelper.getMethod(dateStamp, field.getName());
-                if (obj != null && !"".equalsIgnoreCase(obj.toString())) {
-                    if (field.getName().contains("set")) {
-                        setFields.add(field);
-                    } else if (field.getName().contains("add")) {
-                        addFields.add(field);
-                    }
-                }
-            }
-
-            if (addFields != null) {
-                for (Field field : addFields) {
-                    Object obj = ReflectHelper.getMethod(dateStamp, field.getName());
-                    if (field.getName().contains("Year")) {
-                        c.add(Calendar.YEAR, Integer.parseInt(obj.toString()));
-                    } else if (field.getName().contains("Month")) {
-                        c.add(Calendar.MONTH, Integer.parseInt(obj.toString()));
-                    } else if (field.getName().contains("Day")) {
-                        c.add(Calendar.DAY_OF_MONTH, Integer.parseInt(obj.toString()));
-                    } else if (field.getName().contains("Hour")) {
-                        c.add(Calendar.HOUR_OF_DAY, Integer.parseInt(obj.toString()));
-                    } else if (field.getName().contains("Min")) {
-                        c.add(Calendar.MINUTE, Integer.parseInt(obj.toString()));
-                    } else if (field.getName().contains("Second")) {
-                        c.add(Calendar.SECOND, Integer.parseInt(obj.toString()));
-                    }
-                }
-            }
-            if (setFields != null) {
-                for (Field field : setFields) {
-                    Object obj = ReflectHelper.getMethod(dateStamp, field.getName());
-                    if (obj != null && !"".equalsIgnoreCase(obj.toString())) {
-                        if (field.getName().contains("Year")) {
-                            c.set(Calendar.YEAR, Integer.parseInt(obj.toString()));
-                        } else if (field.getName().contains("Month")) {
-                            c.set(Calendar.MONTH, Integer.parseInt(obj.toString()) - 1);
-                        } else if (field.getName().contains("Day")) {
-                            c.set(Calendar.DAY_OF_MONTH, Integer.parseInt(obj.toString()));
-                        } else if (field.getName().contains("Hour")) {
-                            c.set(Calendar.HOUR_OF_DAY, Integer.parseInt(obj.toString()));
-                        } else if (field.getName().contains("Min")) {
-                            c.set(Calendar.MINUTE, Integer.parseInt(obj.toString()));
-                        } else if (field.getName().contains("Second")) {
-                            c.set(Calendar.SECOND, Integer.parseInt(obj.toString()));
-                        }
-                    }
-                }
-            }
-            logger.info("设置的时间为:" + c.getTime());
-            if (dateStamp.getDateFormat() != null) {
-                param.setValue(new SimpleDateFormat(dateStamp.getDateFormat()).format(c.getTime()));
-            } else {
-                param.setValue(c.getTimeInMillis() / 1000 + "");
-            }
-        }
-    }
-
     public void processParam(Param param, Setup setup, TestData testData) {
         if (param.getSqls() != null) {
-            List<Sql> sortedSqls = sortSqls(param.getSqls());       //sql排序
-            if (param.getMultiple() != null) {
-                Set<String> paramValues = new HashSet<String>();
-                //如果param包含multiple值,且param value中有#{sql1.id, sql2.id}
-                if (param.getValue().contains(",")) {
-                    String cloneValue = param.getValue();
-                    //remove #{}
-                    cloneValue = cloneValue.substring(2, cloneValue.length() - 1);
-                    String[] cloneValues = cloneValue.split(",");
-                    for (String newCloneValue : cloneValues) {
-                        Param param1 = new Param();
-                        param1.setName(param.getName());
-                        param1.setValue("#{" + newCloneValue.trim() + "}");
-                        for (Sql sql : sortedSqls) {
-                            if (newCloneValue.trim().contains(sql.getName())) {
-                                String paramValue = executeSql(Arrays.asList(new Sql[]{sql}), param1, setup, testData, paramValues.size());
-                                stringCache.put(param1.getValue() + paramValues.size(), paramValue);
-                                paramValues.add(paramValue);
-                            }
-                        }
-                    }
-                } else {
-                    while (paramValues.size() < Integer.valueOf(param.getMultiple())) {
-                        String paramValue = executeSql(sortedSqls, param, setup, testData, paramValues.size());
-                        stringCache.put(param.getValue() + paramValues.size(), paramValue);
-                        paramValues.add(paramValue);
-                    }
+            List<Sql> sqlList = param.getSqls();
+            executeSql(sqlList, param, setup, testData);
+            if (param.getValue().contains("#{")) {
+                //处理sql语句中的#{}问题
+                //第一步将#{\\S+}的值找出来
+                List<String> lists = StringHelper.find(param.getValue(), "#\\{[a-zA-Z0-9._]*\\}");
+                String[] replacedStr = new String[lists.size()];   //替换sql语句中的#{}
+                int i = 0;
+                for (String list : lists) {
+                    //去掉#{}
+                    String proStr = list.substring(2, list.length() - 1);
+                    //从缓存中去取相应的值
+                    replacedStr[i++] = stringCache.getValue(proStr);
                 }
-                StringBuilder finalValue = new StringBuilder();
-                for (String paramValue : paramValues) {
-                    finalValue.append(paramValue + ",");
-                }
-                finalValue.deleteCharAt(finalValue.length() - 1);
-                param.setValue(finalValue.toString());
-            } else {
-                param.setValue(executeSql(sortedSqls, param, setup, testData, null));
-
+                param.setValue(handleSpecialChar(param.getValue(), replacedStr));
             }
             stringCache.put(param.getName(), param.getValue());
             stringCache.put(testData.getName() + "." + param.getName(), param.getValue());
@@ -375,13 +217,13 @@ public class ParamValueGenerator {
     /**
      * Execute sql string. 处理sql中#{}, 以及执行相应的sql, 生成最后的结果
      *
-     * @param sortedSqls the sorted sqls  排序后的sql对象
+     * @param sqlList   the sqlList  sql列表
      * @param param      the param      当前传入的参数
      * @param setup      the setup    param所属的setup
      * @return the string
      */
-    public String executeSql(List<Sql> sortedSqls, Param param, Setup setup, TestData testData, Integer size) {
-        for (Sql sql : sortedSqls) {
+    public String executeSql(List<Sql> sqlList, Param param, Setup setup, TestData testData) {
+        for (Sql sql : sqlList) {
             if (sql.getSqlStatement().contains("#{")) {
                 //处理sql语句中的#{}问题
                 //第一步将#{\\S+}的值找出来
@@ -394,9 +236,9 @@ public class ParamValueGenerator {
                     //从缓存中去取相应的值
                     replacedStr[i++] = stringCache.getValue(proStr);
                 }
-                sql.setSqlStatement(handleSql(sql.getSqlStatement(), replacedStr));
+                sql.setSqlStatement(handleSpecialChar(sql.getSqlStatement(), replacedStr));
             }
-            logger.debug("SQL为:" + sql.getSqlStatement());
+            logger.debug("最终的SQL为:" + sql.getSqlStatement());
             Map<String, Object> recordInfo = DBHelper.queryOneRow(sql.getSqlStatement());//查询数据库, 将返回值按照returnValues的值放入HashMap
             for (int i = 0; i < sql.getReturnValues().length; i++) {
                 String key = sql.getReturnValues()[i];
@@ -404,6 +246,7 @@ public class ParamValueGenerator {
                 String paramSqlKey = param.getName() + "." + sqlkey;
                 String testDatakey = testData.getName() + "." + paramSqlKey;
                 String value = null;
+                assert recordInfo != null;
                 if (recordInfo.get(key) == null) {
                     value = "null";
                 } else {
@@ -412,26 +255,11 @@ public class ParamValueGenerator {
                 stringCache.put(sqlkey, value);                         //将sql.属性的值存入缓存
                 stringCache.put(paramSqlKey, value);
                 stringCache.put(testDatakey, value);
-                String othersqlkey = null;
-                String otherParamSqlKey = null;
-                String otherTestDataKey = null;
-                if (size != null) {
-                    othersqlkey = sql.getName() + "." + sql.getReturnValues()[i] + size;
-                    otherParamSqlKey = param.getName() + "." + othersqlkey;
-                    otherTestDataKey = testData.getName() + "." + otherParamSqlKey;
-                    stringCache.put(othersqlkey, value);                         //将sql.属性的值存入缓存
-                    stringCache.put(otherParamSqlKey, value);
-                    stringCache.put(otherTestDataKey, value);
-                }
                 if (setup != null) {
                     String setupParamSqlKey = setup.getName() + "." + paramSqlKey;
                     String testDataSetupParamSqlKey = testData.getName() + "." + setupParamSqlKey;
                     stringCache.put(setupParamSqlKey, value);
                     stringCache.put(testDataSetupParamSqlKey, value);
-                    if (size != null) {
-                        stringCache.put(setup.getName() + "." + otherParamSqlKey, value);
-                        stringCache.put(testData.getName() + "." + setup.getName() + otherParamSqlKey, value);
-                    }
                 }
             }
         }
@@ -468,8 +296,8 @@ public class ParamValueGenerator {
                     String proStr = list.substring(2, list.length() - 1);
                     replacedStr[i++] = stringCache.getValue(proStr);
                 }
-                sql.setSqlStatement(handleSql(sql.getSqlStatement(), replacedStr));
-                logger.debug("SQL为:" + sql.getSqlStatement());
+                sql.setSqlStatement(handleSpecialChar(sql.getSqlStatement(), replacedStr));
+                logger.debug("最终的SQL为:" + sql.getSqlStatement());
             }
             if (sql.getName().equalsIgnoreCase(paramKey) && "array".equalsIgnoreCase(containExpectResult.getType())) {
                 List<Map<String, Object>> recordInfos = DBHelper.queryRows(sql.getSqlStatement());//查询数据库, 将返回值按照returnValues的值放入HashMap
@@ -535,7 +363,7 @@ public class ParamValueGenerator {
 
     public void processStringExpectResult(ContainExpectResult containExpectResult) {
         if (containExpectResult.getSqls() != null) {
-            List<Sql> sortedSql = sortSqls(containExpectResult.getSqls());
+            List<Sql> sortedSql = containExpectResult.getSqls();
             String stringValue = executeExpectSql(sortedSql, containExpectResult);
             containExpectResult.setValue(stringValue);
         } else {
@@ -626,24 +454,6 @@ public class ParamValueGenerator {
         String finalValue = stringCache.getValue(key);
         logger.info("正在设置:" + finalValue);
         return finalValue;
-    }
-
-    @Override
-    public String toString() {
-        List<String> stringList = new ArrayList<String>();
-        for (TestData testData : testDataList) {
-            List<Param> paramList = testData.getParams();
-            if (paramList != null) {
-                Map<String, Param> paramMap = testData.getParamMap();
-                stringList.add(testData.getDesc() + "--->" + paramMap);
-            }
-        }
-        return stringList.toString();
-    }
-
-    public void getTestDataParam(Object next) {
-        next.toString();
-
     }
 }
 

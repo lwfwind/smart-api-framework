@@ -12,7 +12,6 @@ public class Sql {
     private String[] returnValues;        //sql语句返回的多个值
     private String sqlStatement;          //sql语句
     private Map<String, String> returnValueMap;    //储存returnValues及对应的值
-    private String[] dependOnsql;                 //是否依赖其他sql语句
 
     public String getName() {
         return name;
@@ -28,19 +27,6 @@ public class Sql {
 
     public void setReturnValues(String[] returnValues) {
         this.returnValues = returnValues;
-    }
-
-    public void setReturnValues(String returnValues) {
-        String[] returnContents = null;
-        if (returnValues.contains(",")) {
-            returnContents = returnValues.split(",");
-            for (int i = 0; i < returnContents.length; i++) {
-                returnContents[i] = returnContents[i].trim();
-            }
-        } else {
-            returnContents = new String[]{returnValues.trim()};
-        }
-        setReturnValues(returnContents);
     }
 
     public String getSqlStatement() {
@@ -68,23 +54,6 @@ public class Sql {
         setReturnValues(returnStringValues);
     }
 
-
-    public Map<String, String> getReturnValueMap() {
-        return returnValueMap;
-    }
-
-    public void setReturnValueMap(Map<String, String> returnValueMap) {
-        this.returnValueMap = returnValueMap;
-    }
-
-
-    public String[] getDependOnsql() {
-        return dependOnsql;
-    }
-
-    public void setDependOnsql(String[] dependOnsql) {
-        this.dependOnsql = dependOnsql;
-    }
 
     @Override
     public String toString() {
