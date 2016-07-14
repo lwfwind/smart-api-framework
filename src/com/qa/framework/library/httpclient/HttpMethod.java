@@ -16,9 +16,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by apple on 15/11/19.
- */
 public class HttpMethod {
     protected final static Logger logger = Logger.getLogger(HttpMethod.class);
     private static boolean useProxy = PropConfig.isUseProxy();
@@ -62,9 +59,7 @@ public class HttpMethod {
             get.setConfig(requestConfig);
         }
         HttpConnectionImp imp = new HttpConnectionImp(get);
-        String returnResult = imp.getResponseResult(storeCookie, useCookie);
-        logger.info("actual result:" + returnResult);
-        return returnResult;
+        return imp.getResponseResult(storeCookie, useCookie);
     }
 
     public static String useGetMethod(String url, List<Param> params, boolean storeCookie, boolean useCookie, int trytimes) {
@@ -79,7 +74,6 @@ public class HttpMethod {
         HttpConnectionImp imp = new HttpConnectionImp(get);
         String returnResult = imp.getResponseResult(storeCookie, useCookie);
         if (returnResult != null) {
-            logger.info("actual result:" + returnResult);
             return returnResult;
         } else {
             int count = 0;
@@ -93,7 +87,6 @@ public class HttpMethod {
                 }
             }
         }
-        logger.info("actual result:" + returnResult);
         return returnResult;
     }
 
@@ -122,9 +115,7 @@ public class HttpMethod {
             e.printStackTrace();
         }
         HttpConnectionImp imp = new HttpConnectionImp(httpPost);
-        String returnResult = imp.getResponseResult(storeCookie, useCookie);
-        logger.debug("实际结果:" + returnResult);
-        return returnResult;
+        return imp.getResponseResult(storeCookie, useCookie);
     }
 
     public static String usePutMethod(String url, List<Param> params, boolean storeCookie, boolean useCookie) {
@@ -153,8 +144,6 @@ public class HttpMethod {
             e.printStackTrace();
         }
         HttpConnectionImp imp = new HttpConnectionImp(httpPut);
-        String returnResult = imp.getResponseResult(storeCookie, useCookie);
-        logger.debug("实际结果:" + returnResult);
-        return returnResult;
+        return imp.getResponseResult(storeCookie, useCookie);
     }
 }

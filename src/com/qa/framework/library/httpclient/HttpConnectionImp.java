@@ -14,9 +14,6 @@ import org.apache.log4j.Logger;
 
 import java.io.*;
 
-/**
- * Created by apple on 15/11/20.
- */
 public class HttpConnectionImp {
     private final Logger logger = Logger
             .getLogger(this.getClass());
@@ -55,30 +52,22 @@ public class HttpConnectionImp {
                 throw new RuntimeException("cookieStore没有在缓存中");
             }
             clientContext.setCookieStore(cookieStore);
+            logger.debug("useCookie:" + cookieStore.toString());
         }
         String responseBody = null;
         try {
             CloseableHttpResponse httpResponse;
             httpResponse = httpClient.execute(baseRequest, clientContext);
-            //统一处理为utf-8
             int status;
             status = httpResponse.getStatusLine().getStatusCode();
-            logger.info("------------" + status);
-
-            if (status >= 200 && status < 300) {
-                logger.info("expected response status");
-            } else {
-                logger.debug("unexpected response status");
-                httpResponse = httpClient.execute(baseRequest, clientContext);
-                //统一处理为utf-8
-                status = httpResponse.getStatusLine().getStatusCode();
-                logger.info("再一次连接------------" + status);
-            }
+            logger.debug("response status:" + status);
             if (storeCookie) {
                 CookieStore cookieStore = clientContext.getCookieStore();
                 CookieCache.set(cookieStore);
                 if (cookieStore == null) {
-                    logger.info("cookieStore 是空的" + cookieStore);
+                    logger.debug("cookieStore 是空的");
+                } else {
+                    logger.debug("storeCookie:" + cookieStore.toString());
                 }
             }
             HttpEntity entity = httpResponse.getEntity();
@@ -93,9 +82,10 @@ public class HttpConnectionImp {
             try {
                 httpClient.close();
             } catch (IOException e) {
-                //logger.error(e.getMessage());
+                logger.error(e.getMessage());
             }
         }
+        logger.debug("response result:" + responseBody);
         return removeBOM(responseBody);
     }
 

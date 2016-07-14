@@ -22,3 +22,25 @@ DataConfig -- config test url and httpMethod
             Contain	-- assert actual result contain specify string
             Pair -- assert actual result contain specify key-value
 ```
+
+```xml
+<DataConfig url="V2/ClassRecords/classDetail/" httpMethod="get">
+    <TestData name="GetClassDetailSuccess" desc="获取数据成功">
+        <Setup name="setup" url="V1/Students/login/" httpMethod="post">
+            <Param name="username" value="#{sql.mobile}">
+                <Sql name="sql">select s.id as id,s.mobile as mobile ,password,c.id as cid from ebk_students as s
+                    left join ebk_class_records as c ON s.id = c.sid where
+                    c.begin_time >unix_timestamp() and c.status=1 limit 100;
+                </Sql>
+            </Param>
+            <Param name="password" value="#{sql.password}" />
+        </Setup>
+        <Param name="cid" value="#{sql.cid}" />
+        <ExpectResult>
+            <Pair>errorCode:200</Pair>
+            <Pair>errorMsg:获取数据成功</Pair>
+            <Contain>"id":"#{sql.cid}"</Contain>
+        </ExpectResult>
+    </TestData>
+</DataConfig>
+```
