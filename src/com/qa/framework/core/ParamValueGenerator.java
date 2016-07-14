@@ -26,12 +26,12 @@ import java.util.*;
 public class ParamValueGenerator {
     private static final Logger logger = Logger.getLogger(ParamValueGenerator.class);
     private DataConfig dataConfig;
-    private List<TestData> testDatas = new ArrayList<TestData>();
+    private List<TestData> testDataList = new ArrayList<TestData>();
     private StringCache stringCache;
 
     public ParamValueGenerator(DataConfig dataConfig) {
         this.dataConfig = dataConfig;
-        this.testDatas = dataConfig.getTestDataLists();
+        this.testDataList = dataConfig.getTestDataList();
         stringCache = new StringCache();
         processBefore();
         processSetup();
@@ -40,9 +40,9 @@ public class ParamValueGenerator {
 
     public ParamValueGenerator(DataConfig dataConfig, String testDataName) {
         this.dataConfig = dataConfig;
-        for (TestData testData : dataConfig.getTestDataLists()) {
+        for (TestData testData : dataConfig.getTestDataList()) {
             if (testData.getName().equals(testDataName)) {
-                this.testDatas.add(testData);
+                this.testDataList.add(testData);
             }
         }
         stringCache = new StringCache();
@@ -128,7 +128,7 @@ public class ParamValueGenerator {
 
     //处理setup中param的占位
     public void processSetup() {
-        for (TestData testData : testDatas) {
+        for (TestData testData : testDataList) {
             List<Setup> setupList = testData.getSetups();
             if (setupList != null) {
                 for (Setup setup : setupList) {
@@ -147,25 +147,24 @@ public class ParamValueGenerator {
         }
     }
 
+
     public void processBefore() {
-        logger.info("Process Before in Test");
-        for (TestData testData : testDatas) {
-            if (testData.getBefore() != null) {
-                try {
-                    Class cls = Class.forName(testData.getBefore().getClsName());
-                    Method method = cls.getDeclaredMethod(testData.getBefore().getMethodName());
-                    Object object = cls.newInstance();
-                    Object value = method.invoke(object);
-                } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                    e.printStackTrace();
-                }
+        for (TestData testData : testDataList) {
+            if (testData.getBefore() != null) try {
+                logger.info("Process Before in TestData-" + testData.getName());
+                Class cls = Class.forName(testData.getBefore().getClsName());
+                Method method = cls.getDeclaredMethod(testData.getBefore().getMethodName());
+                Object object = cls.newInstance();
+                method.invoke(object);
+            } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
             }
         }
     }
 
     //处理正常流程中的param的sql, 日期, 从其他函数和setup接受值问题
     public void processParam() {
-        for (TestData testData : testDatas) {
+        for (TestData testData : testDataList) {
             List<Param> paramList = testData.getParams();
             if (paramList != null) {
                 Map<String, Param> paramMap = testData.getParamMap();
@@ -633,7 +632,7 @@ public class ParamValueGenerator {
     @Override
     public String toString() {
         List<String> stringList = new ArrayList<String>();
-        for (TestData testData : testDatas) {
+        for (TestData testData : testDataList) {
             List<Param> paramList = testData.getParams();
             if (paramList != null) {
                 Map<String, Param> paramMap = testData.getParamMap();

@@ -27,7 +27,7 @@ public class XmlDataProvider implements Iterator {
         dataConvertor = new DataConvertor(xmlPath);
         dataConfig = dataConvertor.getDataConfig();
         paramValueGenerator = new ParamValueGenerator(dataConfig);
-        iterator = dataConfig.getTestDataLists().iterator();
+        iterator = dataConfig.getTestDataList().iterator();
 
     }
 
@@ -36,7 +36,7 @@ public class XmlDataProvider implements Iterator {
         dataConvertor = new DataConvertor(xmlPath);
         dataConfig = dataConvertor.getDataConfig();
         paramValueGenerator = new ParamValueGenerator(dataConfig, testDataName);
-        for (TestData testData : dataConfig.getTestDataLists()) {
+        for (TestData testData : dataConfig.getTestDataList()) {
             if (testData.getName().equals(testDataName)) {
                 this.testDatas.add(testData);
             }

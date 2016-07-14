@@ -47,7 +47,6 @@ public class PairExpectResult implements IExpectResult {
         Pair pair = new Pair();
         pair.setMapStatement(pairsStatement);
         addPair(pair);
-
     }
 
     public void setContainKeys(String[] containKeys) {

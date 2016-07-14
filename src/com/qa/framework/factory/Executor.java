@@ -6,14 +6,13 @@ import com.qa.framework.core.TestBase;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-public class TestSets extends TestBase {
-    public TestData testData;
-    private String filePath;
+public class Executor extends TestBase {
+    private TestData testData;
     private String url;
     private String httpMethod;
     private ParamValueGenerator paramValueGenerator;
 
-    public TestSets(TestData TESTDATA, String URL, String HTTPMethod, ParamValueGenerator PARAMValueGenerator) {
+    public Executor(TestData TESTDATA, String URL, String HTTPMethod, ParamValueGenerator PARAMValueGenerator) {
         testData = TESTDATA;
         url = URL;
         httpMethod = HTTPMethod;
@@ -24,7 +23,6 @@ public class TestSets extends TestBase {
     public Object[][] data() {
         return new Object[][]{
                 {testData, url, httpMethod},
-
         };
     }
 

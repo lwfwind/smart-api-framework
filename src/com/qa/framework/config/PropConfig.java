@@ -16,19 +16,18 @@ import java.util.Properties;
 public class PropConfig {
     private static Properties props = new Properties();
     //代理配置
-    private static boolean useProxy;
-    private static String localhost;
-    private static String localport;
-    private static String timeout;
+    private static boolean useProxy = false;
+    private static String localhost = "127.0.0.1";
+    private static String localport = "8888";
+    private static String timeout = "3000";
     //测试服务器配置
     private static String webPath;
     private static String dbPoolName;
     //失败重试次数
-    private static int retryCount;
+    private static int retryCount = 1;
     //自定义report
-    private static String sourceCodeEncoding;
-    private static String sourceCodeDir;
-    private static String testCasePath;
+    private static String sourceCodeEncoding = "UTF-8";
+    private static String sourceCodeDir = "src";
 
     static {
         File file = new File(System.getProperty("user.dir") + File.separator + "config.properties");
@@ -138,12 +137,4 @@ public class PropConfig {
         sourceCodeDir = val;
     }
 
-
-    public static String getTestCasePath() {
-        return testCasePath;
-    }
-
-    public static void setTestCasePath(String testCasePath) {
-        PropConfig.testCasePath = testCasePath;
-    }
 }

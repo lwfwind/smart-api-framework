@@ -12,7 +12,7 @@ public class FactoryExecutor {
     @Factory(dataProviderClass = TestXmlData.class, dataProvider = "xmlFactoryData")
     public Object[] execute(TestData testData, String url, String httpMethod, ParamValueGenerator paramValueGenerator) {
         Object[] tests = new Object[1];
-        tests[0] = new TestSets(testData, url, httpMethod, paramValueGenerator);
+        tests[0] = new Executor(testData, url, httpMethod, paramValueGenerator);
         return tests;
     }
 

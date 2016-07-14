@@ -1,4 +1,4 @@
-## Smart-api-framework - a light, robust http api automation framework
+# Smart-api-framework - a light, robust http api automation framework
 
 Smart-api-framework is a light, robust http api automation framework based on [TestNG](http://testng.org/doc/index.html) and [HttpClient](http://hc.apache.org/httpcomponents-client-ga/).
 
@@ -44,3 +44,9 @@ DataConfig -- config test url and httpMethod
     </TestData>
 </DataConfig>
 ```
+
+### Contributors:
+    Charlie
+    Niki    https://github.com/ZhangyuBaolu
+    Wind    https://github.com/lwfwind
+    
