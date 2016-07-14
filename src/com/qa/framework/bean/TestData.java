@@ -26,6 +26,15 @@ public class TestData {
     private Before before;
     private After after;
 
+    public String getCurrentFileName() {
+        return currentFileName;
+    }
+
+    public void setCurrentFileName(String currentFileName) {
+        this.currentFileName = currentFileName;
+    }
+
+    private String currentFileName;
     public List<Param> getParams() {
         return params;
     }
@@ -167,8 +176,8 @@ public class TestData {
 
     @Override
     public String toString() {
-        return "descripton=" + desc +
-                ", " + params + ", " + "name = " + getName();
+        return  "file=" + currentFileName + ", name=" + getName() + ", descripton=" + desc +
+                ", params=" + params;
     }
 
     public Before getBefore() {

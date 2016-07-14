@@ -37,7 +37,7 @@ public class PropConfig {
             props.load(fileReader);
             Field[] fields = PropConfig.class.getDeclaredFields();
             for (Field field : fields) {
-                if (!field.getName().equals("props")) {
+                if (!field.getName().equals("props") && props.getProperty(field.getName()) != null) {
                     ReflectHelper.setMethod(PropConfig.class, field.getName(), props.getProperty(field.getName()), String.class);
                 }
             }

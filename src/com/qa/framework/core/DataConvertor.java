@@ -1,6 +1,7 @@
 package com.qa.framework.core;
 
 import com.qa.framework.bean.DataConfig;
+import com.qa.framework.library.base.IOHelper;
 import com.qa.framework.library.base.XMLHelper;
 import com.qa.framework.library.reflect.ReflectHelper;
 import com.qa.framework.verify.IExpectResult;
@@ -17,8 +18,10 @@ import java.util.List;
 public class DataConvertor {
 
     private DataConfig dataConfig;
+    private String fileName;
 
     public DataConvertor(String filePath) {
+        this.fileName = IOHelper.getName(filePath);
         XMLHelper xmlHelper = new XMLHelper();
         Document document = xmlHelper.readXMLFile(filePath);
         dataConfig = new DataConfig();
@@ -69,6 +72,10 @@ public class DataConvertor {
                 ReflectHelper.addMethod(parentObj, elementObj, "ExpectResultImp", IExpectResult.class);
             } else {
                 ReflectHelper.addMethod(parentObj, elementObj, element.getName(), elementObj.getClass());
+            }
+            //设置xml的文件名到TestData类里
+            if(element.getName().equalsIgnoreCase("TestData")){
+                ReflectHelper.setMethod(elementObj, "currentFileName", this.fileName, String.class);
             }
             //设置属性
             if (attributes.size() != 0) {

@@ -147,7 +147,6 @@ public class ParamValueGenerator {
         }
     }
 
-
     public void processBefore() {
         for (TestData testData : testDataList) {
             if (testData.getBefore() != null) try {
