@@ -11,7 +11,6 @@ import java.util.Map;
  * Created by apple on 15/11/18.
  */
 public class Setup {
-    private String value;
     private Map<String, Param> paramMap;
     private List<Param> params; //可能需要的数据
     private boolean useCookie = false;      //设置cookie
@@ -62,36 +61,28 @@ public class Setup {
         }
     }
 
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
     public boolean isUseCookie() {
         return useCookie;
-    }
-
-    public void setUseCookie(boolean useCookie) {
-        this.useCookie = useCookie;
     }
 
     public void setUseCookie(String useCookie) {
         this.useCookie = StringHelper.changeString2boolean(useCookie);
     }
 
+    public void setUseCookie(boolean useCookie) {
+        this.useCookie = useCookie;
+    }
+
     public boolean isStoreCookie() {
         return storeCookie;
     }
 
-    public void setStoreCookie(boolean storeCookie) {
-        this.storeCookie = storeCookie;
-    }
-
     public void setStoreCookie(String storeCookie) {
         this.storeCookie = StringHelper.changeString2boolean(storeCookie);
+    }
+
+    public void setStoreCookie(boolean storeCookie) {
+        this.storeCookie = storeCookie;
     }
 
     public String getName() {

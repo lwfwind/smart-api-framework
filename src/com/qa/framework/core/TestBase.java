@@ -1,9 +1,10 @@
 package com.qa.framework.core;
 
 import com.qa.framework.bean.*;
-import com.qa.framework.exception.NoSuchSetupException;
 import com.qa.framework.library.base.JsonHelper;
+import com.qa.framework.library.base.StringHelper;
 import com.qa.framework.library.httpclient.HttpMethod;
+import com.qa.framework.util.StringUtil;
 import com.qa.framework.verify.ContainExpectResult;
 import com.qa.framework.verify.IExpectResult;
 import com.qa.framework.verify.PairExpectResult;
@@ -15,6 +16,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 提供一个模板类
@@ -53,35 +55,54 @@ public abstract class TestBase {
         return content;
     }
 
-    public void processSetup(Setup setup) {
-        String content = request(setup.getUrl(),setup.getParams(), setup.getHttpMethod(), setup.isStoreCookie(), setup.isUseCookie());
-        Map<String, Object> jsonObject = JsonHelper.getJsonMapString(content);
-        setup.setValue(jsonObject.get("data").toString());
-    }
-
     /**
      * Process param. 处理param中需要接收setup中的返回值
      */
-    public void processParam(TestData testData) {
-        logger.info("Process Param in the Setup");
-        if (testData.getSetups() != null) {
+    @SuppressWarnings("unchecked")
+    public void processSetupResultParam(TestData testData) {
+        if (testData.getSetupList() != null) {
             Map<String, String> setupMap = new HashMap<String, String>();
             testData.setUseCookie(true);
-            for (Setup setup : testData.getSetups()) {
-                processSetup(setup);
-                if (setup.getValue() != null && !"".equalsIgnoreCase(setup.getValue())) {
-                    setupMap.put(setup.getName(), setup.getValue());
+            for (Setup setup : testData.getSetupList()) {
+                logger.info("Process Setup in xml-" + testData.getCurrentFileName() + " TestData-" + testData.getName() + " Setup-" + setup.getName());
+                String content = request(setup.getUrl(), setup.getParams(), setup.getHttpMethod(), setup.isStoreCookie(), setup.isUseCookie());
+                Map<String, Object> jsonObject = JsonHelper.getJsonMapString(content);
+                if (jsonObject.size() > 0) {
+                    Set<String> Set = jsonObject.keySet();
+                    for (String key : Set) {
+                        Object object = jsonObject.get(key);
+                        if (object instanceof Map) {
+                            Map<String, Object> map = (Map<String, Object>) object;
+                            for (String subKey : map.keySet()) {
+                                setupMap.put(subKey, map.get(subKey).toString());
+                            }
+                        } else if (object instanceof List) {
+                            List<Map<String, Object>> listMap = (List<Map<String, Object>>) object;
+                            for (Map<String, Object> map : listMap) {
+                                for (String subKey : map.keySet()) {
+                                    setupMap.put(subKey, map.get(subKey).toString());
+                                }
+                            }
+                        } else {
+                            setupMap.put(setup.getName(), object.toString());
+                        }
+                    }
                 }
             }
             for (Param param : testData.getParams()) { //处理param中接受setup值的问题
-                if (param.getValue().contains("#{") && !param.getValue().contains(".")) {
-                    //remove #{}
-                    String key = param.getValue().substring(2, param.getValue().length() - 1);
-                    if (setupMap.containsKey(key)) {
-                        param.setValue(setupMap.get(key));
-                    } else {
-                        throw new NoSuchSetupException(key);
+                if (param.getValue().contains("#{")) {
+                    //处理语句中的#{}问题
+                    //第一步将#{\\S+}的值找出来
+                    List<String> lists = StringHelper.find(param.getValue(), "#\\{[a-zA-Z0-9._]*\\}");
+                    String[] replacedStr = new String[lists.size()];   //替换sql语句中的#{}
+                    int i = 0;
+                    for (String list : lists) {
+                        //去掉#{}
+                        String proStr = list.substring(2, list.length() - 1);
+                        //从缓存中去取相应的值
+                        replacedStr[i++] = setupMap.get(proStr);
                     }
+                    param.setValue(StringUtil.handleSpecialChar(param.getValue(), replacedStr));
                 }
             }
         }
@@ -97,7 +118,6 @@ public abstract class TestBase {
     public void verifyResult(TestData testData, String content, ParamValueGenerator paramValueGenerator) {
         //处理多余字符串
         processAfter(testData);
-        logger.info("match the result class");
         paramValueGenerator.processExpect(testData);
         ExpectResult expectResult = testData.getExpectResult();
         for (IExpectResult iExpectResult : expectResult.getExpectResultImp()) {
@@ -115,11 +135,11 @@ public abstract class TestBase {
 
     }
 
-
+    @SuppressWarnings("unchecked")
     protected void processAfter(TestData testData) {
-        logger.info("Process After in Test");
         if (testData.getAfter() != null) {
             try {
+                logger.info("Process After in xml-" + testData.getCurrentFileName() + " TestData-" + testData.getName());
                 Class cls = Class.forName(testData.getAfter().getClsName());
                 Method method = cls.getDeclaredMethod(testData.getAfter().getMethodName());
                 Object object = cls.newInstance();

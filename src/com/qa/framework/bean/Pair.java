@@ -99,12 +99,12 @@ public class Pair {
         return patternMatch;
     }
 
-    public void setPatternMatch(Boolean patternMatch) {
-        this.patternMatch = patternMatch;
-    }
-
     public void setPatternMatch(String patternMatch) {
         this.patternMatch = StringHelper.changeString2boolean(patternMatch);
+    }
+
+    public void setPatternMatch(Boolean patternMatch) {
+        this.patternMatch = patternMatch;
     }
 
     @Override

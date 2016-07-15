@@ -56,25 +56,25 @@ public class ContainExpectResult implements IExpectResult {
         return containKeys;
     }
 
-    public void setContainKeys(String[] containKeys) {
-        this.containKeys = containKeys;
-    }
-
     public void setContainKeys(String containKeysString) {
         this.containKeys = StringHelper.getTokensArray(containKeysString, ",");
 
+    }
+
+    public void setContainKeys(String[] containKeys) {
+        this.containKeys = containKeys;
     }
 
     public String[] getNotContainKeys() {
         return notContainKeys;
     }
 
-    public void setNotContainKeys(String[] notContainKeys) {
-        this.notContainKeys = notContainKeys;
-    }
-
     public void setNotContainKeys(String notContainKeysString) {
         this.notContainKeys = StringHelper.getTokensArray(notContainKeysString, ",");
+    }
+
+    public void setNotContainKeys(String[] notContainKeys) {
+        this.notContainKeys = notContainKeys;
     }
 
     public String getKeyStatement() {

@@ -5,17 +5,14 @@ import com.qa.framework.cache.StringCache;
 import com.qa.framework.library.base.DynamicCompile;
 import com.qa.framework.library.base.StringHelper;
 import com.qa.framework.library.database.DBHelper;
-import com.qa.framework.library.reflect.ReflectHelper;
+import com.qa.framework.util.StringUtil;
 import com.qa.framework.verify.ContainExpectResult;
 import com.qa.framework.verify.IExpectResult;
 import com.qa.framework.verify.PairExpectResult;
 import org.apache.log4j.Logger;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -23,13 +20,13 @@ import java.util.*;
  * 处理param中value的变量
  * Created by apple on 15/11/23.
  */
-public class ParamValueGenerator {
-    private static final Logger logger = Logger.getLogger(ParamValueGenerator.class);
+public class ParamValueProc {
+    private static final Logger logger = Logger.getLogger(ParamValueProc.class);
     private DataConfig dataConfig;
     private List<TestData> testDataList = new ArrayList<TestData>();
     private StringCache stringCache;
 
-    public ParamValueGenerator(DataConfig dataConfig) {
+    public ParamValueProc(DataConfig dataConfig) {
         this.dataConfig = dataConfig;
         this.testDataList = dataConfig.getTestDataList();
         stringCache = new StringCache();
@@ -38,7 +35,7 @@ public class ParamValueGenerator {
         processParam();
     }
 
-    public ParamValueGenerator(DataConfig dataConfig, String testDataName) {
+    public ParamValueProc(DataConfig dataConfig, String testDataName) {
         this.dataConfig = dataConfig;
         for (TestData testData : dataConfig.getTestDataList()) {
             if (testData.getName().equals(testDataName)) {
@@ -51,33 +48,10 @@ public class ParamValueGenerator {
         processParam();
     }
 
-    //处理sql/value中的#{}
-    public static String handleSpecialChar(String sql, String[] replacedStr) {
-        StringBuilder newSql = new StringBuilder();
-        String[] sqlContent = sql.split("#\\{[a-zA-Z0-9._]*\\}");
-        if (sqlContent.length == 0) {
-            newSql.append(replacedStr[0]);
-        } else {
-            if (sqlContent.length > replacedStr.length) {
-                newSql.append(sqlContent[0]);
-                for (int i = 1; i < sqlContent.length; i++) {
-                    newSql.append(replacedStr[i - 1]);
-                    newSql.append(sqlContent[i]);
-                }
-            } else {
-                for (int i = 0; i < sqlContent.length; i++) {
-                    newSql.append(sqlContent[i]);
-                    newSql.append(replacedStr[i]);
-                }
-            }
-        }
-        return newSql.toString();
-    }
-
     //处理setup中param的占位
     public void processSetup() {
         for (TestData testData : testDataList) {
-            List<Setup> setupList = testData.getSetups();
+            List<Setup> setupList = testData.getSetupList();
             if (setupList != null) {
                 for (Setup setup : setupList) {
                     List<Param> setupParamList = setup.getParams();
@@ -97,7 +71,7 @@ public class ParamValueGenerator {
     public void processBefore() {
         for (TestData testData : testDataList) {
             if (testData.getBefore() != null) try {
-                logger.info("Process Before in xml-"+testData.getCurrentFileName()+" TestData-" + testData.getName());
+                logger.info("Process Before in xml-" + testData.getCurrentFileName() + " TestData-" + testData.getName());
                 Class cls = Class.forName(testData.getBefore().getClsName());
                 Method method = cls.getDeclaredMethod(testData.getBefore().getMethodName());
                 Object object = cls.newInstance();
@@ -135,7 +109,7 @@ public class ParamValueGenerator {
 
     //处理param中需要接受setup中param值的问题
     public void processParamFromSetup(TestData testData, Param param) {
-        if (testData.getSetups() != null && param.getSqls() == null && param.getFunction() == null && param.getDateStamp() == null && param.getPairs() == null) {
+        if (testData.getSetupList() != null && param.getSqls() == null && param.getFunction() == null && param.getDateStamp() == null && param.getPairs() == null) {
             if (param.getValue().contains("#{") && param.getValue().contains(".")) {
                 //remove #{}
                 String setupNameAndParam = param.getValue().substring(2, param.getValue().length() - 1);
@@ -192,7 +166,7 @@ public class ParamValueGenerator {
             List<Sql> sqlList = param.getSqls();
             executeSql(sqlList, param, setup, testData);
             if (param.getValue().contains("#{")) {
-                //处理sql语句中的#{}问题
+                //处理语句中的#{}问题
                 //第一步将#{\\S+}的值找出来
                 List<String> lists = StringHelper.find(param.getValue(), "#\\{[a-zA-Z0-9._]*\\}");
                 String[] replacedStr = new String[lists.size()];   //替换sql语句中的#{}
@@ -203,7 +177,7 @@ public class ParamValueGenerator {
                     //从缓存中去取相应的值
                     replacedStr[i++] = stringCache.getValue(proStr);
                 }
-                param.setValue(handleSpecialChar(param.getValue(), replacedStr));
+                param.setValue(StringUtil.handleSpecialChar(param.getValue(), replacedStr));
             }
             stringCache.put(param.getName(), param.getValue());
             stringCache.put(testData.getName() + "." + param.getName(), param.getValue());
@@ -217,9 +191,9 @@ public class ParamValueGenerator {
     /**
      * Execute sql string. 处理sql中#{}, 以及执行相应的sql, 生成最后的结果
      *
-     * @param sqlList   the sqlList  sql列表
-     * @param param      the param      当前传入的参数
-     * @param setup      the setup    param所属的setup
+     * @param sqlList the sqlList  sql列表
+     * @param param   the param      当前传入的参数
+     * @param setup   the setup    param所属的setup
      * @return the string
      */
     public String executeSql(List<Sql> sqlList, Param param, Setup setup, TestData testData) {
@@ -236,7 +210,7 @@ public class ParamValueGenerator {
                     //从缓存中去取相应的值
                     replacedStr[i++] = stringCache.getValue(proStr);
                 }
-                sql.setSqlStatement(handleSpecialChar(sql.getSqlStatement(), replacedStr));
+                sql.setSqlStatement(StringUtil.handleSpecialChar(sql.getSqlStatement(), replacedStr));
             }
             logger.debug("最终的SQL为:" + sql.getSqlStatement());
             Map<String, Object> recordInfo = DBHelper.queryOneRow(sql.getSqlStatement());//查询数据库, 将返回值按照returnValues的值放入HashMap
@@ -296,7 +270,7 @@ public class ParamValueGenerator {
                     String proStr = list.substring(2, list.length() - 1);
                     replacedStr[i++] = stringCache.getValue(proStr);
                 }
-                sql.setSqlStatement(handleSpecialChar(sql.getSqlStatement(), replacedStr));
+                sql.setSqlStatement(StringUtil.handleSpecialChar(sql.getSqlStatement(), replacedStr));
                 logger.debug("最终的SQL为:" + sql.getSqlStatement());
             }
             if (sql.getName().equalsIgnoreCase(paramKey) && "array".equalsIgnoreCase(containExpectResult.getType())) {
@@ -344,7 +318,6 @@ public class ParamValueGenerator {
     }
 
     public void processExpect(TestData testData) {
-        List<Param> paramList = testData.getParams();
         Map<String, Param> paramMap = testData.getParamMap();
         if (paramMap != null) {
             ExpectResult expectResult = testData.getExpectResult();

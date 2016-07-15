@@ -48,8 +48,8 @@ public class DataConvertor {
     /**
      * Convertor. 根据element名字生成相应的bean
      *
-     * @param parentObj     the parentObj 该element父类对应的对象
-     * @param element the element
+     * @param parentObj the parentObj 该element父类对应的对象
+     * @param element   the element
      */
 
     public void convert(Object parentObj, Element element) {
@@ -74,7 +74,7 @@ public class DataConvertor {
                 ReflectHelper.addMethod(parentObj, elementObj, element.getName(), elementObj.getClass());
             }
             //设置xml的文件名到TestData类里
-            if(element.getName().equalsIgnoreCase("TestData")){
+            if (element.getName().equalsIgnoreCase("TestData")) {
                 ReflectHelper.setMethod(elementObj, "currentFileName", this.fileName, String.class);
             }
             //设置属性

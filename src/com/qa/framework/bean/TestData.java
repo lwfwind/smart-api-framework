@@ -14,7 +14,7 @@ import java.util.Map;
 public class TestData {
     private String name;
     private String desc;
-    private List<Setup> setups;
+    private List<Setup> setupList;
     private Map<String, Setup> setupMap;
     private List<Param> params;  //包含的数据
     private Map<String, Param> paramMap;
@@ -25,6 +25,7 @@ public class TestData {
     private ExpectResult expectResult;
     private Before before;
     private After after;
+    private String currentFileName;
 
     public String getCurrentFileName() {
         return currentFileName;
@@ -34,7 +35,6 @@ public class TestData {
         this.currentFileName = currentFileName;
     }
 
-    private String currentFileName;
     public List<Param> getParams() {
         return params;
     }
@@ -55,31 +55,31 @@ public class TestData {
         return storeCookie;
     }
 
-    public void setStoreCookie(String storeCookie) {
-        setStoreCookie(StringHelper.changeString2boolean(storeCookie));
-    }
-
     public void setStoreCookie(boolean storeCookie) {
         this.storeCookie = storeCookie;
+    }
+
+    public void setStoreCookie(String storeCookie) {
+        setStoreCookie(StringHelper.changeString2boolean(storeCookie));
     }
 
     public boolean isUseCookie() {
         return useCookie;
     }
 
-    public void setUseCookie(boolean useCookie) {
-        this.useCookie = useCookie;
-    }
-
     public void setUseCookie(String useCookie) {
         this.useCookie = StringHelper.changeString2boolean(useCookie);
     }
 
+    public void setUseCookie(boolean useCookie) {
+        this.useCookie = useCookie;
+    }
+
     public void addSetup(Setup setup) {
-        if (setups == null) {
-            setups = new ArrayList<Setup>();
+        if (setupList == null) {
+            setupList = new ArrayList<Setup>();
         }
-        setups.add(setup);
+        setupList.add(setup);
 
     }
 
@@ -102,8 +102,8 @@ public class TestData {
     }
 
     public void fillSetupMap() {
-        if (setups != null) {
-            for (Setup setup : setups) {
+        if (setupList != null) {
+            for (Setup setup : setupList) {
                 if (setupMap == null) {
                     setupMap = new HashMap<String, Setup>();
                 }
@@ -142,12 +142,12 @@ public class TestData {
         this.expectResult = expectResult;
     }
 
-    public List<Setup> getSetups() {
-        return setups;
+    public List<Setup> getSetupList() {
+        return setupList;
     }
 
-    public void setSetups(List<Setup> setups) {
-        this.setups = setups;
+    public void setSetupList(List<Setup> setupList) {
+        this.setupList = setupList;
     }
 
     public String getDesc() {
@@ -176,7 +176,7 @@ public class TestData {
 
     @Override
     public String toString() {
-        return  "file=" + currentFileName + ", name=" + getName() + ", descripton=" + desc +
+        return "file=" + currentFileName + ", name=" + getName() + ", descripton=" + desc +
                 ", params=" + params;
     }
 

@@ -28,8 +28,8 @@ public class Executor extends TestBase {
 
     @Test(dataProvider = "data")
     public void testcase(TestData testData, String url, String httpMethod) {
-        processParam(testData);
-        String content = request(url,testData.getParams(), httpMethod, testData.isStoreCookie(), testData.isUseCookie());
+        processSetupResultParam(testData);
+        String content = request(url, testData.getParams(), httpMethod, testData.isStoreCookie(), testData.isUseCookie());
         verifyResult(testData, content, this.paramValueGenerator);
     }
 }

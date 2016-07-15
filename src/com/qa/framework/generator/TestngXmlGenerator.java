@@ -2,18 +2,10 @@ package com.qa.framework.generator;
 
 
 import com.qa.framework.library.base.IOHelper;
-import com.qa.framework.library.base.StringHelper;
 import com.qa.framework.library.base.XMLHelper;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.TrueFileFilter;
-import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.dom4j.Element;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class TestngXmlGenerator {
     /**
@@ -42,7 +34,7 @@ public class TestngXmlGenerator {
         xml.addAttribute(test, "timeout", "600000");
         Element classes = xml.addChildElement(test, "classes");
         Element cls = xml.addChildElement(classes, "class");
-        xml.addAttribute(cls, "name","com.qa.framework.factory.FactoryExecutor");
+        xml.addAttribute(cls, "name", "com.qa.framework.factory.FactoryExecutor");
         Element methods = xml.addChildElement(cls, "methods");
         Element include = xml.addChildElement(methods, "include");
         xml.addAttribute(include, "name", "execute");
