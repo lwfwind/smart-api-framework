@@ -15,12 +15,14 @@ Smart-api-framework is a light, robust http api automation framework based on [T
 ```xml
 DataConfig -- config test url and httpMethod
     TestData
-        Setup -- config setup url and httpMethod
+        Before -- preset environment such as database
+        Setup -- config setup url and httpMethod, such as login action
             Param	-- config setup parameters
         Param -- config test parameters
         ExpectResult -- config expect result
             Contain	-- assert actual result contain specify string
             Pair -- assert actual result contain specify key-value
+        After -- reset environment 
 ```
 
 ```xml
