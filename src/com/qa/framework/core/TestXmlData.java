@@ -43,7 +43,6 @@ public class TestXmlData {
             String contents = IOHelper.readFileToString(filePath);
             if (contents != null && contents.lastIndexOf("<DataConfig") > 0) {
                 testCaseXml.add(filePath);
-                break;
             }
         }
         return testCaseXml;

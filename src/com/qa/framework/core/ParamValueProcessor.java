@@ -6,7 +6,6 @@ import com.qa.framework.library.base.DynamicCompile;
 import com.qa.framework.library.base.StringHelper;
 import com.qa.framework.library.database.DBHelper;
 import com.qa.framework.util.StringUtil;
-import com.qa.framework.verify.ContainExpectResult;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
@@ -32,8 +31,8 @@ public class ParamValueProcessor {
 
     public void process(){
         processBefore();
-        processSetup();
-        processParam();
+        processSetupParam();
+        processTestDataParam();
     }
 
     public ParamValueProcessor(DataConfig dataConfig, String testDataName) {
@@ -47,7 +46,7 @@ public class ParamValueProcessor {
     }
 
     //处理setup中param的占位
-    public void processSetup() {
+    public void processSetupParam() {
         for (TestData testData : testDataList) {
             List<Setup> setupList = testData.getSetupList();
             if (setupList != null) {
@@ -56,7 +55,7 @@ public class ParamValueProcessor {
                     if (setupParamList != null) {
                         for (Param param : setupParamList) {
                             processFunction(param, setup, testData);
-                            processParam(param, setup, testData);
+                            processTestDataParam(param, setup, testData);
                             processParamFromSetup(testData, param);
                         }
                     }
@@ -81,13 +80,13 @@ public class ParamValueProcessor {
     }
 
     //处理正常流程中的param的sql, 日期, 从其他函数和setup接受值问题
-    public void processParam() {
+    public void processTestDataParam() {
         for (TestData testData : testDataList) {
             List<Param> paramList = testData.getParams();
             if (paramList != null) {
                 for (Param param : paramList) {
                     processFunction(param, null, testData);
-                    processParam(param, null, testData);
+                    processTestDataParam(param, null, testData);
                     processParamFromSetup(testData, param);
                     processParamFromOtherTestData(param);
                     processParamPair(param);
@@ -159,7 +158,7 @@ public class ParamValueProcessor {
         }
     }
 
-    public void processParam(Param param, Setup setup, TestData testData) {
+    public void processTestDataParam(Param param, Setup setup, TestData testData) {
         if (param.getSqls() != null) {
             List<Sql> sqlList = param.getSqls();
             executeSql(sqlList, param, setup, testData);

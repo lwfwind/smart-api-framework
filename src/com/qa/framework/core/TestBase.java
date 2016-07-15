@@ -78,16 +78,19 @@ public abstract class TestBase {
                             Map<String, Object> map = (Map<String, Object>) object;
                             for (String subKey : map.keySet()) {
                                 setupMap.put(subKey, map.get(subKey).toString());
+                                setupMap.put(setup.getName()+"."+subKey, map.get(subKey).toString());
                             }
                         } else if (object instanceof List) {
                             List<Map<String, Object>> listMap = (List<Map<String, Object>>) object;
                             for (Map<String, Object> map : listMap) {
                                 for (String subKey : map.keySet()) {
                                     setupMap.put(subKey, map.get(subKey).toString());
+                                    setupMap.put(setup.getName()+"."+subKey, map.get(subKey).toString());
                                 }
                             }
                         } else {
-                            setupMap.put(setup.getName(), object.toString());
+                            setupMap.put(key, object.toString());
+                            setupMap.put(setup.getName()+"."+key, object.toString());
                         }
                     }
                 }
