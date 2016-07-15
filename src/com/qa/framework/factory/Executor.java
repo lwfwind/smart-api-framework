@@ -1,7 +1,6 @@
 package com.qa.framework.factory;
 
 import com.qa.framework.bean.TestData;
-import com.qa.framework.core.ParamValueProcessor;
 import com.qa.framework.core.TestBase;
 import com.qa.framework.testngListener.PowerEmailableReporter;
 import com.qa.framework.testngListener.TestResultListener;

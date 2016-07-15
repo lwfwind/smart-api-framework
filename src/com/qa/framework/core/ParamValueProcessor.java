@@ -6,6 +6,9 @@ import com.qa.framework.library.base.DynamicCompile;
 import com.qa.framework.library.base.StringHelper;
 import com.qa.framework.library.database.DBHelper;
 import com.qa.framework.util.StringUtil;
+import com.qa.framework.verify.ContainExpectResult;
+import com.qa.framework.verify.IExpectResult;
+import com.qa.framework.verify.PairExpectResult;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
@@ -35,15 +38,6 @@ public class ParamValueProcessor {
     }
 
     /**
-     * Process.
-     */
-    public void process(){
-        processBefore();
-        processSetupParam();
-        processTestDataParam();
-    }
-
-    /**
      * Instantiates a new Param value processor.
      *
      * @param dataConfig   the data config
@@ -60,25 +54,12 @@ public class ParamValueProcessor {
     }
 
     /**
-     * Process setup param.
+     * Process.
      */
-//处理setup中param的占位
-    public void processSetupParam() {
-        for (TestData testData : testDataList) {
-            List<Setup> setupList = testData.getSetupList();
-            if (setupList != null) {
-                for (Setup setup : setupList) {
-                    List<Param> setupParamList = setup.getParams();
-                    if (setupParamList != null) {
-                        for (Param param : setupParamList) {
-                            processFunction(param, setup, testData);
-                            processTestDataParam(param, setup, testData);
-                            processParamFromSetup(testData, param);
-                        }
-                    }
-                }
-            }
-        }
+    public void process() {
+        processBefore();
+        processSetupParam();
+        processTestDataParam();
     }
 
     /**
@@ -100,53 +81,59 @@ public class ParamValueProcessor {
     }
 
     /**
-     * Process test data param.
+     * 处理setup中param的占位
      */
-//处理正常流程中的param的sql, 日期, 从其他函数和setup接受值问题
-    public void processTestDataParam() {
+    public void processSetupParam() {
         for (TestData testData : testDataList) {
-            List<Param> paramList = testData.getParams();
-            if (paramList != null) {
-                for (Param param : paramList) {
-                    processFunction(param, null, testData);
-                    processTestDataParam(param, null, testData);
-                    processParamFromSetup(testData, param);
-                    processParamFromOtherTestData(param);
-                    processParamPair(param);
-                    processNormalParam(param, testData);
+            List<Setup> setupList = testData.getSetupList();
+            if (setupList != null) {
+                for (Setup setup : setupList) {
+                    List<Param> setupParamList = setup.getParams();
+                    if (setupParamList != null) {
+                        for (Param param : setupParamList) {
+                            executeFunction(param, setup, testData);
+                            executeSql(param, setup, testData);
+                            processParamFromSetup(testData, param);
+                            processExpectResult(testData);
+                        }
+                    }
                 }
             }
         }
     }
 
     /**
-     * Process normal param.
-     *
-     * @param param    the param
-     * @param testData the test data
+     * Process test data param.
+     * 处理正常流程中的param的sql,从其他函数和setup接受值问题
      */
-//处理param没有变量
-    public void processNormalParam(Param param, TestData testData) {
-        if (param.getValue() != null && !param.getValue().contains("#{")) { //处理没有变量的param
-            stringCache.put(param.getName(), param.getValue());
-            stringCache.put(testData.getName() + "." + param.getName(), param.getValue());
+    public void processTestDataParam() {
+        for (TestData testData : testDataList) {
+            List<Param> paramList = testData.getParams();
+            if (paramList != null) {
+                for (Param param : paramList) {
+                    executeFunction(param, null, testData);
+                    executeSql(param, null, testData);
+                    processParamFromSetup(testData, param);
+                    processParamFromOtherTestData(param);
+                    processExpectResult(testData);
+                    //processParamPair(param);
+                }
+            }
         }
     }
 
     /**
-     * Process param from setup.
+     * 处理param中需要接受setup中param值的问题
      *
      * @param testData the test data
      * @param param    the param
      */
-//处理param中需要接受setup中param值的问题
     public void processParamFromSetup(TestData testData, Param param) {
         if (testData.getSetupList() != null && param.getSqls() == null && param.getFunction() == null && param.getDateStamp() == null && param.getPairs() == null) {
             if (param.getValue().contains("#{") && param.getValue().contains(".")) {
                 //remove #{}
                 String setupNameAndParam = param.getValue().substring(2, param.getValue().length() - 1);
                 param.setValue(stringCache.getValue(setupNameAndParam));
-
             }
         }
     }
@@ -177,6 +164,49 @@ public class ParamValueProcessor {
         }
     }
 
+    public void processExpectResult(TestData testData) {
+        ExpectResult expectResult = testData.getExpectResult();
+        for (IExpectResult result : expectResult.getExpectResultImp()) {
+            if (result instanceof ContainExpectResult) {
+                ContainExpectResult containExpectResult = (ContainExpectResult) result;
+                if (containExpectResult.getTextStatement().contains("#{")) {
+                    //处理语句中的#{}问题
+                    //第一步将#{\\S+}的值找出来
+                    List<String> lists = StringHelper.find(containExpectResult.getTextStatement(), "#\\{[a-zA-Z0-9._]*\\}");
+                    String[] replacedStr = new String[lists.size()];   //替换sql语句中的#{}
+                    int i = 0;
+                    for (String list : lists) {
+                        //去掉#{}
+                        String proStr = list.substring(2, list.length() - 1);
+                        //从缓存中去取相应的值
+                        replacedStr[i++] = stringCache.getValue(proStr);
+                    }
+                    containExpectResult.setTextStatement(StringUtil.handleSpecialChar(containExpectResult.getTextStatement(), replacedStr));
+                }
+            } else if (result instanceof PairExpectResult) {
+                PairExpectResult pairExpectResult = (PairExpectResult) result;
+                for (Pair pair : pairExpectResult.getPairs()) {
+                    if (pair.getValue().contains("#{")) {
+                        //处理语句中的#{}问题
+                        //第一步将#{\\S+}的值找出来
+                        List<String> lists = StringHelper.find(pair.getValue(), "#\\{[a-zA-Z0-9._]*\\}");
+                        String[] replacedStr = new String[lists.size()];   //替换sql语句中的#{}
+                        int i = 0;
+                        for (String list : lists) {
+                            //去掉#{}
+                            String proStr = list.substring(2, list.length() - 1);
+                            //从缓存中去取相应的值
+                            replacedStr[i++] = stringCache.getValue(proStr);
+                        }
+                        pair.setValue(StringUtil.handleSpecialChar(pair.getValue(), replacedStr));
+                    }
+                }
+            } else {
+                throw new IllegalArgumentException("没有匹配的期望结果集！");
+            }
+        }
+    }
+
     /**
      * Process function.
      *
@@ -185,7 +215,7 @@ public class ParamValueProcessor {
      * @param testData the test data
      */
     @SuppressWarnings("unchecked")
-    public void processFunction(Param param, Setup setup, TestData testData) {
+    public void executeFunction(Param param, Setup setup, TestData testData) {
         if (param.getFunction() != null) {
             try {
                 Class cls = Class.forName(param.getFunction().getClsName());
@@ -212,7 +242,7 @@ public class ParamValueProcessor {
      * @param setup    the setup
      * @param testData the test data
      */
-    public void processTestDataParam(Param param, Setup setup, TestData testData) {
+    public void executeSql(Param param, Setup setup, TestData testData) {
         if (param.getSqls() != null) {
             List<Sql> sqlList = param.getSqls();
             executeSql(sqlList, param, setup, testData);

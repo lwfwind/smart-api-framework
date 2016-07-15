@@ -83,19 +83,19 @@ public abstract class TestBase {
                             Map<String, Object> map = (Map<String, Object>) object;
                             for (String subKey : map.keySet()) {
                                 setupMap.put(subKey, map.get(subKey).toString());
-                                setupMap.put(setup.getName()+"."+subKey, map.get(subKey).toString());
+                                setupMap.put(setup.getName() + "." + subKey, map.get(subKey).toString());
                             }
                         } else if (object instanceof List) {
                             List<Map<String, Object>> listMap = (List<Map<String, Object>>) object;
                             for (Map<String, Object> map : listMap) {
                                 for (String subKey : map.keySet()) {
                                     setupMap.put(subKey, map.get(subKey).toString());
-                                    setupMap.put(setup.getName()+"."+subKey, map.get(subKey).toString());
+                                    setupMap.put(setup.getName() + "." + subKey, map.get(subKey).toString());
                                 }
                             }
                         } else {
                             setupMap.put(key, object.toString());
-                            setupMap.put(setup.getName()+"."+key, object.toString());
+                            setupMap.put(setup.getName() + "." + key, object.toString());
                         }
                     }
                 }
@@ -130,7 +130,7 @@ public abstract class TestBase {
         for (IExpectResult iExpectResult : expectResult.getExpectResultImp()) {
             if (iExpectResult instanceof ContainExpectResult) {
                 ContainExpectResult containKeyExpectResult = (ContainExpectResult) iExpectResult;
-                containKeyExpectResult.comparereal(content);
+                containKeyExpectResult.compareReal(content);
             } else if (iExpectResult instanceof PairExpectResult) {
                 PairExpectResult mapExpectResult = (PairExpectResult) iExpectResult;
                 mapExpectResult.compareReal(content);

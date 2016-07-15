@@ -169,8 +169,8 @@ public class Pair {
      *
      * @param patternMatch the pattern match
      */
-    public void setPatternMatch(String patternMatch) {
-        this.patternMatch = StringHelper.changeString2boolean(patternMatch);
+    public void setPatternMatch(Boolean patternMatch) {
+        this.patternMatch = patternMatch;
     }
 
     /**
@@ -178,8 +178,8 @@ public class Pair {
      *
      * @param patternMatch the pattern match
      */
-    public void setPatternMatch(Boolean patternMatch) {
-        this.patternMatch = patternMatch;
+    public void setPatternMatch(String patternMatch) {
+        this.patternMatch = StringHelper.changeString2boolean(patternMatch);
     }
 
     @Override
