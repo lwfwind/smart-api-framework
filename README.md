@@ -49,6 +49,5 @@ DataConfig -- config test url and httpMethod
 
 ### Contributors:
     Charlie
-    Niki    https://github.com/ZhangyuBaolu
-    Wind    https://github.com/lwfwind
-    
+    Niki    [https://github.com/ZhangyuBaolu](https://github.com/ZhangyuBaolu)
+    Wind    [https://github.com/lwfwind](https://github.com/lwfwind)
