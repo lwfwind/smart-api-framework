@@ -23,10 +23,11 @@ public class TestXmlData {
         for (String filePath : files) {
             DataConvertor dataConvertor = new DataConvertor(filePath);
             DataConfig dataConfig = dataConvertor.getDataConfig();
-            ParamValueGenerator paramValueGenerator = new ParamValueGenerator(dataConfig);
+            ParamValueProcessor paramValueProcessor = new ParamValueProcessor(dataConfig);
+            paramValueProcessor.process();
             List<TestData> testDataList = dataConfig.getTestDataList();
             for (TestData data : testDataList) {
-                Object[] d = {data, dataConfig.getUrl(), dataConfig.getHttpMethod(), paramValueGenerator};
+                Object[] d = {data, dataConfig.getUrl(), dataConfig.getHttpMethod()};
                 xmldata.add(d);
             }
         }

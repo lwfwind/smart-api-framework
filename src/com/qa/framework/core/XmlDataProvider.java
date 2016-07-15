@@ -11,37 +11,34 @@ import java.util.List;
  * Created by apple on 15/11/18.
  */
 public class XmlDataProvider implements Iterator {
-    private String xmlPath;
+
 
     private DataConvertor dataConvertor;
-
     private Iterator iterator;
-
-    private ParamValueGenerator paramValueGenerator;
-
+    private ParamValueProcessor paramValueProcessor;
     private DataConfig dataConfig;
-    private List<TestData> testDatas = new ArrayList<TestData>();
+    private List<TestData> testDataList = new ArrayList<TestData>();
 
     public XmlDataProvider(String xmlPath) {
-        this.xmlPath = xmlPath;
         dataConvertor = new DataConvertor(xmlPath);
         dataConfig = dataConvertor.getDataConfig();
-        paramValueGenerator = new ParamValueGenerator(dataConfig);
+        paramValueProcessor = new ParamValueProcessor(dataConfig);
+        paramValueProcessor.process();
         iterator = dataConfig.getTestDataList().iterator();
 
     }
 
     public XmlDataProvider(String xmlPath, String testDataName) {
-        this.xmlPath = xmlPath;
         dataConvertor = new DataConvertor(xmlPath);
         dataConfig = dataConvertor.getDataConfig();
-        paramValueGenerator = new ParamValueGenerator(dataConfig, testDataName);
+        paramValueProcessor = new ParamValueProcessor(dataConfig, testDataName);
+        paramValueProcessor.process();
         for (TestData testData : dataConfig.getTestDataList()) {
             if (testData.getName().equals(testDataName)) {
-                this.testDatas.add(testData);
+                this.testDataList.add(testData);
             }
         }
-        iterator = testDatas.iterator();
+        iterator = testDataList.iterator();
 
     }
 
@@ -51,7 +48,7 @@ public class XmlDataProvider implements Iterator {
 
     public Object next() {
         return new Object[]{
-                iterator.next(), dataConfig.getUrl(), dataConfig.getHttpMethod(), paramValueGenerator
+                iterator.next(), dataConfig.getUrl(), dataConfig.getHttpMethod(), paramValueProcessor
         };
     }
 

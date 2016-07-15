@@ -1,6 +1,9 @@
 package com.qa.framework.core;
 
-import com.qa.framework.bean.*;
+import com.qa.framework.bean.ExpectResult;
+import com.qa.framework.bean.Param;
+import com.qa.framework.bean.Setup;
+import com.qa.framework.bean.TestData;
 import com.qa.framework.library.base.JsonHelper;
 import com.qa.framework.library.base.StringHelper;
 import com.qa.framework.library.httpclient.HttpMethod;
@@ -108,17 +111,13 @@ public abstract class TestBase {
         }
     }
 
-
     /**
      * Verify result. 验证结果
      *
      * @param testData the test data
      * @param content  the content
      */
-    public void verifyResult(TestData testData, String content, ParamValueGenerator paramValueGenerator) {
-        //处理多余字符串
-        processAfter(testData);
-        paramValueGenerator.processExpect(testData);
+    public void verifyResult(TestData testData, String content) {
         ExpectResult expectResult = testData.getExpectResult();
         for (IExpectResult iExpectResult : expectResult.getExpectResultImp()) {
             if (iExpectResult instanceof ContainExpectResult) {
@@ -131,37 +130,19 @@ public abstract class TestBase {
                 throw new IllegalArgumentException("没有匹配的期望结果集！");
             }
         }
-        processExtraCheck(content, testData);
-
     }
 
     @SuppressWarnings("unchecked")
-    protected void processAfter(TestData testData) {
+    public void processAfter(TestData testData) {
         if (testData.getAfter() != null) {
             try {
                 logger.info("Process After in xml-" + testData.getCurrentFileName() + " TestData-" + testData.getName());
                 Class cls = Class.forName(testData.getAfter().getClsName());
                 Method method = cls.getDeclaredMethod(testData.getAfter().getMethodName());
                 Object object = cls.newInstance();
-                Object value = method.invoke(object);
+                method.invoke(object);
             } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
-            }
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    public void processExtraCheck(String content, TestData testData) {
-        if (testData.getExtraCheck() != null) {
-            for (Function function : testData.getExtraCheck().getFunctionList()) {
-                try {
-                    Class clz = Class.forName(function.getClsName());
-                    Method method = clz.getDeclaredMethod(function.getMethodName(), String.class, TestData.class);
-                    Object obj = clz.newInstance();
-                    method.invoke(obj, content, testData);
-                } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                    e.printStackTrace();
-                }
             }
         }
     }

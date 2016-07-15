@@ -7,8 +7,6 @@ import com.qa.framework.library.base.StringHelper;
 import com.qa.framework.library.database.DBHelper;
 import com.qa.framework.util.StringUtil;
 import com.qa.framework.verify.ContainExpectResult;
-import com.qa.framework.verify.IExpectResult;
-import com.qa.framework.verify.PairExpectResult;
 import org.apache.log4j.Logger;
 
 import java.lang.reflect.InvocationTargetException;
@@ -20,22 +18,25 @@ import java.util.*;
  * 处理param中value的变量
  * Created by apple on 15/11/23.
  */
-public class ParamValueProc {
-    private static final Logger logger = Logger.getLogger(ParamValueProc.class);
+public class ParamValueProcessor {
+    private static final Logger logger = Logger.getLogger(ParamValueProcessor.class);
     private DataConfig dataConfig;
     private List<TestData> testDataList = new ArrayList<TestData>();
     private StringCache stringCache;
 
-    public ParamValueProc(DataConfig dataConfig) {
+    public ParamValueProcessor(DataConfig dataConfig) {
         this.dataConfig = dataConfig;
         this.testDataList = dataConfig.getTestDataList();
         stringCache = new StringCache();
+    }
+
+    public void process(){
         processBefore();
         processSetup();
         processParam();
     }
 
-    public ParamValueProc(DataConfig dataConfig, String testDataName) {
+    public ParamValueProcessor(DataConfig dataConfig, String testDataName) {
         this.dataConfig = dataConfig;
         for (TestData testData : dataConfig.getTestDataList()) {
             if (testData.getName().equals(testDataName)) {
@@ -43,9 +44,6 @@ public class ParamValueProc {
             }
         }
         stringCache = new StringCache();
-        processBefore();
-        processSetup();
-        processParam();
     }
 
     //处理setup中param的占位
@@ -248,57 +246,6 @@ public class ParamValueProc {
     }
 
     /**
-     * Execute expect sql. 处理sql中#{}, 以及执行相应的sql, 生成最后的结果
-     *
-     * @param sortedSqls          the sorted sqls  排序后的sql对象
-     * @param containExpectResult the param      string的预期结果
-     * @return the string
-     */
-    public String executeExpectSql(List<Sql> sortedSqls, ContainExpectResult containExpectResult) {
-        //将值赋给paramValue
-        String decodeValue = containExpectResult.getValue();
-        decodeValue = decodeValue.substring(2, decodeValue.length() - 1);
-        String paramKey = decodeValue.split("\\.")[0];
-        for (int j = 0; j < sortedSqls.size(); j++) {
-            Sql sql = sortedSqls.get(j);
-            if (sql.getSqlStatement().contains("#{")) {
-                List<String> lists = StringHelper.find(sql.getSqlStatement(), "#\\{[a-zA-Z0-9._]*\\}");
-                String[] replacedStr = new String[lists.size()];   //替换sql语句中的#{}
-                int i = 0;
-                for (String list : lists) {
-                    //去掉#{}
-                    String proStr = list.substring(2, list.length() - 1);
-                    replacedStr[i++] = stringCache.getValue(proStr);
-                }
-                sql.setSqlStatement(StringUtil.handleSpecialChar(sql.getSqlStatement(), replacedStr));
-                logger.debug("最终的SQL为:" + sql.getSqlStatement());
-            }
-            if (sql.getName().equalsIgnoreCase(paramKey) && "array".equalsIgnoreCase(containExpectResult.getType())) {
-                List<Map<String, Object>> recordInfos = DBHelper.queryRows(sql.getSqlStatement());//查询数据库, 将返回值按照returnValues的值放入HashMap
-                for (int i = 0; i < sql.getReturnValues().length; i++) {
-                    String key = sql.getReturnValues()[i];
-                    StringBuilder value = new StringBuilder();
-                    for (Map<String, Object> recordInfo : recordInfos) {
-                        value.append(recordInfo.get(key).toString() + ",");
-                    }
-                    value.setCharAt(value.toString().length() - 1, ' ');
-                    stringCache.put(key, value.toString());
-                    stringCache.put(sql.getName() + "." + key, value.toString());
-                }
-            } else {
-                Map<String, Object> recordInfo = DBHelper.queryOneRow(sql.getSqlStatement());//查询数据库, 将返回值按照returnValues的值放入HashMap
-                for (int i = 0; i < sql.getReturnValues().length; i++) {
-                    String key = sql.getReturnValues()[i];
-                    String value = recordInfo.get(key).toString();
-                    stringCache.put(key, value);
-                    stringCache.put(sql.getName() + "." + key, value.toString());
-                }
-            }
-        }
-        return stringCache.getValue(decodeValue);
-    }
-
-    /**
      * Process param pair. 处理Param中的键值对, 转化成url能识别的格式
      *
      * @param param the param
@@ -314,46 +261,6 @@ public class ParamValueProc {
             stringBuilder.deleteCharAt(stringBuilder.length() - 1);
             stringBuilder.append("}");
             param.setValue(stringBuilder.toString());
-        }
-    }
-
-    public void processExpect(TestData testData) {
-        Map<String, Param> paramMap = testData.getParamMap();
-        if (paramMap != null) {
-            ExpectResult expectResult = testData.getExpectResult();
-            for (IExpectResult iExpectResult : expectResult.getExpectResultImp()) {
-                if (iExpectResult instanceof ContainExpectResult) {
-                    ContainExpectResult containExpectResult = (ContainExpectResult) iExpectResult;
-                    processStringExpectResult(containExpectResult);
-                } else if (iExpectResult instanceof PairExpectResult) {
-                    PairExpectResult pairExpectResult = (PairExpectResult) iExpectResult;
-                    processMapExpectResult(pairExpectResult);
-                }
-            }
-        }
-
-    }
-
-    public void processStringExpectResult(ContainExpectResult containExpectResult) {
-        if (containExpectResult.getSqls() != null) {
-            List<Sql> sortedSql = containExpectResult.getSqls();
-            String stringValue = executeExpectSql(sortedSql, containExpectResult);
-            containExpectResult.setValue(stringValue);
-        } else {
-            if (containExpectResult.getValue() != null) {
-                if (containExpectResult.getValue().contains("#{")) {
-                    processParam(containExpectResult.getValue());
-                }
-            }
-        }
-    }
-
-    public void processMapExpectResult(PairExpectResult pairExpectResult) {
-        if (pairExpectResult.getPairs() != null) {
-            List<Pair> pairs = pairExpectResult.getPairs();
-            for (Pair pair : pairs) {
-                processPair(pair);
-            }
         }
     }
 
@@ -414,19 +321,6 @@ public class ParamValueProc {
             logger.info("after replace,expect pair string:" + OriginalString);
             pair.setValue(OriginalString);
         }
-    }
-
-    /**
-     * Process param string. 处理在Setup中,或是ExpectResult调用params中的值
-     *
-     * @param value the value   待处理的字符串
-     * @return the string
-     */
-    public String processParam(String value) {
-        String key = value.substring(2, value.length() - 1);      //先去除#{}在进行"."的处理
-        String finalValue = stringCache.getValue(key);
-        logger.info("正在设置:" + finalValue);
-        return finalValue;
     }
 }
 

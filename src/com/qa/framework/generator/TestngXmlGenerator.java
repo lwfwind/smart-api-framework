@@ -34,7 +34,7 @@ public class TestngXmlGenerator {
         xml.addAttribute(test, "timeout", "600000");
         Element classes = xml.addChildElement(test, "classes");
         Element cls = xml.addChildElement(classes, "class");
-        xml.addAttribute(cls, "name", "com.qa.framework.factory.FactoryExecutor");
+        xml.addAttribute(cls, "name", "com.qa.framework.factory.ExecutorFactory");
         Element methods = xml.addChildElement(cls, "methods");
         Element include = xml.addChildElement(methods, "include");
         xml.addAttribute(include, "name", "execute");

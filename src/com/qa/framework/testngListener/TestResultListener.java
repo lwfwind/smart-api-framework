@@ -1,5 +1,6 @@
 package com.qa.framework.testngListener;
 
+import com.qa.framework.factory.Executor;
 import org.apache.log4j.Logger;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -21,6 +22,8 @@ public class TestResultListener extends TestListenerAdapter {
     @Override
     public void onTestFailure(ITestResult tr) {
         super.onTestFailure(tr);
+        Executor executor = (Executor) tr.getInstance();
+        executor.processAfter(executor.getTestData());
         logger.error(tr.getName() + " Failure");
         printStackTrace(tr);
     }
@@ -28,6 +31,8 @@ public class TestResultListener extends TestListenerAdapter {
     @Override
     public void onTestSkipped(ITestResult tr) {
         super.onTestSkipped(tr);
+        Executor executor = (Executor) tr.getInstance();
+        executor.processAfter(executor.getTestData());
         logger.info(tr.getName() + " Skipped");
         printStackTrace(tr);
     }
@@ -35,6 +40,8 @@ public class TestResultListener extends TestListenerAdapter {
     @Override
     public void onTestSuccess(ITestResult tr) {
         super.onTestSuccess(tr);
+        Executor executor = (Executor) tr.getInstance();
+        executor.processAfter(executor.getTestData());
         logger.info(tr.getName() + " Success");
     }
 

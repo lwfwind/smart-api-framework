@@ -17,7 +17,6 @@ public class TestData {
     private List<Setup> setupList;
     private Map<String, Setup> setupMap;
     private List<Param> params;  //包含的数据
-    private Map<String, Param> paramMap;
     private ExtraCheck extraCheck;  //自定义的检查方法
     private int sendTime = 1;
     private boolean storeCookie;
@@ -90,17 +89,6 @@ public class TestData {
         params.add(param);
     }
 
-    public void fillParamMap() {
-        if (params != null) {
-            for (Param param : params) {
-                if (paramMap == null) {
-                    paramMap = new HashMap<String, Param>();
-                }
-                paramMap.put(param.getName(), param);
-            }
-        }
-    }
-
     public void fillSetupMap() {
         if (setupList != null) {
             for (Setup setup : setupList) {
@@ -110,17 +98,6 @@ public class TestData {
                 setupMap.put(setup.getName(), setup);
             }
         }
-    }
-
-    public Map<String, Param> getParamMap() {
-        if (paramMap == null) {
-            fillParamMap();
-        }
-        return paramMap;
-    }
-
-    public void setParamMap(Map<String, Param> paramMap) {
-        this.paramMap = paramMap;
     }
 
     public Map<String, Setup> getSetupMap() {
