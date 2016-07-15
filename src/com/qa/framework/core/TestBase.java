@@ -26,13 +26,16 @@ import java.util.Set;
  * Created by apple on 15/11/19.
  */
 public abstract class TestBase {
+    /**
+     * The constant logger.
+     */
     protected static final Logger logger = Logger.getLogger(TestBase.class);
 
     /**
      * Get content string. 获得模拟httpmethod的内容
      *
-     * @param params      the params
      * @param url         the url
+     * @param params      the params
      * @param httpMethod  the http method
      * @param storeCookie the store cookie
      * @param useCookie   the use cookie
@@ -60,6 +63,8 @@ public abstract class TestBase {
 
     /**
      * Process param. 处理param中需要接收setup中的返回值
+     *
+     * @param testData the test data
      */
     @SuppressWarnings("unchecked")
     public void processSetupResultParam(TestData testData) {
@@ -135,6 +140,11 @@ public abstract class TestBase {
         }
     }
 
+    /**
+     * Process after.
+     *
+     * @param testData the test data
+     */
     @SuppressWarnings("unchecked")
     public void processAfter(TestData testData) {
         if (testData.getAfter() != null) {

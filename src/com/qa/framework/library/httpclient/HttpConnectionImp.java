@@ -14,15 +14,29 @@ import org.apache.log4j.Logger;
 
 import java.io.*;
 
+/**
+ * The type Http connection imp.
+ */
 public class HttpConnectionImp {
     private final Logger logger = Logger
             .getLogger(this.getClass());
     private HttpRequestBase baseRequest;
 
+    /**
+     * Instantiates a new Http connection imp.
+     *
+     * @param baseRequest the base request
+     */
     public HttpConnectionImp(HttpRequestBase baseRequest) {
         this.baseRequest = baseRequest;
     }
 
+    /**
+     * Remove bom string.
+     *
+     * @param responseBody the response body
+     * @return the string
+     */
     public static String removeBOM(String responseBody) {
         BufferedReader reader = null;
         // convert String into InputStream
@@ -43,6 +57,13 @@ public class HttpConnectionImp {
 
     }
 
+    /**
+     * Gets response result.
+     *
+     * @param storeCookie the store cookie
+     * @param useCookie   the use cookie
+     * @return the response result
+     */
     public String getResponseResult(boolean storeCookie, boolean useCookie) {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpClientContext clientContext = HttpClientContext.create();

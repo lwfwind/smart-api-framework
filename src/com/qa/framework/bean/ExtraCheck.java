@@ -11,14 +11,29 @@ import java.util.List;
 public class ExtraCheck {
     private List<Function> functionList;
 
+    /**
+     * Gets function list.
+     *
+     * @return the function list
+     */
     public List<Function> getFunctionList() {
         return functionList;
     }
 
+    /**
+     * Sets function list.
+     *
+     * @param functionList the function list
+     */
     public void setFunctionList(List<Function> functionList) {
         this.functionList = functionList;
     }
 
+    /**
+     * Add function.
+     *
+     * @param function the function
+     */
     public void addFunction(Function function) {
         if (functionList == null) {
             functionList = new ArrayList<Function>();

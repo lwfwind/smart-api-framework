@@ -16,13 +16,26 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Http method.
+ */
 public class HttpMethod {
+    /**
+     * The constant logger.
+     */
     protected final static Logger logger = Logger.getLogger(HttpMethod.class);
     private static boolean useProxy = PropConfig.isUseProxy();
     private static String localhost = PropConfig.getLocalhost();
     private static Integer localport = Integer.valueOf(PropConfig.getLocalport());
     private static Integer timeout = Integer.valueOf(PropConfig.getTimeout());
 
+    /**
+     * Gets url.
+     *
+     * @param url    the url
+     * @param params the params
+     * @return the url
+     */
     public static String getUrl(String url, List<Param> params) {
         StringBuilder webPath = new StringBuilder();
         webPath.append(PropConfig.getWebPath());
@@ -45,10 +58,25 @@ public class HttpMethod {
         return webPath.toString();
     }
 
+    /**
+     * Post url string.
+     *
+     * @param url the url
+     * @return the string
+     */
     public static String postUrl(String url) {
         return PropConfig.getWebPath() + url;
     }
 
+    /**
+     * Use get method string.
+     *
+     * @param url         the url
+     * @param params      the params
+     * @param storeCookie the store cookie
+     * @param useCookie   the use cookie
+     * @return the string
+     */
     public static String useGetMethod(String url, List<Param> params, boolean storeCookie, boolean useCookie) {
         String uri = getUrl(url, params);
         logger.info("拼接后的web地址为:" + uri);
@@ -62,6 +90,16 @@ public class HttpMethod {
         return imp.getResponseResult(storeCookie, useCookie);
     }
 
+    /**
+     * Use get method string.
+     *
+     * @param url         the url
+     * @param params      the params
+     * @param storeCookie the store cookie
+     * @param useCookie   the use cookie
+     * @param trytimes    the trytimes
+     * @return the string
+     */
     public static String useGetMethod(String url, List<Param> params, boolean storeCookie, boolean useCookie, int trytimes) {
         String uri = getUrl(url, params);
         logger.info("拼接后的web地址为:" + uri);
@@ -90,6 +128,15 @@ public class HttpMethod {
         return returnResult;
     }
 
+    /**
+     * Use post method string.
+     *
+     * @param url         the url
+     * @param params      the params
+     * @param storeCookie the store cookie
+     * @param useCookie   the use cookie
+     * @return the string
+     */
     public static String usePostMethod(String url, List<Param> params, boolean storeCookie, boolean useCookie) {
         String uri = postUrl(url);
         logger.info("拼接后的web地址为:" + uri);
@@ -118,6 +165,15 @@ public class HttpMethod {
         return imp.getResponseResult(storeCookie, useCookie);
     }
 
+    /**
+     * Use put method string.
+     *
+     * @param url         the url
+     * @param params      the params
+     * @param storeCookie the store cookie
+     * @param useCookie   the use cookie
+     * @return the string
+     */
     public static String usePutMethod(String url, List<Param> params, boolean storeCookie, boolean useCookie) {
         String uri = postUrl(url);
         logger.info("拼接后的web地址为:" + uri);

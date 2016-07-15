@@ -9,22 +9,42 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+/**
+ * The type Executor.
+ */
 @Listeners({TestResultListener.class, PowerEmailableReporter.class})
 public class Executor extends TestBase {
     private TestData testData;
     private String url;
     private String httpMethod;
 
+    /**
+     * Instantiates a new Executor.
+     *
+     * @param testData   the test data
+     * @param url        the url
+     * @param httpMethod the http method
+     */
     public Executor(TestData testData, String url, String httpMethod) {
         this.testData = testData;
         this.url = url;
         this.httpMethod = httpMethod;
     }
 
+    /**
+     * Gets test data.
+     *
+     * @return the test data
+     */
     public TestData getTestData() {
         return testData;
     }
 
+    /**
+     * Data object [ ] [ ].
+     *
+     * @return the object [ ] [ ]
+     */
     @DataProvider
     public Object[][] data() {
         return new Object[][]{
@@ -32,6 +52,13 @@ public class Executor extends TestBase {
         };
     }
 
+    /**
+     * Testcase.
+     *
+     * @param testData   the test data
+     * @param url        the url
+     * @param httpMethod the http method
+     */
     @Test(dataProvider = "data")
     public void testcase(TestData testData, String url, String httpMethod) {
         processSetupResultParam(testData);

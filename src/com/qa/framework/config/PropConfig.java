@@ -55,10 +55,20 @@ public class PropConfig {
     }
 
 
+    /**
+     * Gets web path.
+     *
+     * @return the web path
+     */
     public static String getWebPath() {
         return webPath;
     }
 
+    /**
+     * Sets web path.
+     *
+     * @param val the val
+     */
     public static void setWebPath(String val) {
         webPath = val;
     }
@@ -81,58 +91,128 @@ public class PropConfig {
         PropConfig.dbPoolName = dbPoolName;
     }
 
+    /**
+     * Is use proxy boolean.
+     *
+     * @return the boolean
+     */
     public static boolean isUseProxy() {
         return useProxy;
     }
 
+    /**
+     * Sets use proxy.
+     *
+     * @param val the val
+     */
     public static void setUseProxy(String val) {
         useProxy = StringHelper.changeString2boolean(val);
     }
 
+    /**
+     * Gets localhost.
+     *
+     * @return the localhost
+     */
     public static String getLocalhost() {
         return localhost;
     }
 
+    /**
+     * Sets localhost.
+     *
+     * @param val the val
+     */
     public static void setLocalhost(String val) {
         localhost = val;
     }
 
+    /**
+     * Gets localport.
+     *
+     * @return the localport
+     */
     public static String getLocalport() {
         return localport;
     }
 
+    /**
+     * Sets localport.
+     *
+     * @param val the val
+     */
     public static void setLocalport(String val) {
         localport = val;
     }
 
+    /**
+     * Gets timeout.
+     *
+     * @return the timeout
+     */
     public static String getTimeout() {
         return timeout;
     }
 
+    /**
+     * Sets timeout.
+     *
+     * @param val the val
+     */
     public static void setTimeout(String val) {
         timeout = val;
     }
 
+    /**
+     * Gets retry count.
+     *
+     * @return the retry count
+     */
     public static int getRetryCount() {
         return retryCount;
     }
 
+    /**
+     * Sets retry count.
+     *
+     * @param val the val
+     */
     public static void setRetryCount(String val) {
         retryCount = Integer.parseInt(val);
     }
 
+    /**
+     * Gets source code encoding.
+     *
+     * @return the source code encoding
+     */
     public static String getSourceCodeEncoding() {
         return sourceCodeEncoding;
     }
 
+    /**
+     * Sets source code encoding.
+     *
+     * @param val the val
+     */
     public static void setSourceCodeEncoding(String val) {
         sourceCodeEncoding = val;
     }
 
+    /**
+     * Gets source code dir.
+     *
+     * @return the source code dir
+     */
     public static String getSourceCodeDir() {
         return sourceCodeDir;
     }
 
+    /**
+     * Sets source code dir.
+     *
+     * @param val the val
+     */
     public static void setSourceCodeDir(String val) {
         sourceCodeDir = val;
     }

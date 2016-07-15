@@ -524,7 +524,6 @@ public class IOHelper {
      * @param WildcardFileFilter filter to apply when finding files. such as "*.*"
      * @return list list
      */
-
     public static List<String> listFilesInDirectoryRecursive(String strdirpath,
                                                              String WildcardFileFilter) {
         File directory = new File(strdirpath);

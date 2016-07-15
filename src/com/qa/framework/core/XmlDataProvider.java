@@ -19,6 +19,11 @@ public class XmlDataProvider implements Iterator {
     private DataConfig dataConfig;
     private List<TestData> testDataList = new ArrayList<TestData>();
 
+    /**
+     * Instantiates a new Xml data provider.
+     *
+     * @param xmlPath the xml path
+     */
     public XmlDataProvider(String xmlPath) {
         dataConvertor = new DataConvertor(xmlPath);
         dataConfig = dataConvertor.getDataConfig();
@@ -28,6 +33,12 @@ public class XmlDataProvider implements Iterator {
 
     }
 
+    /**
+     * Instantiates a new Xml data provider.
+     *
+     * @param xmlPath      the xml path
+     * @param testDataName the test data name
+     */
     public XmlDataProvider(String xmlPath, String testDataName) {
         dataConvertor = new DataConvertor(xmlPath);
         dataConfig = dataConvertor.getDataConfig();
@@ -48,7 +59,7 @@ public class XmlDataProvider implements Iterator {
 
     public Object next() {
         return new Object[]{
-                iterator.next(), dataConfig.getUrl(), dataConfig.getHttpMethod(), paramValueProcessor
+                iterator.next(), dataConfig.getUrl(), dataConfig.getHttpMethod()
         };
     }
 

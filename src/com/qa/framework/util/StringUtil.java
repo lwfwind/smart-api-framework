@@ -4,7 +4,14 @@ package com.qa.framework.util;
  * Created by kcgw001 on 2016/7/15.
  */
 public class StringUtil {
-    //处理sql/value中的#{}
+    /**
+     * Handle special char string.
+     *
+     * @param sql         the sql
+     * @param replacedStr the replaced str
+     * @return the string
+     */
+//处理sql/value中的#{}
     public static String handleSpecialChar(String sql, String[] replacedStr) {
         StringBuilder newSql = new StringBuilder();
         String[] sqlContent = sql.split("#\\{[a-zA-Z0-9._]*\\}");

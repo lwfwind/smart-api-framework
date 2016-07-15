@@ -47,12 +47,26 @@ public class DynamicCompile {
         this.setSource(source);
     }
 
+    /**
+     * Eval string object.
+     *
+     * @param stringToEval the string to eval
+     * @return the object
+     * @throws Exception the exception
+     */
     public static Object evalString(String stringToEval) throws Exception {
         String methodName = "Compiler";
         DynamicCompile dynamicComiler = new DynamicCompile("package com.qa.util; class AutoCompilerString {public static Object Compiler(){return \"" + stringToEval + "\";}}", "./target/classes");
         return dynamicComiler.Invoke(methodName);
     }
 
+    /**
+     * Eval calculate object.
+     *
+     * @param stringToEval the string to eval
+     * @return the object
+     * @throws Exception the exception
+     */
     public static Object evalCalculate(String stringToEval) throws Exception {
         String methodName = "Compiler";
         DynamicCompile dynamicComiler = new DynamicCompile("package com.qa.util; class AutoCompilerCalculate {public static Object Compiler(){return " + stringToEval + ";}}", "./target/classes");
@@ -180,7 +194,7 @@ public class DynamicCompile {
      * 负责自动编译
      *
      * @author WangYanCheng
-     * @version 2011-2-17
+     * @version 2011 -2-17
      */
     class InnerCompiler extends SimpleJavaFileObject {
         /**

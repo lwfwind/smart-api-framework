@@ -7,8 +7,13 @@ import org.dom4j.Element;
 
 import java.io.File;
 
+/**
+ * The type Testng xml generator.
+ */
 public class TestngXmlGenerator {
     /**
+     * The entry point of application.
+     *
      * @param args the input arguments
      */
     public static void main(String[] args) {
@@ -18,6 +23,12 @@ public class TestngXmlGenerator {
         autoGenerateFactory(args[0], args[1]);
     }
 
+    /**
+     * Auto generate factory.
+     *
+     * @param outputPath the output path
+     * @param threadCnt  the thread cnt
+     */
     public static void autoGenerateFactory(String outputPath, String threadCnt) {
         XMLHelper xml = new XMLHelper();
         xml.createDocument();

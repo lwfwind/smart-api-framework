@@ -20,16 +20,29 @@ public class DataManager {
     private static String xmlName = null;
     private static String xmlDataNmae = null;
 
+    /**
+     * Gets data provider.
+     *
+     * @param method the method
+     * @return the data provider
+     */
     @DataProvider(name = "data")
     @SuppressWarnings("unchecked")
     public static Iterator<Object[]> getDataProvider(Method method) {
-        if (method.getName().equals("Testcase")) {
+        if (method.getName().equals("debug")) {
             return getDataProvider();
         } else {
             return getDataProvider(method.getDeclaringClass(), method);
         }
     }
 
+    /**
+     * Gets data provider.
+     *
+     * @param cls    the cls
+     * @param method the method
+     * @return the data provider
+     */
     public static Iterator getDataProvider(Class cls, Method method) {
         logger.info("class package name is: " + cls.getPackage().getName() + ", Method name is: " + method.getName());
         String xmlPath = ProjectEnvironment.srcPath() + cls.getPackage().getName().replace(".", File.separator);
@@ -38,6 +51,11 @@ public class DataManager {
         return new XmlDataProvider(filePath);
     }
 
+    /**
+     * Gets data provider.
+     *
+     * @return the data provider
+     */
     public static Iterator getDataProvider() {
         List<String> files = IOHelper.listFilesInDirectoryRecursive(System.getProperty("user.dir"), xmlName + ".xml");
         String filePath = files.get(0);
@@ -49,18 +67,38 @@ public class DataManager {
 
     }
 
+    /**
+     * Gets xml name.
+     *
+     * @return the xml name
+     */
     public static String getXmlName() {
         return xmlName;
     }
 
+    /**
+     * Sets xml name.
+     *
+     * @param xmlName the xml name
+     */
     public static void setXmlName(String xmlName) {
         DataManager.xmlName = xmlName;
     }
 
+    /**
+     * Gets xml data nmae.
+     *
+     * @return the xml data nmae
+     */
     public static String getXmlDataNmae() {
         return xmlDataNmae;
     }
 
+    /**
+     * Sets xml data nmae.
+     *
+     * @param xmlDataNmae the xml data nmae
+     */
     public static void setXmlDataNmae(String xmlDataNmae) {
         DataManager.xmlDataNmae = xmlDataNmae;
     }

@@ -5,19 +5,40 @@ import net.sf.json.JSONObject;
 
 import java.util.*;
 
+/**
+ * The type Json helper.
+ */
 public class JsonHelper {
 
+    /**
+     * The constant Error.
+     */
     public static final int Error = 0;
+    /**
+     * The constant ObjectJson.
+     */
     public static final int ObjectJson = 1;
+    /**
+     * The constant ArrayJson.
+     */
     public static final int ArrayJson = 2;
+    /**
+     * The constant Number.
+     */
     public static final int Number = 3;
+    /**
+     * The constant Str.
+     */
     public static final int Str = 4;
+    /**
+     * The constant phpArray.
+     */
     public static final int phpArray = 5;
 
     /**
      * 简单判断是否是json格式的字符串
      *
-     * @param strJson
+     * @param strJson the str json
      * @return str 的类型
      */
     public static int JudgeStringJson(String strJson) {
@@ -48,7 +69,8 @@ public class JsonHelper {
     /**
      * 简单判断是否是json格式的字符串
      *
-     * @param str
+     * @param str the str
+     * @return the boolean
      */
     public static boolean BooleanJudgeStringJson(String str) {
         return str.startsWith("{") && str.contains(":") && str.endsWith("}") || str.startsWith("[") && str.endsWith("]");
@@ -73,6 +95,12 @@ public class JsonHelper {
         return map;
     }
 
+    /**
+     * Gets object.
+     *
+     * @param str the str
+     * @return the object
+     */
     public static Object getObject(String str) {
         int type = JudgeStringJson(str);
         switch (type) {
@@ -97,6 +125,12 @@ public class JsonHelper {
         }
     }
 
+    /**
+     * Decode unicode string.
+     *
+     * @param theString the the string
+     * @return the string
+     */
     public static String decodeUnicode(String theString) {
         char aChar;
         int len = theString.length();

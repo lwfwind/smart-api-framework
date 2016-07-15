@@ -20,6 +20,11 @@ public class DataConvertor {
     private DataConfig dataConfig;
     private String fileName;
 
+    /**
+     * Instantiates a new Data convertor.
+     *
+     * @param filePath the file path
+     */
     public DataConvertor(String filePath) {
         this.fileName = IOHelper.getName(filePath);
         XMLHelper xmlHelper = new XMLHelper();
@@ -41,6 +46,11 @@ public class DataConvertor {
     }
 
 
+    /**
+     * Gets data config.
+     *
+     * @return the data config
+     */
     public DataConfig getDataConfig() {
         return dataConfig;
     }
@@ -51,7 +61,6 @@ public class DataConvertor {
      * @param parentObj the parentObj 该element父类对应的对象
      * @param element   the element
      */
-
     public void convert(Object parentObj, Element element) {
         String className = null;
         String beanPackage = "com.qa.framework.bean";

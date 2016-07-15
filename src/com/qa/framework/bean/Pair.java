@@ -14,42 +14,92 @@ public class Pair {
     private boolean sort;
     private Boolean patternMatch = false;
 
+    /**
+     * Instantiates a new Pair.
+     *
+     * @param key   the key
+     * @param value the value
+     */
     public Pair(String key, String value) {
         this.key = key;
         this.value = value;
     }
 
+    /**
+     * Instantiates a new Pair.
+     */
     public Pair() {
     }
 
+    /**
+     * Gets key.
+     *
+     * @return the key
+     */
     public String getKey() {
         return key;
     }
 
+    /**
+     * Sets key.
+     *
+     * @param key the key
+     */
     public void setKey(String key) {
         this.key = key;
     }
 
+    /**
+     * Gets value.
+     *
+     * @return the value
+     */
     public String getValue() {
         return value;
     }
 
+    /**
+     * Sets value.
+     *
+     * @param value the value
+     */
     public void setValue(String value) {
         this.value = value;
     }
 
+    /**
+     * Sets sort.
+     *
+     * @param sortStr the sort str
+     */
     public void setSort(String sortStr) {
         sort = StringHelper.changeString2boolean(sortStr);
     }
 
+    /**
+     * Is sort boolean.
+     *
+     * @return the boolean
+     */
     public boolean isSort() {
         return sort;
     }
 
+    /**
+     * Sets sort.
+     *
+     * @param sort the sort
+     */
     public void setSort(boolean sort) {
         this.sort = sort;
     }
 
+    /**
+     * Find value string.
+     *
+     * @param msg the msg
+     * @return the string
+     */
     public String findValue(String msg) {
         if (msg.equalsIgnoreCase(key)) {
             return getValue();
@@ -57,10 +107,20 @@ public class Pair {
         return null;
     }
 
+    /**
+     * Gets map statement.
+     *
+     * @return the map statement
+     */
     public String getMapStatement() {
         return mapStatement;
     }
 
+    /**
+     * Sets map statement.
+     *
+     * @param mapStatement the map statement
+     */
     public void setMapStatement(String mapStatement) {
         if (mapStatement != null && !"".equalsIgnoreCase(mapStatement)) {
             if (!mapStatement.contains(":")) {
@@ -95,14 +155,29 @@ public class Pair {
         return false;
     }
 
+    /**
+     * Gets pattern match.
+     *
+     * @return the pattern match
+     */
     public Boolean getPatternMatch() {
         return patternMatch;
     }
 
+    /**
+     * Sets pattern match.
+     *
+     * @param patternMatch the pattern match
+     */
     public void setPatternMatch(String patternMatch) {
         this.patternMatch = StringHelper.changeString2boolean(patternMatch);
     }
 
+    /**
+     * Sets pattern match.
+     *
+     * @param patternMatch the pattern match
+     */
     public void setPatternMatch(Boolean patternMatch) {
         this.patternMatch = patternMatch;
     }

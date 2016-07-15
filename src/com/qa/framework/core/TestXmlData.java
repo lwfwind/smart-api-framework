@@ -16,6 +16,11 @@ import java.util.List;
 public class TestXmlData {
     private static final Logger logger = Logger.getLogger(TestXmlData.class);
 
+    /**
+     * Xml factory data iterator.
+     *
+     * @return the iterator
+     */
     @DataProvider(name = "xmlFactoryData")
     public static Iterator<Object[]> xmlFactoryData() {
         List<Object[]> xmldata = new ArrayList<Object[]>();
@@ -35,6 +40,11 @@ public class TestXmlData {
     }
 
 
+    /**
+     * Gets test case files.
+     *
+     * @return the test case files
+     */
     public static List<String> getTestCaseFiles() {
         String useDir = System.getProperty("user.dir");
         List<String> files = IOHelper.listFilesInDirectoryRecursive(useDir, "*.xml");

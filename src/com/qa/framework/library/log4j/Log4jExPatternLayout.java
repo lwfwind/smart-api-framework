@@ -7,10 +7,18 @@ import org.apache.log4j.helpers.PatternParser;
  * Created by kcgw001 on 2016/2/22.
  */
 public class Log4jExPatternLayout extends PatternLayout {
+    /**
+     * Instantiates a new Log 4 j ex pattern layout.
+     *
+     * @param pattern the pattern
+     */
     public Log4jExPatternLayout(String pattern) {
         super(pattern);
     }
 
+    /**
+     * Instantiates a new Log 4 j ex pattern layout.
+     */
     public Log4jExPatternLayout() {
         super();
     }

@@ -17,24 +17,47 @@ import java.util.regex.Pattern;
  * Created by apple on 15/11/20.
  */
 public class PairExpectResult implements IExpectResult {
+    /**
+     * The constant logger.
+     */
     protected static final Logger logger = Logger.getLogger(PairExpectResult.class);
     private String pairsStatement;
     private List<Pair> pairs;
     private String[] containKeys;
 
+    /**
+     * Gets pairs.
+     *
+     * @return the pairs
+     */
     public List<Pair> getPairs() {
         return pairs;
     }
 
+    /**
+     * Sets pairs.
+     *
+     * @param pairs the pairs
+     */
     public void setPairs(List<Pair> pairs) {
         this.pairs = pairs;
     }
 
+    /**
+     * Sets contain keys.
+     *
+     * @param containKeysString the contain keys string
+     */
     public void setContainKeys(String containKeysString) {
         this.containKeys = StringHelper.getTokensArray(containKeysString, ",");
 
     }
 
+    /**
+     * Add pair.
+     *
+     * @param pair the pair
+     */
     public void addPair(Pair pair) {
         if (pairs == null) {
             pairs = new ArrayList<Pair>();
@@ -42,6 +65,11 @@ public class PairExpectResult implements IExpectResult {
         pairs.add(pair);
     }
 
+    /**
+     * Sets pairs statement.
+     *
+     * @param pairsStatement the pairs statement
+     */
     public void setPairsStatement(String pairsStatement) {
         this.pairsStatement = pairsStatement;
         Pair pair = new Pair();
@@ -49,6 +77,11 @@ public class PairExpectResult implements IExpectResult {
         addPair(pair);
     }
 
+    /**
+     * Sets contain keys.
+     *
+     * @param containKeys the contain keys
+     */
     public void setContainKeys(String[] containKeys) {
         this.containKeys = containKeys;
     }
@@ -80,6 +113,12 @@ public class PairExpectResult implements IExpectResult {
         }
     }
 
+    /**
+     * Compare map.
+     *
+     * @param objectMap the object map
+     * @param expectMsg the expect msg
+     */
     public void compareMap(Map<String, Object> objectMap, String expectMsg) {
         Map<String, Object> expectMap = JsonHelper.getJsonMapString(expectMsg);
         Set<String> expectMapSet = expectMap.keySet();
@@ -99,6 +138,12 @@ public class PairExpectResult implements IExpectResult {
         }
     }
 
+    /**
+     * Compare map.
+     *
+     * @param objectMap  the object map
+     * @param keyCompare the key compare
+     */
     @SuppressWarnings("unchecked")
     public void compareMap(Map<String, Object> objectMap, boolean keyCompare) {
         if (keyCompare) {

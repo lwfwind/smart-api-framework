@@ -23,18 +23,32 @@ public class ParamValueProcessor {
     private List<TestData> testDataList = new ArrayList<TestData>();
     private StringCache stringCache;
 
+    /**
+     * Instantiates a new Param value processor.
+     *
+     * @param dataConfig the data config
+     */
     public ParamValueProcessor(DataConfig dataConfig) {
         this.dataConfig = dataConfig;
         this.testDataList = dataConfig.getTestDataList();
         stringCache = new StringCache();
     }
 
+    /**
+     * Process.
+     */
     public void process(){
         processBefore();
         processSetupParam();
         processTestDataParam();
     }
 
+    /**
+     * Instantiates a new Param value processor.
+     *
+     * @param dataConfig   the data config
+     * @param testDataName the test data name
+     */
     public ParamValueProcessor(DataConfig dataConfig, String testDataName) {
         this.dataConfig = dataConfig;
         for (TestData testData : dataConfig.getTestDataList()) {
@@ -45,7 +59,10 @@ public class ParamValueProcessor {
         stringCache = new StringCache();
     }
 
-    //处理setup中param的占位
+    /**
+     * Process setup param.
+     */
+//处理setup中param的占位
     public void processSetupParam() {
         for (TestData testData : testDataList) {
             List<Setup> setupList = testData.getSetupList();
@@ -64,6 +81,9 @@ public class ParamValueProcessor {
         }
     }
 
+    /**
+     * Process before.
+     */
     @SuppressWarnings("unchecked")
     public void processBefore() {
         for (TestData testData : testDataList) {
@@ -79,7 +99,10 @@ public class ParamValueProcessor {
         }
     }
 
-    //处理正常流程中的param的sql, 日期, 从其他函数和setup接受值问题
+    /**
+     * Process test data param.
+     */
+//处理正常流程中的param的sql, 日期, 从其他函数和setup接受值问题
     public void processTestDataParam() {
         for (TestData testData : testDataList) {
             List<Param> paramList = testData.getParams();
@@ -96,7 +119,13 @@ public class ParamValueProcessor {
         }
     }
 
-    //处理param没有变量
+    /**
+     * Process normal param.
+     *
+     * @param param    the param
+     * @param testData the test data
+     */
+//处理param没有变量
     public void processNormalParam(Param param, TestData testData) {
         if (param.getValue() != null && !param.getValue().contains("#{")) { //处理没有变量的param
             stringCache.put(param.getName(), param.getValue());
@@ -104,7 +133,13 @@ public class ParamValueProcessor {
         }
     }
 
-    //处理param中需要接受setup中param值的问题
+    /**
+     * Process param from setup.
+     *
+     * @param testData the test data
+     * @param param    the param
+     */
+//处理param中需要接受setup中param值的问题
     public void processParamFromSetup(TestData testData, Param param) {
         if (testData.getSetupList() != null && param.getSqls() == null && param.getFunction() == null && param.getDateStamp() == null && param.getPairs() == null) {
             if (param.getValue().contains("#{") && param.getValue().contains(".")) {
@@ -116,6 +151,11 @@ public class ParamValueProcessor {
         }
     }
 
+    /**
+     * Process param from other test data.
+     *
+     * @param param the param
+     */
     public void processParamFromOtherTestData(Param param) {
         if (param.getSqls() == null && param.getFunction() == null && param.getDateStamp() == null && param.getPairs() == null) {
             if (param.getValue() != null) {
@@ -137,6 +177,13 @@ public class ParamValueProcessor {
         }
     }
 
+    /**
+     * Process function.
+     *
+     * @param param    the param
+     * @param setup    the setup
+     * @param testData the test data
+     */
     @SuppressWarnings("unchecked")
     public void processFunction(Param param, Setup setup, TestData testData) {
         if (param.getFunction() != null) {
@@ -158,6 +205,13 @@ public class ParamValueProcessor {
         }
     }
 
+    /**
+     * Process test data param.
+     *
+     * @param param    the param
+     * @param setup    the setup
+     * @param testData the test data
+     */
     public void processTestDataParam(Param param, Setup setup, TestData testData) {
         if (param.getSqls() != null) {
             List<Sql> sqlList = param.getSqls();
@@ -188,9 +242,10 @@ public class ParamValueProcessor {
     /**
      * Execute sql string. 处理sql中#{}, 以及执行相应的sql, 生成最后的结果
      *
-     * @param sqlList the sqlList  sql列表
-     * @param param   the param      当前传入的参数
-     * @param setup   the setup    param所属的setup
+     * @param sqlList  the sqlList  sql列表
+     * @param param    the param      当前传入的参数
+     * @param setup    the setup    param所属的setup
+     * @param testData the test data
      * @return the string
      */
     public String executeSql(List<Sql> sqlList, Param param, Setup setup, TestData testData) {
@@ -263,6 +318,11 @@ public class ParamValueProcessor {
         }
     }
 
+    /**
+     * Process pair.
+     *
+     * @param pair the pair
+     */
     public void processPair(Pair pair) {
         if (pair.getValue().contains("#{")) {
             String OriginalString = pair.getValue();

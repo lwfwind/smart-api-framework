@@ -8,6 +8,11 @@ import org.apache.log4j.spi.LoggingEvent;
  * Created by kcgw001 on 2016/2/22.
  */
 public class ExPatternConverter extends PatternConverter {
+    /**
+     * Instantiates a new Ex pattern converter.
+     *
+     * @param fi the fi
+     */
     public ExPatternConverter(FormattingInfo fi) {
         super(fi);
     }

@@ -474,6 +474,13 @@ public class StringHelper {
         return str.toUpperCase().substring(0, 1) + str.substring(1);
     }
 
+    /**
+     * Find list.
+     *
+     * @param target the target
+     * @param patten the patten
+     * @return the list
+     */
     public static List<String> find(String target, String patten) {
         Pattern p = Pattern.compile(patten);
         Matcher matcher = p.matcher(target);

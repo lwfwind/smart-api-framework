@@ -6,6 +6,11 @@ import org.apache.log4j.helpers.PatternParser;
  * Created by kcgw001 on 2016/2/22.
  */
 public class Log4jExPatternParser extends PatternParser {
+    /**
+     * Instantiates a new Log 4 j ex pattern parser.
+     *
+     * @param pattern the pattern
+     */
     public Log4jExPatternParser(String pattern) {
         super(pattern);
     }

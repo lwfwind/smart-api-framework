@@ -13,6 +13,14 @@ import java.util.List;
  * Created by apple on 15/11/18.
  */
 public class ReflectHelper {
+    /**
+     * Sets method.
+     *
+     * @param obj        the obj
+     * @param fieldName  the field name
+     * @param value      the value
+     * @param fieldClass the field class
+     */
     @SuppressWarnings("unchecked")
     public static void setMethod(Object obj, String fieldName, Object value, Class fieldClass) {
         Class cls = obj.getClass();
@@ -24,6 +32,14 @@ public class ReflectHelper {
         }
     }
 
+    /**
+     * Sets method.
+     *
+     * @param cls        the cls
+     * @param fieldName  the field name
+     * @param value      the value
+     * @param fieldClass the field class
+     */
     @SuppressWarnings("unchecked")
     public static void setMethod(Class cls, String fieldName, Object value, Class fieldClass) {
         try {
@@ -34,6 +50,14 @@ public class ReflectHelper {
         }
     }
 
+    /**
+     * Add method.
+     *
+     * @param parent    the parent
+     * @param sub       the sub
+     * @param fieldName the field name
+     * @param subClass  the sub class
+     */
     @SuppressWarnings("unchecked")
     public static void addMethod(Object parent, Object sub, String fieldName, Class subClass) {
         Class cls = parent.getClass();
@@ -54,6 +78,13 @@ public class ReflectHelper {
         }
     }
 
+    /**
+     * Gets method.
+     *
+     * @param obj   the obj
+     * @param field the field
+     * @return the method
+     */
     @SuppressWarnings("unchecked")
     public static Object getMethod(Object obj, String field) {
         Class cls = obj.getClass();
@@ -88,6 +119,12 @@ public class ReflectHelper {
         return fields;
     }
 
+    /**
+     * Gets object info.
+     *
+     * @param obj the obj
+     * @return the object info
+     */
     public static String getObjectInfo(Object obj) {
         StringBuilder stringBuilder = new StringBuilder();
         Class<?> clazz = obj.getClass();
@@ -121,6 +158,12 @@ public class ReflectHelper {
         return stringBuilder.toString();
     }
 
+    /**
+     * Gets collections info.
+     *
+     * @param list the list
+     * @return the collections info
+     */
     public static String getCollectionsInfo(List<?> list) {
         if (list.size() == 0) {
             return "null";

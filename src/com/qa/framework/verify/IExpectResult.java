@@ -6,6 +6,11 @@ package com.qa.framework.verify;
  */
 public interface IExpectResult {
 
+    /**
+     * Compare real.
+     *
+     * @param content the content
+     */
     public void compareReal(String content);
 
 }

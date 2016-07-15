@@ -13,26 +13,56 @@ public class Sql {
     private String sqlStatement;          //sql语句
     private Map<String, String> returnValueMap;    //储存returnValues及对应的值
 
+    /**
+     * Gets name.
+     *
+     * @return the name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets name.
+     *
+     * @param name the name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Get return values string [ ].
+     *
+     * @return the string [ ]
+     */
     public String[] getReturnValues() {
         return returnValues;
     }
 
+    /**
+     * Sets return values.
+     *
+     * @param returnValues the return values
+     */
     public void setReturnValues(String[] returnValues) {
         this.returnValues = returnValues;
     }
 
+    /**
+     * Gets sql statement.
+     *
+     * @return the sql statement
+     */
     public String getSqlStatement() {
         return sqlStatement;
     }
 
+    /**
+     * Sets sql statement.
+     *
+     * @param sqlstatement the sqlstatement
+     */
     public void setSqlStatement(String sqlstatement) {
         this.sqlStatement = sqlstatement;
         //设置returnValue

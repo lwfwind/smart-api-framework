@@ -12,6 +12,9 @@ import java.util.*;
  * Created by apple on 15/11/20.
  */
 public class ContainExpectResult implements IExpectResult {
+    /**
+     * The constant logger.
+     */
     protected static final Logger logger = Logger.getLogger(ContainExpectResult.class);
     private String[] containKeys;
     private String[] notContainKeys;
@@ -24,63 +27,138 @@ public class ContainExpectResult implements IExpectResult {
     private String patten;
     private Map<String, Sql> stringSqlMap;
 
+    /**
+     * Gets value.
+     *
+     * @return the value
+     */
     public String getValue() {
         return value;
     }
 
+    /**
+     * Sets value.
+     *
+     * @param value the value
+     */
     public void setValue(String value) {
         this.value = value;
     }
 
+    /**
+     * Gets type.
+     *
+     * @return the type
+     */
     public String getType() {
         return type;
     }
 
+    /**
+     * Sets type.
+     *
+     * @param type the type
+     */
     public void setType(String type) {
         this.type = type;
     }
 
+    /**
+     * Is compara key boolean.
+     *
+     * @return the boolean
+     */
     public boolean isComparaKey() {
         return comparaKey;
     }
 
+    /**
+     * Sets compara key.
+     *
+     * @param comparaKey the compara key
+     */
     public void setComparaKey(boolean comparaKey) {
         this.comparaKey = comparaKey;
     }
 
+    /**
+     * Sets compare key.
+     *
+     * @param compareKey the compare key
+     */
     public void setCompareKey(String compareKey) {
         this.comparaKey = StringHelper.changeString2boolean(compareKey);
     }
 
+    /**
+     * Get contain keys string [ ].
+     *
+     * @return the string [ ]
+     */
     public String[] getContainKeys() {
         return containKeys;
     }
 
+    /**
+     * Sets contain keys.
+     *
+     * @param containKeysString the contain keys string
+     */
     public void setContainKeys(String containKeysString) {
         this.containKeys = StringHelper.getTokensArray(containKeysString, ",");
 
     }
 
+    /**
+     * Sets contain keys.
+     *
+     * @param containKeys the contain keys
+     */
     public void setContainKeys(String[] containKeys) {
         this.containKeys = containKeys;
     }
 
+    /**
+     * Get not contain keys string [ ].
+     *
+     * @return the string [ ]
+     */
     public String[] getNotContainKeys() {
         return notContainKeys;
     }
 
+    /**
+     * Sets not contain keys.
+     *
+     * @param notContainKeysString the not contain keys string
+     */
     public void setNotContainKeys(String notContainKeysString) {
         this.notContainKeys = StringHelper.getTokensArray(notContainKeysString, ",");
     }
 
+    /**
+     * Sets not contain keys.
+     *
+     * @param notContainKeys the not contain keys
+     */
     public void setNotContainKeys(String[] notContainKeys) {
         this.notContainKeys = notContainKeys;
     }
 
+    /**
+     * Gets key statement.
+     *
+     * @return the key statement
+     */
     public String getKeyStatement() {
         return keyStatement;
     }
 
+    /**
+     * Sets key statement.
+     *
+     * @param keyStatement the key statement
+     */
     public void setKeyStatement(String keyStatement) {
         if (keyStatement != null && !"".equalsIgnoreCase(keyStatement)) {
             if (keyStatement.contains(":")) {
@@ -159,6 +237,11 @@ public class ContainExpectResult implements IExpectResult {
         }
     }
 
+    /**
+     * Comparereal.
+     *
+     * @param content the content
+     */
     @SuppressWarnings("unchecked")
     public void comparereal(String content) {
         if (comKey != null) {
@@ -169,6 +252,11 @@ public class ContainExpectResult implements IExpectResult {
         }
     }
 
+    /**
+     * Compare real init result.
+     *
+     * @param content the content
+     */
     @SuppressWarnings("unchecked")
     public void compareRealInitResult(String content) {
         Object object = JsonHelper.getObject(content);
@@ -199,6 +287,12 @@ public class ContainExpectResult implements IExpectResult {
         }
     }
 
+    /**
+     * Compare map.
+     *
+     * @param objectMap  the object map
+     * @param keyCompare the key compare
+     */
     @SuppressWarnings("unchecked")
     public void compareMap(Map<String, Object> objectMap, boolean keyCompare) {
         if (keyCompare) {
@@ -230,14 +324,29 @@ public class ContainExpectResult implements IExpectResult {
         }
     }
 
+    /**
+     * Gets com key.
+     *
+     * @return the com key
+     */
     public String getComKey() {
         return comKey;
     }
 
+    /**
+     * Sets com key.
+     *
+     * @param comKey the com key
+     */
     public void setComKey(String comKey) {
         this.comKey = comKey;
     }
 
+    /**
+     * Add sql.
+     *
+     * @param sql the sql
+     */
     public void addSql(Sql sql) {
         if (sqls == null) {
             sqls = new ArrayList<Sql>();
@@ -245,14 +354,29 @@ public class ContainExpectResult implements IExpectResult {
         sqls.add(sql);
     }
 
+    /**
+     * Gets sqls.
+     *
+     * @return the sqls
+     */
     public List<Sql> getSqls() {
         return sqls;
     }
 
+    /**
+     * Sets sqls.
+     *
+     * @param sqls the sqls
+     */
     public void setSqls(List<Sql> sqls) {
         this.sqls = sqls;
     }
 
+    /**
+     * Gets string sql map.
+     *
+     * @return the string sql map
+     */
     public Map<String, Sql> getStringSqlMap() {
         if (stringSqlMap == null) {
             fillMap();
@@ -260,10 +384,18 @@ public class ContainExpectResult implements IExpectResult {
         return stringSqlMap;
     }
 
+    /**
+     * Sets string sql map.
+     *
+     * @param stringSqlMap the string sql map
+     */
     public void setStringSqlMap(Map<String, Sql> stringSqlMap) {
         this.stringSqlMap = stringSqlMap;
     }
 
+    /**
+     * Fill map.
+     */
     public void fillMap() {
         for (Sql sql : sqls) {
             if (stringSqlMap == null) {
@@ -273,10 +405,20 @@ public class ContainExpectResult implements IExpectResult {
         }
     }
 
+    /**
+     * Gets patten.
+     *
+     * @return the patten
+     */
     public String getPatten() {
         return patten;
     }
 
+    /**
+     * Sets patten.
+     *
+     * @param patten the patten
+     */
     public void setPatten(String patten) {
         this.patten = patten;
     }
