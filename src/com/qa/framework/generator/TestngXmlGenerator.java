@@ -33,7 +33,7 @@ public class TestngXmlGenerator {
         XMLHelper xml = new XMLHelper();
         xml.createDocument();
         Element root = xml.createDocumentRoot("suite");
-        xml.addAttribute(root, "name", "xml_" + threadCnt);
+        xml.addAttribute(root, "name", "Factory_" + threadCnt + "_Thread");
         xml.addAttribute(root, "thread-count", threadCnt);
         xml.addAttribute(root, "parallel", "methods");
         xml.addAttribute(root, "verbose", "1");
