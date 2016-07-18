@@ -71,15 +71,16 @@ public class ParamValueProcessor {
             if (testData.getBefore() != null) try {
                 logger.info("Process Before in xml-" + testData.getCurrentFileName() + " TestData-" + testData.getName());
                 Before before=testData.getBefore();
-                if (before.getSqls().size()>0){
+                if (before.getSqls()!=null){
                     List<Sql> sqls=before.getSqls();
                     for (Sql sql:sqls){
                         logger.info("需更新语句："+sql.getSqlStatement());
                         DBHelper.executeUpdate(sql.getSqlStatement());
                     }
-                }else {
-                    Class cls = Class.forName(testData.getBefore().getClsName());
-                    Method method = cls.getDeclaredMethod(testData.getBefore().getMethodName());
+                }else if (before.getFunction()!=null){
+                    Function function=before.getFunction();
+                    Class cls = Class.forName(function.getClsName());
+                    Method method = cls.getDeclaredMethod(function.getMethodName());
                     Object object = cls.newInstance();
                     method.invoke(object);
                 }

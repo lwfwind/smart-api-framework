@@ -8,25 +8,9 @@ import java.util.List;
  * Created by Administrator on 2016/6/22.
  */
 public class Before extends Function {
-    private String clsName;
-    private String methodName;
+    private Function function;
     private List<Sql> sqls;
 
-    public String getClsName() {
-        return clsName;
-    }
-
-    public void setClsName(String clsName) {
-        this.clsName = clsName;
-    }
-
-    public String getMethodName() {
-        return methodName;
-    }
-
-    public void setMethodName(String methodName) {
-        this.methodName = methodName;
-    }
 
     public List<Sql> getSqls() {
         return sqls;
@@ -40,5 +24,13 @@ public class Before extends Function {
             sqls = new ArrayList<Sql>();
         }
         sqls.add(sql);
+    }
+
+    public Function getFunction() {
+        return function;
+    }
+
+    public void setFunction(Function function) {
+        this.function = function;
     }
 }
