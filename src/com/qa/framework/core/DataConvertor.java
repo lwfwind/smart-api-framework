@@ -1,6 +1,9 @@
 package com.qa.framework.core;
 
 import com.qa.framework.bean.DataConfig;
+import com.qa.framework.bean.TestData;
+import com.qa.framework.exception.TestDataDescDuplicatedException;
+import com.qa.framework.exception.TestDataNameDuplicatedException;
 import com.qa.framework.library.base.IOHelper;
 import com.qa.framework.library.base.XMLHelper;
 import com.qa.framework.library.reflect.ReflectHelper;
@@ -10,6 +13,7 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,6 +46,24 @@ public class DataConvertor {
         List elements = document.getRootElement().elements();
         for (Object element : elements) {
             convert(dataConfig, (Element) element);
+        }
+        List<String> testDataNameList = new ArrayList<String>();
+        List<String> testDataDescList = new ArrayList<String>();
+        for (TestData testData : dataConfig.getTestDataList()) {
+            if(!testDataNameList.contains(testData.getName())){
+                testDataNameList.add(testData.getName());
+            }
+            else
+            {
+                throw new TestDataNameDuplicatedException(this.fileName,testData.getName());
+            }
+            if(!testDataDescList.contains(testData.getDesc())){
+                testDataDescList.add(testData.getDesc());
+            }
+            else
+            {
+                throw new TestDataDescDuplicatedException(this.fileName,testData.getDesc());
+            }
         }
     }
 
