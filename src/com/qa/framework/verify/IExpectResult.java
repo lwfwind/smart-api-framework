@@ -11,6 +11,6 @@ public interface IExpectResult {
      *
      * @param content the content
      */
-    public void compareReal(String content);
+    void compareReal(String content);
 
 }

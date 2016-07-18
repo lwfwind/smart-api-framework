@@ -142,13 +142,13 @@ public class DBPoolFactory {
     /**
      * Initial pool
      *
-     * @param poolname
+     * @param poolName the database pool name
      */
-    private static void init(String poolname) {
+    private static void init(String poolName) {
 
         List<BaseConnBean> pools = XmlToBean.read();
         for (BaseConnBean baseConnBean : pools) {
-            if (baseConnBean.getName().equals(poolname)) {
+            if (baseConnBean.getName().equals(poolName)) {
                 dbJdbc = baseConnBean.getJdbcurl();
                 dbUser = baseConnBean.getUsername();
                 dbPwd = baseConnBean.getPassword();
