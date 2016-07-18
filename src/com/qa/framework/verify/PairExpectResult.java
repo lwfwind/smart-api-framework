@@ -108,7 +108,7 @@ public class PairExpectResult implements IExpectResult {
             logger.debug("需验证的正则表达式：" + pair.getValue());
             Pattern pattern = Pattern.compile(pair.getValue());
             Matcher matcher = pattern.matcher(code);
-            logger.info(matcher.matches());
+            logger.debug(matcher.matches());
             Assert.assertTrue(matcher.matches(), String.format("期望返回:%s, 实际返回:%s", pairsStatement, content));
         }
     }
