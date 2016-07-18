@@ -79,11 +79,11 @@ public class DateTimeHelper {
      * @return true if the string can be converted into Date
      */
     public static boolean isDate(String str) {
+        boolean isDateType=false;
         if (toDate(str) != null) {
-            return true;
-        } else {
-            return false;
+            isDateType=true;
         }
+        return isDateType;
     }
 
     /**
@@ -177,8 +177,7 @@ public class DateTimeHelper {
      * @return Date date
      */
     public static Date now() {
-        Date dt = new Date();
-        return dt;
+        return new Date();
     }
 
     /**

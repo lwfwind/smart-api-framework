@@ -1,8 +1,6 @@
 package com.qa.framework.library.base;
 
-/**
- * Created by kcgw001 on 2016/3/31.
- */
+
 public class CastHelper {
     /**
      * 转为 String 型

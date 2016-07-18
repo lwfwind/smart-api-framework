@@ -53,6 +53,9 @@ public abstract class TestBase {
             case "put":
                 content = HttpMethod.usePutMethod(url, params, storeCookie, useCookie);
                 break;
+            case "delete":
+                content = HttpMethod.usePutMethod(url, params, storeCookie, useCookie);
+                break;
         }
 
         content = JsonHelper.decodeUnicode(content);

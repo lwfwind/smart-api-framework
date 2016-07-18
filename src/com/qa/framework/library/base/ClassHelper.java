@@ -4,9 +4,7 @@ import org.apache.log4j.Logger;
 
 import java.net.URL;
 
-/**
- * Created by kcgw001 on 2016/4/12.
- */
+
 public class ClassHelper {
 
     private final static Logger logger = Logger

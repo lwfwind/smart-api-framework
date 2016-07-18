@@ -70,10 +70,19 @@ public class ParamValueProcessor {
         for (TestData testData : testDataList) {
             if (testData.getBefore() != null) try {
                 logger.info("Process Before in xml-" + testData.getCurrentFileName() + " TestData-" + testData.getName());
-                Class cls = Class.forName(testData.getBefore().getClsName());
-                Method method = cls.getDeclaredMethod(testData.getBefore().getMethodName());
-                Object object = cls.newInstance();
-                method.invoke(object);
+                Before before=testData.getBefore();
+                if (before.getSqls().size()>0){
+                    List<Sql> sqls=before.getSqls();
+                    for (Sql sql:sqls){
+                        logger.info("需更新语句："+sql.getSqlStatement());
+                        DBHelper.executeUpdate(sql.getSqlStatement());
+                    }
+                }else {
+                    Class cls = Class.forName(testData.getBefore().getClsName());
+                    Method method = cls.getDeclaredMethod(testData.getBefore().getMethodName());
+                    Object object = cls.newInstance();
+                    method.invoke(object);
+                }
             } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
             }

@@ -126,7 +126,7 @@ public class StringHelper {
         //logger.info("转码前:" + str);
         try {
             String value = URLDecoder.decode(str, "UTF-8");
-            //logger.info("转码后:" + value);
+            logger.debug("转码后:" + value);
             return value;
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -439,6 +439,7 @@ public class StringHelper {
     public static int getRandomInt(int min, int max) {
         // include min, exclude max
         int result = min + new Double(Math.random() * (max - min)).intValue();
+        logger.debug(result);
         return result;
     }
 

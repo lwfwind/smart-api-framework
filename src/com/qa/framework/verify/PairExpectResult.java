@@ -85,7 +85,7 @@ public class PairExpectResult implements IExpectResult {
     public void setContainKeys(String[] containKeys) {
         this.containKeys = containKeys;
     }
-
+    @SuppressWarnings("unchecked")
     public void compareReal(String content) {
         Map<String, Object> jsonObject = JsonHelper.getJsonMapString(content);
         String expectCode = null;
@@ -109,7 +109,7 @@ public class PairExpectResult implements IExpectResult {
             Pattern pattern = Pattern.compile(pair.getValue());
             Matcher matcher = pattern.matcher(code);
             logger.info(matcher.matches());
-            Assert.assertTrue(matcher.matches(), String.format("实际返回:%s, 期望返回:%s", pairsStatement.toString(), content));
+            Assert.assertTrue(matcher.matches(), String.format("期望返回:%s, 实际返回:%s", pairsStatement, content));
         }
     }
 
@@ -119,6 +119,7 @@ public class PairExpectResult implements IExpectResult {
      * @param objectMap the object map
      * @param expectMsg the expect msg
      */
+    @SuppressWarnings("unchecked")
     public void compareMap(Map<String, Object> objectMap, String expectMsg) {
         Map<String, Object> expectMap = JsonHelper.getJsonMapString(expectMsg);
         Set<String> expectMapSet = expectMap.keySet();
