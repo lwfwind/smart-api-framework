@@ -109,7 +109,7 @@ public class PairExpectResult implements IExpectResult {
             Pattern pattern = Pattern.compile(pair.getValue());
             Matcher matcher = pattern.matcher(code);
             logger.info(matcher.matches());
-            Assert.assertTrue(matcher.matches(), String.format("实际返回:%s, 期望返回:%s", pairsStatement.toString(), content));
+            Assert.assertTrue(matcher.matches(), String.format(" 期望返回:%s,实际返回:%s", pairsStatement.toString(), content));
         }
     }
 
