@@ -17,7 +17,6 @@ public class XmlDataProvider implements Iterator {
     private Iterator iterator;
     private ParamValueProcessor paramValueProcessor;
     private DataConfig dataConfig;
-    private List<TestData> testDataList = new ArrayList<TestData>();
 
     /**
      * Instantiates a new Xml data provider.
@@ -44,9 +43,10 @@ public class XmlDataProvider implements Iterator {
         dataConfig = dataConvertor.getDataConfig();
         paramValueProcessor = new ParamValueProcessor(dataConfig, testDataName);
         paramValueProcessor.process();
+        List<TestData> testDataList = new ArrayList<TestData>();
         for (TestData testData : dataConfig.getTestDataList()) {
             if (testData.getName().equals(testDataName)) {
-                this.testDataList.add(testData);
+                testDataList.add(testData);
             }
         }
         iterator = testDataList.iterator();

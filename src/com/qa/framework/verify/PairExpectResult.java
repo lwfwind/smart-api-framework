@@ -86,6 +86,7 @@ public class PairExpectResult implements IExpectResult {
         this.containKeys = containKeys;
     }
 
+    @SuppressWarnings("unchecked")
     public void compareReal(String content) {
         Map<String, Object> jsonObject = JsonHelper.getJsonMapString(content);
         String expectCode = null;
@@ -108,7 +109,7 @@ public class PairExpectResult implements IExpectResult {
             logger.debug("需验证的正则表达式：" + pair.getValue());
             Pattern pattern = Pattern.compile(pair.getValue());
             Matcher matcher = pattern.matcher(code);
-            Assert.assertTrue(matcher.matches(), String.format("实际返回:%s, 期望返回:%s", pairsStatement.toString(), content));
+            Assert.assertTrue(matcher.matches(), String.format("实际返回:%s, 期望返回:%s", pairsStatement, content));
         }
     }
 
