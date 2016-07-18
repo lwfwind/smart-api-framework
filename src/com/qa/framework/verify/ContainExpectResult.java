@@ -4,7 +4,10 @@ import com.qa.framework.bean.Sql;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by apple on 15/11/20.

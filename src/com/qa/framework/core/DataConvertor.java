@@ -50,19 +50,15 @@ public class DataConvertor {
         List<String> testDataNameList = new ArrayList<String>();
         List<String> testDataDescList = new ArrayList<String>();
         for (TestData testData : dataConfig.getTestDataList()) {
-            if(!testDataNameList.contains(testData.getName())){
+            if (!testDataNameList.contains(testData.getName())) {
                 testDataNameList.add(testData.getName());
+            } else {
+                throw new TestDataNameDuplicatedException(this.fileName, testData.getName());
             }
-            else
-            {
-                throw new TestDataNameDuplicatedException(this.fileName,testData.getName());
-            }
-            if(!testDataDescList.contains(testData.getDesc())){
+            if (!testDataDescList.contains(testData.getDesc())) {
                 testDataDescList.add(testData.getDesc());
-            }
-            else
-            {
-                throw new TestDataDescDuplicatedException(this.fileName,testData.getDesc());
+            } else {
+                throw new TestDataDescDuplicatedException(this.fileName, testData.getDesc());
             }
         }
     }
