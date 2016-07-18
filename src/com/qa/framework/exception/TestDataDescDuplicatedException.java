@@ -10,6 +10,6 @@ public class TestDataDescDuplicatedException extends RuntimeException {
      * @param name the name
      */
     public TestDataDescDuplicatedException(String fileName, String name) {
-        super("The Setup desc-" + name + " have duplicated in file-"+fileName);
+        super("The Setup desc-" + name + " have duplicated in file-" + fileName);
     }
 }

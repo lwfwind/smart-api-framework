@@ -35,7 +35,7 @@ public class TestngXmlGenerator {
         Element root = xml.createDocumentRoot("suite");
         xml.addAttribute(root, "name", "xml_" + threadCnt);
         xml.addAttribute(root, "thread-count", threadCnt);
-        xml.addAttribute(root, "parallel", "tests");
+        xml.addAttribute(root, "parallel", "methods");
         xml.addAttribute(root, "verbose", "1");
         Element listeners = xml.addChildElement(root, "listeners");
         Element listener = xml.addChildElement(listeners, "listener");
