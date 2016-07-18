@@ -1,26 +1,43 @@
 package com.qa.framework.bean;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Administrator on 2016/6/22.
  */
-public class After extends Function {
-    private String clsName;
-    private String methodName;
+public class After {
+    private List<Function> functions;
+    private List<Sql> sqls;
 
-    public String getClsName() {
-        return clsName;
+
+    public List<Sql> getSqls() {
+        return sqls;
     }
 
-    public void setClsName(String clsName) {
-        this.clsName = clsName;
+    public void setSqls(List<Sql> sqls) {
+        this.sqls = sqls;
+    }
+    public void addSql(Sql sql) {
+        if (sqls == null) {
+            sqls = new ArrayList<Sql>();
+        }
+        sqls.add(sql);
     }
 
-    public String getMethodName() {
-        return methodName;
+    public List<Function> getFunctions() {
+        return functions;
     }
 
-    public void setMethodName(String methodName) {
-        this.methodName = methodName;
+    public void setFunctions(List<Function> functions) {
+        this.functions = functions;
     }
+    public void addFunction(Function function) {
+        if (functions == null) {
+            functions = new ArrayList<Function>();
+        }
+        functions.add(function);
+    }
+
 }

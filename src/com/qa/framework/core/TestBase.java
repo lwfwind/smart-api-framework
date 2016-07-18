@@ -1,11 +1,9 @@
 package com.qa.framework.core;
 
-import com.qa.framework.bean.ExpectResult;
-import com.qa.framework.bean.Param;
-import com.qa.framework.bean.Setup;
-import com.qa.framework.bean.TestData;
+import com.qa.framework.bean.*;
 import com.qa.framework.library.base.JsonHelper;
 import com.qa.framework.library.base.StringHelper;
+import com.qa.framework.library.database.DBHelper;
 import com.qa.framework.library.httpclient.HttpMethod;
 import com.qa.framework.util.StringUtil;
 import com.qa.framework.verify.ContainExpectResult;
@@ -153,10 +151,22 @@ public abstract class TestBase {
         if (testData.getAfter() != null) {
             try {
                 logger.info("Process After in xml-" + testData.getCurrentFileName() + " TestData-" + testData.getName());
-                Class cls = Class.forName(testData.getAfter().getClsName());
-                Method method = cls.getDeclaredMethod(testData.getAfter().getMethodName());
-                Object object = cls.newInstance();
-                method.invoke(object);
+                After after=testData.getAfter();
+                if (after.getSqls()!=null){
+                    List<Sql> sqls=after.getSqls();
+                    for (Sql sql:sqls){
+                        logger.info("需更新语句："+sql.getSqlStatement());
+                        DBHelper.executeUpdate(sql.getSqlStatement());
+                    }
+                }else if (after.getFunctions()!=null){
+                    List<Function> functions=after.getFunctions();
+                    for (Function function:functions) {
+                        Class cls = Class.forName(function.getClsName());
+                        Method method = cls.getDeclaredMethod(function.getMethodName());
+                        Object object = cls.newInstance();
+                        method.invoke(object);
+                    }
+                }
             } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
             }

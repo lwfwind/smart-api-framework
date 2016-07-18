@@ -77,12 +77,14 @@ public class ParamValueProcessor {
                         logger.info("需更新语句："+sql.getSqlStatement());
                         DBHelper.executeUpdate(sql.getSqlStatement());
                     }
-                }else if (before.getFunction()!=null){
-                    Function function=before.getFunction();
-                    Class cls = Class.forName(function.getClsName());
-                    Method method = cls.getDeclaredMethod(function.getMethodName());
-                    Object object = cls.newInstance();
-                    method.invoke(object);
+                }else if (before.getFunctions()!=null){
+                    List<Function> functions=before.getFunctions();
+                    for (Function function:functions) {
+                        Class cls = Class.forName(function.getClsName());
+                        Method method = cls.getDeclaredMethod(function.getMethodName());
+                        Object object = cls.newInstance();
+                        method.invoke(object);
+                    }
                 }
             } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();

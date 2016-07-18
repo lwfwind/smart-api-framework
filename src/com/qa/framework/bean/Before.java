@@ -7,8 +7,8 @@ import java.util.List;
 /**
  * Created by Administrator on 2016/6/22.
  */
-public class Before extends Function {
-    private Function function;
+public class Before{
+    private List<Function> functions;
     private List<Sql> sqls;
 
 
@@ -26,11 +26,18 @@ public class Before extends Function {
         sqls.add(sql);
     }
 
-    public Function getFunction() {
-        return function;
+    public List<Function> getFunctions() {
+        return functions;
     }
 
-    public void setFunction(Function function) {
-        this.function = function;
+    public void setFunctions(List<Function> functions) {
+        this.functions = functions;
     }
+    public void addFunction(Function function) {
+        if (functions == null) {
+            functions = new ArrayList<Function>();
+        }
+        functions.add(function);
+    }
+
 }
