@@ -25,9 +25,33 @@ DataConfig -- config test url and httpMethod
         After -- reset environment ********
 ```
 ### Example
-##### &nbsp;&nbsp; 1.Support get param's value from sql
 
+#### &nbsp;&nbsp; Support execute setup action before execution of test method
+```xml
+<DataConfig url="V1/ClassRecords/bookClass/" httpMethod="put">
+  <TestData name="data1" desc="约课成功">
+        <Setup name="setup1" url="V1/Students/login/" httpMethod="post">
+            <Param name="username" value="#{sql1.mobile}">
+                <Sql name="sql1">select id,mobile,password from ebk_students where status=1 and acoin>100 
+                and level is not null;
+                </Sql>
+            </Param>
+            <Param name="password" value="#{sql1.password}"></Param>
+        </Setup>
+        <Param name="cid" value="#{sql4.id}">
+            <Sql name="sql4">select id from ebk_class_records where status=0 and begin_time>unix_timestamp()
+             and free_try=0 ;
+            </Sql>
+        </Param>
+        <ExpectResult>
+            <Pair>errorCode:200</Pair>
+            <Pair>errorMsg:约课成功</Pair>
+        </ExpectResult>
+    </TestData>
+</DataConfig>
+```
 
+#### &nbsp;&nbsp; Support to get param's value from sql
 ```xml
 <DataConfig url="V1/Students/login" httpMethod="post">
     <TestData name="data3" desc="登录成功">
@@ -45,7 +69,7 @@ DataConfig -- config test url and httpMethod
 <DataConfig>
 ```
     
-##### &nbsp;&nbsp; 2.Support Param's value from funcation where user defined  
+#### &nbsp;&nbsp; Support to get param's value from function
 ```xml
 <DataConfig url="V1/Students/login" httpMethod="post">
      <TestData name="data1" desc="用户不存在">
@@ -61,73 +85,27 @@ DataConfig -- config test url and httpMethod
 </DataConfig>
 ```
 
-##### &nbsp;&nbsp; 3.Contain can be used to create a matcher object that can match arbitrary character sequences against the regular expression  
+#### &nbsp;&nbsp; Contain/Pair both support regular expression
 ```xml
 <DataConfig url="V2/ClassRecords/classDetail/" httpMethod="get">
     <TestData name="GetClassDetailSuccess" desc="获取数据成功">
          <Param name="username" value="#{sql.mobile}">
-             <Sql name="sql">select c.begin_time as begin_time,s.mobile as mobile ,password,c.id as cid from ebk_students as s
-                      left join ebk_class_records as c ON s.id = c.sid limit 100;
+             <Sql name="sql">select c.begin_time as begin_time,s.mobile as mobile ,password,c.id as cid 
+             from ebk_students as s left join ebk_class_records as c ON s.id = c.sid limit 100;
              </Sql>
         </Param>
         <Param name="password" value="#{sql.password}" />
         <Param name="cid" value="#{sql.cid}" />
         <ExpectResult>
             <Pair>errorCode:200</Pair>
-            <Pair>errorMsg:获取数据成功</Pair>
+            <Pair>errorMsg:老师已在(QQ|Skype)上等你，快去上课吧</Pair>
             <Contain>.*("id":"#{sql.cid}").*("begin_time":"#{sql.begin_time}").*</Contain>
         </ExpectResult>
     </TestData>
 </DataConfig>
 ```
 
-##### &nbsp;&nbsp; 4.Pair can be used to create a matcher object that can match arbitrary character sequences against the regular expression  
-```xml
-<DataConfig url="V2/ClassRecords/classDetail/" httpMethod="get">
-    <TestData name="data1" desc="老师已在Skype上等你，快去上课吧">
-        <Param name="username" value="#{sql.mobile}">
-            <Sql name="sql">select s.id as id,s.mobile as mobile ,password,c.id as cid from ebk_students as s
-                left join ebk_class_records as c ON s.id = c.sid where
-                c.begin_time between unix_timestamp() and unix_timestamp()+360 and c.use_tool in("qq","skype") limit
-                100;
-            </Sql>
-        </Param>
-        <Param name="password" value="#{sql.password}"></Param>
-        <Param name="cid" value="#{sql.cid}">
-        </Param>
-        <ExpectResult>
-            <Pair>errorCode:410</Pair>
-            <Pair>errorMsg:老师已在(QQ|Skype)上等你，快去上课吧</Pair>
-        </ExpectResult>
-    </TestData>
-<DataConfig>
-```
-
-##### &nbsp;&nbsp; 5.Setup are mainly used to execute a certain steps of code before execution of test methods 
-```xml
-<DataConfig url="V1/ClassRecords/bookClass/" httpMethod="put">
-  <TestData name="data1" desc="约课成功">
-        <Setup name="setup1" url="V1/Students/login/" httpMethod="post">
-            <Param name="username" value="#{sql1.mobile}">
-                <Sql name="sql1">select id,mobile,password from ebk_students where status=1 and acoin>100 and level is
-                    not null;
-                </Sql>
-            </Param>
-            <Param name="password" value="#{sql1.password}"></Param>
-        </Setup>
-        <Param name="cid" value="#{sql4.id}">
-            <Sql name="sql4">select id from ebk_class_records where status=0 and begin_time>unix_timestamp() and
-                free_try=0 ;
-            </Sql>
-        </Param>
-        <ExpectResult>
-            <Pair>errorCode:200</Pair>
-            <Pair>errorMsg:约课成功</Pair>
-        </ExpectResult>
-    </TestData>
-</DataConfig>
-```
-##### &nbsp;&nbsp; 6.Before and After annotations are mainly used to execute a certain set of code before and after the execution of test methods 
+##### &nbsp;&nbsp; Before/After element support function
 ```xml
 <DataConfig url="V1/Students/login" httpMethod="post">
     <TestData name="data1" desc="更改手机号登录">
@@ -150,7 +128,7 @@ DataConfig -- config test url and httpMethod
 <DataConfig>
 ```
 
-##### &nbsp;&nbsp; 7.Before and After also can use Sql annotations
+##### &nbsp;&nbsp; Before/After also support sql
 ```xml
 <DataConfig url="V1/Students/login" httpMethod="post">
     <TestData name="data1" desc="更改手机号登录">
@@ -172,6 +150,7 @@ DataConfig -- config test url and httpMethod
     </TestData>
 <DataConfig>
 ```
+
 ### Contributors
    Charlie <br/>
    Niki    [https://github.com/ZhangyuBaolu](https://github.com/ZhangyuBaolu)<br/>
