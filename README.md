@@ -130,6 +130,8 @@ DataConfig -- config test url and httpMethod
 <DataConfig>
 ```
 
+A simple demo maven project please refer to  [smart-api-automation-example](https://github.com/lwfwind/smart-api-automation-example)
+
 ## Contributors
    Charlie <br/>
    Niki    [https://github.com/ZhangyuBaolu](https://github.com/ZhangyuBaolu)<br/>
