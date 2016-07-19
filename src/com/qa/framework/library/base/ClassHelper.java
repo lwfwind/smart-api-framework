@@ -5,6 +5,9 @@ import org.apache.log4j.Logger;
 import java.net.URL;
 
 
+/**
+ * The type Class helper.
+ */
 public class ClassHelper {
 
     private final static Logger logger = Logger

@@ -1,6 +1,9 @@
 package com.qa.framework.library.base;
 
 
+/**
+ * The type Cast helper.
+ */
 public class CastHelper {
     /**
      * 转为 String 型

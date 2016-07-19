@@ -85,6 +85,7 @@ public class PairExpectResult implements IExpectResult {
     public void setContainKeys(String[] containKeys) {
         this.containKeys = containKeys;
     }
+
     @SuppressWarnings("unchecked")
     public void compareReal(String content) {
         Map<String, Object> jsonObject = JsonHelper.getJsonMapString(content);

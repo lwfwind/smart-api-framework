@@ -151,16 +151,16 @@ public abstract class TestBase {
         if (testData.getAfter() != null) {
             try {
                 logger.info("Process After in xml-" + testData.getCurrentFileName() + " TestData-" + testData.getName());
-                After after=testData.getAfter();
-                if (after.getSqls()!=null){
-                    List<Sql> sqls=after.getSqls();
-                    for (Sql sql:sqls){
-                        logger.info("需更新语句："+sql.getSqlStatement());
+                After after = testData.getAfter();
+                if (after.getSqls() != null) {
+                    List<Sql> sqls = after.getSqls();
+                    for (Sql sql : sqls) {
+                        logger.info("需更新语句：" + sql.getSqlStatement());
                         DBHelper.executeUpdate(sql.getSqlStatement());
                     }
-                }else if (after.getFunctions()!=null){
-                    List<Function> functions=after.getFunctions();
-                    for (Function function:functions) {
+                } else if (after.getFunctions() != null) {
+                    List<Function> functions = after.getFunctions();
+                    for (Function function : functions) {
                         Class cls = Class.forName(function.getClsName());
                         Method method = cls.getDeclaredMethod(function.getMethodName());
                         Object object = cls.newInstance();

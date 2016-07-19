@@ -7,7 +7,8 @@ public class TestDataNameDuplicatedException extends RuntimeException {
     /**
      * Instantiates a new No such param exception.
      *
-     * @param name the name
+     * @param fileName the file name
+     * @param name     the name
      */
     public TestDataNameDuplicatedException(String fileName, String name) {
         super("The Setup name-" + name + " have duplicated in file-" + fileName);

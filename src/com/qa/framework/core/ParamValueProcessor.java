@@ -70,16 +70,16 @@ public class ParamValueProcessor {
         for (TestData testData : testDataList) {
             if (testData.getBefore() != null) try {
                 logger.info("Process Before in xml-" + testData.getCurrentFileName() + " TestData-" + testData.getName());
-                Before before=testData.getBefore();
-                if (before.getSqls()!=null){
-                    List<Sql> sqls=before.getSqls();
-                    for (Sql sql:sqls){
-                        logger.info("需更新语句："+sql.getSqlStatement());
+                Before before = testData.getBefore();
+                if (before.getSqls() != null) {
+                    List<Sql> sqls = before.getSqls();
+                    for (Sql sql : sqls) {
+                        logger.info("需更新语句：" + sql.getSqlStatement());
                         DBHelper.executeUpdate(sql.getSqlStatement());
                     }
-                }else if (before.getFunctions()!=null){
-                    List<Function> functions=before.getFunctions();
-                    for (Function function:functions) {
+                } else if (before.getFunctions() != null) {
+                    List<Function> functions = before.getFunctions();
+                    for (Function function : functions) {
                         Class cls = Class.forName(function.getClsName());
                         Method method = cls.getDeclaredMethod(function.getMethodName());
                         Object object = cls.newInstance();
@@ -176,6 +176,11 @@ public class ParamValueProcessor {
         }
     }
 
+    /**
+     * Process expect result.
+     *
+     * @param testData the test data
+     */
     public void processExpectResult(TestData testData) {
         ExpectResult expectResult = testData.getExpectResult();
         for (IExpectResult result : expectResult.getExpectResultImp()) {

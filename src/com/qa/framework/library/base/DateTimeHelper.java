@@ -79,9 +79,9 @@ public class DateTimeHelper {
      * @return true if the string can be converted into Date
      */
     public static boolean isDate(String str) {
-        boolean isDateType=false;
+        boolean isDateType = false;
         if (toDate(str) != null) {
-            isDateType=true;
+            isDateType = true;
         }
         return isDateType;
     }
