@@ -22,7 +22,7 @@ DataConfig -- config test url and httpMethod
         ExpectResult -- config expect result
             Contain	-- assert actual result contain specify string
             Pair -- assert actual result contain specify key-value
-        After -- reset environment ********
+        After -- reset environment
 ```
 ## Example
 
@@ -133,6 +133,6 @@ DataConfig -- config test url and httpMethod
 A simple demo maven project please refer to  [smart-api-automation-example](https://github.com/lwfwind/smart-api-automation-example)
 
 ## Contributors
-   Charlie <br/>
+   Charlie [https://github.com/zhuyecao321](https://github.com/zhuyecao321)<br/>
    Niki    [https://github.com/ZhangyuBaolu](https://github.com/ZhangyuBaolu)<br/>
    Wind    [https://github.com/lwfwind](https://github.com/lwfwind)<br/>
