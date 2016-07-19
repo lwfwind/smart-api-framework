@@ -24,9 +24,9 @@ DataConfig -- config test url and httpMethod
             Pair -- assert actual result contain specify key-value
         After -- reset environment ********
 ```
-### Example
+## Example
 
-#### &nbsp;&nbsp; 1.support execute setup action before execution of test method
+### &nbsp;&nbsp; 1.support execute setup action before execution of test method
 ```xml
 <DataConfig url="V1/ClassRecords/bookClass/" httpMethod="put">
   <TestData name="data1" desc="约课成功">
@@ -51,7 +51,7 @@ DataConfig -- config test url and httpMethod
 </DataConfig>
 ```
 
-#### &nbsp;&nbsp; 2.support to get param's value from sql
+### &nbsp;&nbsp; 2.support to get param's value from sql
 ```xml
 <DataConfig url="V1/Students/login" httpMethod="post">
     <TestData name="data3" desc="登录成功">
@@ -69,7 +69,7 @@ DataConfig -- config test url and httpMethod
 <DataConfig>
 ```
     
-#### &nbsp;&nbsp; 3.support to get param's value from function
+### &nbsp;&nbsp; 3.support to get param's value from function
 ```xml
 <DataConfig url="V1/Students/login" httpMethod="post">
      <TestData name="data1" desc="用户不存在">
@@ -85,7 +85,7 @@ DataConfig -- config test url and httpMethod
 </DataConfig>
 ```
 
-#### &nbsp;&nbsp; 4.the expect result in contain/pair both support regular expression
+### &nbsp;&nbsp; 4.the expect result in contain/pair both support regular expression
 ```xml
 <DataConfig url="V2/ClassRecords/classDetail/" httpMethod="get">
     <TestData name="GetClassDetailSuccess" desc="获取数据成功">
@@ -105,7 +105,7 @@ DataConfig -- config test url and httpMethod
 </DataConfig>
 ```
 
-#### &nbsp;&nbsp; 5.support function/sql action in before/after
+### &nbsp;&nbsp; 5.support function/sql action in before/after
 ```xml
 <DataConfig url="V1/Students/login" httpMethod="post">
     <TestData name="data1" desc="更改手机号登录">
@@ -130,7 +130,7 @@ DataConfig -- config test url and httpMethod
 <DataConfig>
 ```
 
-### Contributors
+## Contributors
    Charlie <br/>
    Niki    [https://github.com/ZhangyuBaolu](https://github.com/ZhangyuBaolu)<br/>
    Wind    [https://github.com/lwfwind](https://github.com/lwfwind)<br/>
