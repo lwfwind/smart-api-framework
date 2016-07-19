@@ -9,7 +9,7 @@
     <version>1.0</version>
     <packaging>jar</packaging>
     <description>Support web service api automaton test based on testng and httpclient</description>
-    <url>https://github.com/lwfwind/smart-ui-framework</url>
+    <url>https://github.com/lwfwind/smart-api-framework</url>
 
     <parent>
         <groupId>org.sonatype.oss</groupId>
@@ -26,7 +26,7 @@
     </licenses>
 
     <scm>
-        <url>https://github.com/lwfwind/smart-ui-framework</url>
+        <url>https://github.com/lwfwind/smart-api-framework</url>
         <connection>scm:git:ssh://git@github.com/lwfwind/smart-api-framework.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/lwfwind/smart-api-framework.git</developerConnection>
         <tag>1.0.0</tag>
