@@ -10,6 +10,7 @@ import com.qa.framework.verify.ContainExpectResult;
 import com.qa.framework.verify.IExpectResult;
 import com.qa.framework.verify.PairExpectResult;
 import org.apache.log4j.Logger;
+import org.testng.Assert;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -319,8 +320,7 @@ public class ParamValueProcessor {
                 String paramSqlKey = param.getName() + "." + sqlkey;
                 String testDatakey = testData.getName() + "." + paramSqlKey;
                 String value = null;
-                logger.info("recordInfo是否为空并且其sql为"+recordInfo+"/n"+sql.getSqlStatement());
-                assert recordInfo != null;
+                Assert.assertNotNull(recordInfo,"sql为"+sql.getSqlStatement());
                 if (recordInfo.get(key) == null) {
                     value = "null";
                 } else {
