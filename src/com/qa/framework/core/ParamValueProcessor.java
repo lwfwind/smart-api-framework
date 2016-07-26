@@ -319,7 +319,6 @@ public class ParamValueProcessor {
                 String paramSqlKey = param.getName() + "." + sqlkey;
                 String testDatakey = testData.getName() + "." + paramSqlKey;
                 String value = null;
-                logger.info("recordInfo是否为空并且其sql为"+recordInfo+"/n"+sql.getSqlStatement());
                 assert recordInfo != null;
                 if (recordInfo.get(key) == null) {
                     value = "null";
