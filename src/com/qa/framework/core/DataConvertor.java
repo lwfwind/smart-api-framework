@@ -8,6 +8,7 @@ import com.qa.framework.library.base.IOHelper;
 import com.qa.framework.library.base.XMLHelper;
 import com.qa.framework.library.reflect.ReflectHelper;
 import com.qa.framework.verify.IExpectResult;
+import org.apache.log4j.Logger;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -20,7 +21,7 @@ import java.util.List;
  * 将xml中的数据转化成对应的bean类
  */
 public class DataConvertor {
-
+    private static final Logger logger = Logger.getLogger(DataConvertor.class);
     private DataConfig dataConfig;
     private String fileName;
 
@@ -31,6 +32,7 @@ public class DataConvertor {
      */
     public DataConvertor(String filePath) {
         this.fileName = IOHelper.getName(filePath);
+        logger.info("convert data from xml-" + this.fileName);
         XMLHelper xmlHelper = new XMLHelper();
         Document document = xmlHelper.readXMLFile(filePath);
         dataConfig = new DataConfig();
