@@ -22,7 +22,9 @@ public class ExecutorFactory {
 
     @AfterSuite(alwaysRun = true)
     public void afterClass() {
-        mockServer.stopServer();
+        if(mockServer != null) {
+            mockServer.stopServer();
+        }
     }
 
     /**
