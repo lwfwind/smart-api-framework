@@ -73,7 +73,7 @@ public class HttpConnectionImp {
                 throw new RuntimeException("cookieStore没有在缓存中");
             }
             clientContext.setCookieStore(cookieStore);
-            logger.debug("useCookie:" + cookieStore.toString());
+            logger.info("useCookie:" + cookieStore.toString());
         }
         String responseBody = null;
         try {

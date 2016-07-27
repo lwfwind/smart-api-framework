@@ -178,7 +178,6 @@ public class HttpMethod {
         String uri = postUrl(url);
         logger.info("拼接后的web地址为:" + uri);
         HttpPut httpPut = new HttpPut(uri);
-//        HttpPost httpPost = new HttpPost(uri);
         RequestConfig requestConfig = null;
         if (useProxy) {
             HttpHost proxy = new HttpHost(localhost, localport, "http");
