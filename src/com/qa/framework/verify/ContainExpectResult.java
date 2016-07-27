@@ -45,9 +45,7 @@ public class ContainExpectResult implements IExpectResult {
 
     @SuppressWarnings("unchecked")
     public void compareReal(String content) {
-        Pattern pattern = Pattern.compile(this.textStatement);
-        Matcher matcher = pattern.matcher(content);
-        Assert.assertTrue(matcher.matches(), String.format("实际返回:%s, 期望返回:%s", content, this.textStatement));
+        Assert.assertTrue(Pattern.matches(this.textStatement,content), String.format("实际返回:%s, 期望返回:%s", content, this.textStatement));
     }
 
     /**
