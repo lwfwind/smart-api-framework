@@ -39,7 +39,7 @@ public class TestngXmlGenerator {
         xml.addAttribute(root, "verbose", "1");
         Element listeners = xml.addChildElement(root, "listeners");
         Element listener = xml.addChildElement(listeners, "listener");
-        xml.addAttribute(listener, "class-name", "com.qa.framework.testngListener.RetryListener");
+        xml.addAttribute(listener, "class-name", "com.qa.framework.testnglistener.RetryListener");
         Element test = xml.addChildElement(root, "test");
         xml.addAttribute(test, "name", "FactoryExecutor_execute");
         xml.addAttribute(test, "timeout", "600000");

@@ -2,8 +2,8 @@ package com.qa.framework.factory;
 
 import com.qa.framework.bean.TestData;
 import com.qa.framework.core.TestBase;
-import com.qa.framework.testngListener.PowerEmailableReporter;
-import com.qa.framework.testngListener.TestResultListener;
+import com.qa.framework.testnglistener.PowerEmailableReporter;
+import com.qa.framework.testnglistener.TestResultListener;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;

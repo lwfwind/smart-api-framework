@@ -28,6 +28,8 @@ public class PropConfig {
     //自定义report
     private static String sourceCodeEncoding = "UTF-8";
     private static String sourceCodeDir = "src";
+    //base package name
+    private static String basePackage;
 
     static {
         File file = new File(System.getProperty("user.dir") + File.separator + "config.properties");
@@ -54,6 +56,13 @@ public class PropConfig {
         }
     }
 
+    public static String getBasePackage() {
+        return basePackage;
+    }
+
+    public static void setBasePackage(String val) {
+        basePackage = val;
+    }
 
     /**
      * Gets web path.

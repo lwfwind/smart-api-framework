@@ -319,12 +319,8 @@ public class ParamValueProcessor {
                 String sqlkey = sql.getName() + "." + sql.getReturnValues()[i];
                 String paramSqlKey = param.getName() + "." + sqlkey;
                 String testDatakey = testData.getName() + "." + paramSqlKey;
+                Assert.assertNotNull(recordInfo, "sql为" + sql.getSqlStatement());
                 String value = null;
-
-                assert recordInfo != null;
-
-                Assert.assertNotNull(recordInfo,"sql为"+sql.getSqlStatement());
-
                 if (recordInfo.get(key) == null) {
                     value = "null";
                 } else {
@@ -433,6 +429,7 @@ public class ParamValueProcessor {
             pair.setValue(OriginalString);
         }
     }
+
     public void clearStringCache() {
         stringCache.mapCache.clear();
     }

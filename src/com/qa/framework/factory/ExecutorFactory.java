@@ -2,12 +2,31 @@ package com.qa.framework.factory;
 
 import com.qa.framework.bean.TestData;
 import com.qa.framework.core.TestXmlData;
+import com.qa.framework.mock.IMockServer;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Factory;
 
-/**
- * Created by Administrator on 2016/6/23.
- */
+import static com.qa.framework.classfinder.ClassHelper.findImplementClass;
+
 public class ExecutorFactory {
+    private IMockServer mockServer = null;
+
+    @BeforeClass(alwaysRun = true)
+    public void beforeClass() throws IllegalAccessException, InstantiationException {
+        Class<?> clazz = findImplementClass(IMockServer.class);
+        if (clazz != null) {
+            mockServer = (IMockServer) clazz.newInstance();
+            mockServer.startServer();
+            mockServer.settingRules();
+        }
+    }
+
+    @AfterClass(alwaysRun = true)
+    public void afterClass() {
+        mockServer.stopServer();
+    }
+
     /**
      * Execute object [ ].
      *
