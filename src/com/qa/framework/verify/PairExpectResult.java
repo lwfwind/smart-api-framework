@@ -7,7 +7,6 @@ import org.apache.log4j.Logger;
 import org.testng.Assert;
 
 import java.util.*;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -110,7 +109,7 @@ public class PairExpectResult implements IExpectResult {
         }
         for (Pair pair : pairs) {
             String actualVal = resultMap.get(pair.getKey());
-            Assert.assertTrue(Pattern.matches(pair.getValue(),actualVal), String.format("期望返回:%s, 实际返回:%s", pairsStatement, content));
+            Assert.assertTrue(Pattern.matches(pair.getValue(), actualVal), String.format("期望返回:%s, 实际返回:%s", pairsStatement, content));
         }
     }
 }

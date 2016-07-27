@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -45,7 +44,7 @@ public class ContainExpectResult implements IExpectResult {
 
     @SuppressWarnings("unchecked")
     public void compareReal(String content) {
-        Assert.assertTrue(Pattern.matches(this.textStatement,content), String.format("实际返回:%s, 期望返回:%s", content, this.textStatement));
+        Assert.assertTrue(Pattern.matches(this.textStatement, content), String.format("实际返回:%s, 期望返回:%s", content, this.textStatement));
     }
 
     /**

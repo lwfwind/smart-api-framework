@@ -2,10 +2,11 @@ package com.qa.framework.factory;
 
 import com.qa.framework.bean.TestData;
 import com.qa.framework.core.TestBase;
+import com.qa.framework.testnglistener.PowerEmailableReporter;
+import com.qa.framework.testnglistener.TestResultListener;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
-import com.qa.framework.testnglistener.*;
 
 /**
  * The type Executor.

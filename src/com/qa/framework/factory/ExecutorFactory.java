@@ -3,7 +3,9 @@ package com.qa.framework.factory;
 import com.qa.framework.bean.TestData;
 import com.qa.framework.core.TestXmlData;
 import com.qa.framework.mock.IMockServer;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.Factory;
 
 import static com.qa.framework.classfinder.ClassHelper.findImplementClass;
 
@@ -22,7 +24,7 @@ public class ExecutorFactory {
 
     @AfterSuite(alwaysRun = true)
     public void afterClass() {
-        if(mockServer != null) {
+        if (mockServer != null) {
             mockServer.stopServer();
         }
     }

@@ -68,7 +68,7 @@ public class Sql {
         //设置returnValue
         int selectIndex = sqlstatement.indexOf("select ") + "select ".length();
         int fromIndex = sqlstatement.indexOf("from ");
-        if(fromIndex < 0){
+        if (fromIndex < 0) {
             fromIndex = sqlstatement.length();
         }
         String returnString = sqlstatement.substring(selectIndex, fromIndex);
