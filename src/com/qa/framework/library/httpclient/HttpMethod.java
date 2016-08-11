@@ -85,6 +85,9 @@ public class HttpMethod {
             HttpHost proxy = new HttpHost(localhost, localport, "http");
             RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout).setProxy(proxy).build();
             get.setConfig(requestConfig);
+        } else {
+            RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout).build();
+            get.setConfig(requestConfig);
         }
         HttpConnectionImp imp = new HttpConnectionImp(get);
         return imp.getResponseResult(storeCookie, useCookie);
@@ -107,6 +110,9 @@ public class HttpMethod {
         if (useProxy) {
             HttpHost proxy = new HttpHost(localhost, localport, "http");
             RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout).setProxy(proxy).build();
+            get.setConfig(requestConfig);
+        } else {
+            RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout).build();
             get.setConfig(requestConfig);
         }
         HttpConnectionImp imp = new HttpConnectionImp(get);
@@ -152,7 +158,7 @@ public class HttpMethod {
         List<BasicNameValuePair> basicNameValuePairs = new ArrayList<BasicNameValuePair>();
         if (params != null) {
             for (Param param : params) {
-                BasicNameValuePair basicNameValuePair = new BasicNameValuePair(param.getName(), param.getValue(false));
+                BasicNameValuePair basicNameValuePair = new BasicNameValuePair(param.getName(), param.getValue(true));
                 basicNameValuePairs.add(basicNameValuePair);
             }
         }
@@ -189,7 +195,7 @@ public class HttpMethod {
         List<BasicNameValuePair> basicNameValuePairs = new ArrayList<BasicNameValuePair>();
         if (params != null) {
             for (Param param : params) {
-                BasicNameValuePair basicNameValuePair = new BasicNameValuePair(param.getName(), param.getValue(false));
+                BasicNameValuePair basicNameValuePair = new BasicNameValuePair(param.getName(), param.getValue(true));
                 basicNameValuePairs.add(basicNameValuePair);
             }
         }
