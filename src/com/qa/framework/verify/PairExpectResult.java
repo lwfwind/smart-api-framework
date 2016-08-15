@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.testng.Assert;
 
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -86,7 +87,6 @@ public class PairExpectResult implements IExpectResult {
     public void compareReal(String content) {
         Map<String, String> resultMap = new HashMap<String, String>();
         Map<String, Object> jsonObject = JsonHelper.getJsonMapString(content);
-<<<<<<< HEAD
         String expectCode = null;
         String code = null;
         for (Pair pair : pairs) {
@@ -167,33 +167,20 @@ public class PairExpectResult implements IExpectResult {
             Set<String> objectMapSet = objectMap.keySet();
             for (String key : objectMapSet) {
                 Object object = objectMap.get(key);
-=======
-        if (jsonObject.size() > 0) {
-            Set<String> Set = jsonObject.keySet();
-            for (String key : Set) {
-                Object object = jsonObject.get(key);
->>>>>>> ebee3b254d568dfac7ee8225aed1322e5fa12866
                 if (object instanceof Map) {
-                    Map<String, Object> map = (Map<String, Object>) object;
-                    for (String subKey : map.keySet()) {
-                        resultMap.put(subKey, map.get(subKey).toString());
-                    }
+                    Map<String, Object> contentMap = (Map<String, Object>) object;
+                    compareMap(contentMap, true);
+
                 } else if (object instanceof List) {
-                    List<Map<String, Object>> listMap = (List<Map<String, Object>>) object;
-                    for (Map<String, Object> map : listMap) {
-                        for (String subKey : map.keySet()) {
-                            resultMap.put(subKey, map.get(subKey).toString());
-                        }
+                    List<Map<String, Object>> contentList = (List<Map<String, Object>>) object;
+                    for (Map<String, Object> contetMap : contentList) {
+                        compareMap(contetMap, true);
                     }
-                } else {
-                    resultMap.put(key, object.toString());
                 }
             }
-        }
-        for (Pair pair : pairs) {
-            String actualVal = resultMap.get(pair.getKey());
-            Assert.assertTrue(Pattern.matches(pair.getValue(), actualVal), String.format("期望返回:%s, 实际返回:%s", pairsStatement, content));
+
         }
     }
 }
+
 
