@@ -106,11 +106,16 @@ public class PairExpectResult implements IExpectResult {
                     compareMap(contentMap, true);
                 }
             }
-            logger.debug("需验证的正则表达式：" + pair.getValue());
-            Pattern pattern = Pattern.compile(pair.getValue());
-            Matcher matcher = pattern.matcher(code);
-            logger.debug(matcher.matches());
-            Assert.assertTrue(matcher.matches(), String.format("期望返回:%s, 实际返回:%s", pairsStatement, content));
+            if (pair.getPatternMatch()) {
+                logger.debug("需验证的正则表达式：" + pair.getValue());
+                Pattern pattern = Pattern.compile(pair.getValue());
+                Matcher matcher = pattern.matcher(code);
+                Assert.assertTrue(matcher.matches(), String.format("期望返回:%s, 实际返回:%s", expectCode, code));
+                logger.info(matcher.matches() + "====" + expectCode.equals(code));
+            }else {
+                Assert.assertTrue(expectCode.equals(code), String.format("期望返回:%s, 实际返回:%s", expectCode, code));
+            }
+
         }
     }
 

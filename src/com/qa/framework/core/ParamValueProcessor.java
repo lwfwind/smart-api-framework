@@ -113,6 +113,11 @@ public class ParamValueProcessor {
                 }
             }
         }
+        try {
+            Thread.sleep(1000); //1000 毫秒，也就是1秒.
+        } catch(InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
     }
 
     /**

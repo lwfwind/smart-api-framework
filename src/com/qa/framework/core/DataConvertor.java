@@ -112,7 +112,15 @@ public class DataConvertor {
                     Attribute attr = (Attribute) attribute;
                     String attributeName = attr.getName();     //element对应对象的属性值
                     String attributeValue = attr.getStringValue();
-                    ReflectHelper.setMethod(elementObj, attributeName, attributeValue, String.class);
+                    if ("Pair".equalsIgnoreCase(element.getName())){
+                        String PairClsaa=beanPackage + "." +"Pair";;
+                        Class Pairclazz = Class.forName(PairClsaa);          //获取className的class对象
+                        Object PairObj = Pairclazz.newInstance();
+                        ReflectHelper.setMethod(PairObj, attributeName, attributeValue, String.class);
+                    }else {
+                        ReflectHelper.setMethod(elementObj, attributeName, attributeValue, String.class);
+                    }
+
                 }
             }
             //处理sql与ExpectResult

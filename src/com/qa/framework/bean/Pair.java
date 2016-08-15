@@ -12,7 +12,7 @@ public class Pair {
     private String value;
     private String mapStatement;
     private boolean sort;
-    private Boolean patternMatch = false;
+    private static Boolean patternMatch=true;
 
     /**
      * Instantiates a new Pair.
@@ -31,6 +31,16 @@ public class Pair {
     public Pair() {
     }
 
+    public static Boolean getPatternMatch() {
+        return patternMatch;
+    }
+
+    public static void setPatternMatch(Boolean patternMatch) {
+        Pair.patternMatch = patternMatch;
+    }
+    public static void setPatternMatch(String patternMatch) {
+        Pair.patternMatch = StringHelper.changeString2boolean(patternMatch);;
+    }
     /**
      * Gets key.
      *
@@ -155,32 +165,7 @@ public class Pair {
         return false;
     }
 
-    /**
-     * Gets pattern match.
-     *
-     * @return the pattern match
-     */
-    public Boolean getPatternMatch() {
-        return patternMatch;
-    }
 
-    /**
-     * Sets pattern match.
-     *
-     * @param patternMatch the pattern match
-     */
-    public void setPatternMatch(Boolean patternMatch) {
-        this.patternMatch = patternMatch;
-    }
-
-    /**
-     * Sets pattern match.
-     *
-     * @param patternMatch the pattern match
-     */
-    public void setPatternMatch(String patternMatch) {
-        this.patternMatch = StringHelper.changeString2boolean(patternMatch);
-    }
 
     @Override
     public String toString() {

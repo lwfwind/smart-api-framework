@@ -41,6 +41,9 @@ public abstract class TestBase {
      */
     public String request(String url, List<Param> params, String httpMethod, boolean storeCookie, boolean useCookie) {
         String content = null;
+        for (Param param:params){
+            logger.info("--------"+param.toString());
+        }
         switch (httpMethod) {
             case "get":
                 content = HttpMethod.useGetMethod(url, params, storeCookie, useCookie);
