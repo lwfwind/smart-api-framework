@@ -166,6 +166,26 @@ public class Pair {
     }
 
 
+<<<<<<< HEAD
+=======
+    /**
+     * Sets pattern match.
+     *
+     * @param patternMatch the pattern match
+     */
+    public void setPatternMatch(String patternMatch) {
+        this.patternMatch = StringHelper.changeString2boolean(patternMatch);
+    }
+
+    /**
+     * Sets pattern match.
+     *
+     * @param patternMatch the pattern match
+     */
+    public void setPatternMatch(Boolean patternMatch) {
+        this.patternMatch = patternMatch;
+    }
+>>>>>>> ebee3b254d568dfac7ee8225aed1322e5fa12866
 
     @Override
     public String toString() {
