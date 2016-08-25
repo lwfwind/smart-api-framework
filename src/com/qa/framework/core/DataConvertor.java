@@ -87,7 +87,7 @@ public class DataConvertor {
         String verifyPackage = "com.qa.framework.verify";
         if ("Contain".equalsIgnoreCase(element.getName())) {
             className = verifyPackage + "." + "ContainExpectResult";
-        } else if ("Pair".equalsIgnoreCase(element.getName())) {
+        } else if ("Pair".equalsIgnoreCase(element.getName())&&element.getParent().getName().equals("ExpectResult")) {
             className = verifyPackage + "." + "PairExpectResult";
         } else {
             className = beanPackage + "." + element.getName();  //组成className的完整路径

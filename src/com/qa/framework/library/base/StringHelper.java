@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -104,7 +105,7 @@ public class StringHelper {
         try {
             logger.debug("转码前:" + str);
             if (!str.contains(".com")) {
-                value = URLDecoder.decode(str, "UTF-8");
+                value = URLEncoder.encode(str, "UTF-8");
             } else {
                 value = str.replace("%40", "@");
             }

@@ -5,6 +5,7 @@ import com.qa.framework.cache.StringCache;
 import com.qa.framework.library.base.DynamicCompile;
 import com.qa.framework.library.base.StringHelper;
 import com.qa.framework.library.database.DBHelper;
+import com.qa.framework.library.reflect.ReflectHelper;
 import com.qa.framework.util.StringUtil;
 import com.qa.framework.verify.ContainExpectResult;
 import com.qa.framework.verify.IExpectResult;
@@ -12,8 +13,11 @@ import com.qa.framework.verify.PairExpectResult;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -106,6 +110,8 @@ public class ParamValueProcessor {
                         for (Param param : setupParamList) {
                             executeFunction(param, setup, testData);
                             executeSql(param, setup, testData);
+                            processParamPair(param,setup,testData);
+                            processParamDate(param,setup,testData);
                             processParamFromSetup(testData, param);
                             processExpectResult(testData);
                         }
@@ -120,6 +126,88 @@ public class ParamValueProcessor {
         }
     }
 
+    private void processParamDate(Param param, Setup setup, TestData testData) {
+        if (param.getDateStamp() != null) {
+            DateStamp dateStamp = param.getDateStamp();
+            Calendar c = Calendar.getInstance();
+            Field[] fields = dateStamp.getClass().getDeclaredFields(); //遍历成员变量, 寻找哪些属性不为空
+            if (dateStamp.getBaseTime() == null || "".equalsIgnoreCase(dateStamp.getBaseTime())) {
+                c.setTime(new Date());
+            } else {
+                SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                try {
+                    Date date = dateFormater.parse(dateStamp.getBaseTime());
+                    c.setTime(date);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+            List<Field> setFields = new ArrayList<Field>();
+            List<Field> addFields = new ArrayList<Field>();
+            for (Field field : fields) {
+                Object obj = ReflectHelper.getMethod(dateStamp, field.getName());
+                if (obj != null && !"".equalsIgnoreCase(obj.toString())) {
+                    if (field.getName().contains("set")) {
+                        setFields.add(field);
+                    } else if (field.getName().contains("add")) {
+                        addFields.add(field);
+                    }
+                }
+            }
+
+            if (addFields != null) {
+                for (Field field : addFields) {
+                    Object obj = ReflectHelper.getMethod(dateStamp, field.getName());
+                    if (field.getName().contains("Year")) {
+                        c.add(Calendar.YEAR, Integer.parseInt(obj.toString()));
+                    } else if (field.getName().contains("Month")) {
+                        c.add(Calendar.MONTH, Integer.parseInt(obj.toString()));
+                    } else if (field.getName().contains("Day")) {
+                        c.add(Calendar.DAY_OF_MONTH, Integer.parseInt(obj.toString()));
+                    } else if (field.getName().contains("Hour")) {
+                        c.add(Calendar.HOUR_OF_DAY, Integer.parseInt(obj.toString()));
+                    } else if (field.getName().contains("Min")) {
+                        c.add(Calendar.MINUTE, Integer.parseInt(obj.toString()));
+                    } else if (field.getName().contains("Second")) {
+                        c.add(Calendar.SECOND, Integer.parseInt(obj.toString()));
+                    }
+                }
+            }
+            if (setFields != null) {
+                for (Field field : setFields) {
+                    Object obj = ReflectHelper.getMethod(dateStamp, field.getName());
+                    if (obj != null && !"".equalsIgnoreCase(obj.toString())) {
+                        if (field.getName().contains("Year")) {
+                            c.set(Calendar.YEAR, Integer.parseInt(obj.toString()));
+                        } else if (field.getName().contains("Month")) {
+                            c.set(Calendar.MONTH, Integer.parseInt(obj.toString()) - 1);
+                        } else if (field.getName().contains("Day")) {
+                            c.set(Calendar.DAY_OF_MONTH, Integer.parseInt(obj.toString()));
+                        } else if (field.getName().contains("Hour")) {
+                            c.set(Calendar.HOUR_OF_DAY, Integer.parseInt(obj.toString()));
+                        } else if (field.getName().contains("Min")) {
+                            c.set(Calendar.MINUTE, Integer.parseInt(obj.toString()));
+                        } else if (field.getName().contains("Second")) {
+                            c.set(Calendar.SECOND, Integer.parseInt(obj.toString()));
+                        }
+                    }
+                }
+            }
+            logger.info("设置的时间为:" + c.getTime());
+            if (dateStamp.getDateFormat() != null) {
+                param.setValue(new SimpleDateFormat(dateStamp.getDateFormat()).format(c.getTime()));
+            } else {
+                param.setValue(c.getTimeInMillis() / 1000 + "");
+            }
+            stringCache.put(param.getName(), param.getValue());
+            stringCache.put(testData.getName() + "." + param.getName(), param.getValue());
+            if (setup != null) {
+                stringCache.put(setup.getName() + "." + param.getName(), param.getValue());
+                stringCache.put(testData.getName() + "." + setup.getName() + "." + param.getName(), param.getValue());
+            }
+        }
+    }
+
     /**
      * Process test data param.
      * 处理正常流程中的param的sql,从其他函数和setup接受值问题
@@ -131,13 +219,16 @@ public class ParamValueProcessor {
                 for (Param param : paramList) {
                     executeFunction(param, null, testData);
                     executeSql(param, null, testData);
+                    processParamPair(param,null,testData);
+                    processParamDate(param,null,testData);
                     processParamFromSetup(testData, param);
                     processParamFromOtherTestData(param);
-                    processExpectResult(testData);
                     //processParamPair(param);
                 }
             }
+            processExpectResult(testData);
         }
+
     }
 
     /**
@@ -192,6 +283,10 @@ public class ParamValueProcessor {
         for (IExpectResult result : expectResult.getExpectResultImp()) {
             if (result instanceof ContainExpectResult) {
                 ContainExpectResult containExpectResult = (ContainExpectResult) result;
+                if (containExpectResult.getSqls() != null) {
+                    List<Sql> sqlList = containExpectResult.getSqls();
+                    executeSql(sqlList);
+                }
                 if (containExpectResult.getTextStatement().contains("#{")) {
                     //处理语句中的#{}问题
                     //第一步将#{\\S+}的值找出来
@@ -229,6 +324,8 @@ public class ParamValueProcessor {
             }
         }
     }
+
+
 
     /**
      * Process function.
@@ -272,7 +369,32 @@ public class ParamValueProcessor {
             if (param.getValue().contains("#{")) {
                 //处理语句中的#{}问题
                 //第一步将#{\\S+}的值找出来
-                List<String> lists = StringHelper.find(param.getValue(), "#\\{[a-zA-Z0-9._]*\\}");
+                    List<String> lists = StringHelper.find(param.getValue(), "#\\{[a-zA-Z0-9._]*\\}");
+                    String[] replacedStr = new String[lists.size()];   //替换sql语句中的#{}
+                    int i = 0;
+                    for (String list : lists) {
+                        //去掉#{}
+                        String proStr = list.substring(2, list.length() - 1);
+                        //从缓存中去取相应的值
+                        replacedStr[i++] = stringCache.getValue(proStr);
+                    }
+                    param.setValue(StringUtil.handleSpecialChar(param.getValue(), replacedStr));
+                }
+
+            stringCache.put(param.getName(), param.getValue());
+            stringCache.put(testData.getName() + "." + param.getName(), param.getValue());
+            if (setup != null) {
+                stringCache.put(setup.getName() + "." + param.getName(), param.getValue());
+                stringCache.put(testData.getName() + "." + setup.getName() + "." + param.getName(), param.getValue());
+            }
+        }
+        }
+    private void executeSql(List<Sql> sqlList) {
+        for (Sql sql : sqlList) {
+            if (sql.getSqlStatement().contains("#{")) {
+                //处理sql语句中的#{}问题
+                //第一步将#{\\S+}的值找出来
+                List<String> lists = StringHelper.find(sql.getSqlStatement(), "#\\{[a-zA-Z0-9._]*\\}");
                 String[] replacedStr = new String[lists.size()];   //替换sql语句中的#{}
                 int i = 0;
                 for (String list : lists) {
@@ -281,15 +403,24 @@ public class ParamValueProcessor {
                     //从缓存中去取相应的值
                     replacedStr[i++] = stringCache.getValue(proStr);
                 }
-                param.setValue(StringUtil.handleSpecialChar(param.getValue(), replacedStr));
+                sql.setSqlStatement(StringUtil.handleSpecialChar(sql.getSqlStatement(), replacedStr));
             }
-            stringCache.put(param.getName(), param.getValue());
-            stringCache.put(testData.getName() + "." + param.getName(), param.getValue());
-            if (setup != null) {
-                stringCache.put(setup.getName() + "." + param.getName(), param.getValue());
-                stringCache.put(testData.getName() + "." + setup.getName() + "." + param.getName(), param.getValue());
+            logger.debug("最终的SQL为:" + sql.getSqlStatement());
+            Map<String, Object> recordInfo = DBHelper.queryOneRow(sql.getSqlStatement());//查询数据库, 将返回值按照returnValues的值放入HashMap
+            for (int i = 0; i < sql.getReturnValues().length; i++) {
+                String key = sql.getReturnValues()[i];
+                String sqlkey = sql.getName() + "." + sql.getReturnValues()[i];
+                Assert.assertNotNull(recordInfo, "sql为" + sql.getSqlStatement());
+                String value = null;
+                if (recordInfo.get(key) == null) {
+                    value = "";
+                } else {
+                    value = recordInfo.get(key).toString();
+                }
+                stringCache.put(sqlkey, value);                         //将sql.属性的值存入缓存
             }
         }
+
     }
 
     /**
@@ -327,7 +458,7 @@ public class ParamValueProcessor {
                 Assert.assertNotNull(recordInfo, "sql为" + sql.getSqlStatement());
                 String value = null;
                 if (recordInfo.get(key) == null) {
-                    value = "null";
+                    value = "";
                 } else {
                     value = recordInfo.get(key).toString();
                 }
@@ -352,12 +483,15 @@ public class ParamValueProcessor {
         return stringCache.getValue(decodeValue);
     }
 
+
     /**
      * Process param pair. 处理Param中的键值对, 转化成url能识别的格式
      *
      * @param param the param
+     * @param setup
+     * @param testData
      */
-    public void processParamPair(Param param) {
+    public void processParamPair(Param param, Setup setup, TestData testData) {
         if (param.getPairs() != null) {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("{");
@@ -368,6 +502,12 @@ public class ParamValueProcessor {
             stringBuilder.deleteCharAt(stringBuilder.length() - 1);
             stringBuilder.append("}");
             param.setValue(stringBuilder.toString());
+            stringCache.put(param.getName(), param.getValue());
+            stringCache.put(testData.getName() + "." + param.getName(), param.getValue());
+            if (setup != null) {
+                stringCache.put(setup.getName() + "." + param.getName(), param.getValue());
+                stringCache.put(testData.getName() + "." + setup.getName() + "." + param.getName(), param.getValue());
+            }
         }
     }
 

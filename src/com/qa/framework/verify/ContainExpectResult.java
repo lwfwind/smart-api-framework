@@ -1,6 +1,8 @@
 package com.qa.framework.verify;
 
 import com.qa.framework.bean.Sql;
+import com.qa.framework.library.base.StringHelper;
+import com.qa.framework.util.StringUtil;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 
@@ -18,9 +20,9 @@ public class ContainExpectResult implements IExpectResult {
      * The constant logger.
      */
     protected static final Logger logger = Logger.getLogger(ContainExpectResult.class);
-    private String textStatement;
+    private String textStatement="";
     private List<Sql> sqls;
-    private String patten;
+    private  Boolean patternMatch=true;
     private Map<String, Sql> stringSqlMap;
 
 
@@ -44,7 +46,11 @@ public class ContainExpectResult implements IExpectResult {
 
     @SuppressWarnings("unchecked")
     public void compareReal(String content) {
-        Assert.assertTrue(Pattern.matches(this.textStatement, content), String.format("实际返回:%s, 期望返回:%s", content, this.textStatement));
+        if (patternMatch) {
+            Assert.assertTrue(Pattern.matches(this.textStatement, content), String.format("实际返回:%s, 期望返回:%s", content, this.textStatement));
+        }else{
+            Assert.assertTrue(content.contains(this.textStatement), String.format("实际返回:%s, 期望包含:%s", content, this.textStatement));
+        }
     }
 
     /**
@@ -110,21 +116,14 @@ public class ContainExpectResult implements IExpectResult {
         }
     }
 
-    /**
-     * Gets patten.
-     *
-     * @return the patten
-     */
-    public String getPatten() {
-        return patten;
+    public  Boolean getPatternMatch() {
+        return patternMatch;
     }
 
-    /**
-     * Sets patten.
-     *
-     * @param patten the patten
-     */
-    public void setPatten(String patten) {
-        this.patten = patten;
+    public  void setPatternMatch(Boolean patten) {
+        patternMatch = patten;
+    }
+    public  void setPatternMatch(String patten) {
+        patternMatch = StringHelper.changeString2boolean(patten);
     }
 }
