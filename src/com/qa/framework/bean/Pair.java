@@ -12,7 +12,7 @@ public class Pair {
     private String value;
     private String mapStatement;
     private boolean sort;
-    private static Boolean patternMatch=true;
+    private  boolean patternMatch=true;
 
     /**
      * Instantiates a new Pair.
@@ -31,15 +31,15 @@ public class Pair {
     public Pair() {
     }
 
-    public static Boolean getPatternMatch() {
+    public  Boolean getPatternMatch() {
         return patternMatch;
     }
 
-    public static void setPatternMatch(Boolean patternMatch) {
-        Pair.patternMatch = patternMatch;
+    public  void setPatternMatch(Boolean patter) {
+        this.patternMatch = patter;
     }
-    public static void setPatternMatch(String patternMatch) {
-        Pair.patternMatch = StringHelper.changeString2boolean(patternMatch);;
+    public  void setPatternMatch(String patter) {
+        this.patternMatch = StringHelper.changeString2boolean(patter);
     }
     /**
      * Gets key.

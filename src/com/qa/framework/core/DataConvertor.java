@@ -1,6 +1,7 @@
 package com.qa.framework.core;
 
 import com.qa.framework.bean.DataConfig;
+import com.qa.framework.bean.Pair;
 import com.qa.framework.bean.TestData;
 import com.qa.framework.exception.TestDataDescDuplicatedException;
 import com.qa.framework.exception.TestDataNameDuplicatedException;
@@ -99,6 +100,13 @@ public class DataConvertor {
             //添加子对象
             if (IExpectResult.class.isAssignableFrom(clazz)) {
                 ReflectHelper.addMethod(parentObj, elementObj, "ExpectResultImp", IExpectResult.class);
+                if ("Pair".equalsIgnoreCase(element.getName())) {
+                    parentObj=elementObj;
+                    String PairClsaa = beanPackage + "." + "Pair";
+                    clazz = Class.forName(PairClsaa);          //获取className的class对象
+                    elementObj = clazz.newInstance();
+                    ReflectHelper.addMethod(parentObj, elementObj, element.getName(), elementObj.getClass());
+                }
             } else {
                 ReflectHelper.addMethod(parentObj, elementObj, element.getName(), elementObj.getClass());
             }
@@ -112,15 +120,7 @@ public class DataConvertor {
                     Attribute attr = (Attribute) attribute;
                     String attributeName = attr.getName();     //element对应对象的属性值
                     String attributeValue = attr.getStringValue();
-                    if ("Pair".equalsIgnoreCase(element.getName())){
-                        String PairClsaa=beanPackage + "." +"Pair";;
-                        Class Pairclazz = Class.forName(PairClsaa);          //获取className的class对象
-                        Object PairObj = Pairclazz.newInstance();
-                        ReflectHelper.setMethod(PairObj, attributeName, attributeValue, String.class);
-                    }else {
-                        ReflectHelper.setMethod(elementObj, attributeName, attributeValue, String.class);
-                    }
-
+                    ReflectHelper.setMethod(elementObj, attributeName, attributeValue, String.class);
                 }
             }
             //处理sql与ExpectResult
