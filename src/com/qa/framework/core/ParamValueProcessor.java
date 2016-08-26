@@ -127,6 +127,7 @@ public class ParamValueProcessor {
     }
 
     private void processParamDate(Param param, Setup setup, TestData testData) {
+        logger.info(param.getDateStamp()+"---"+testData.getDesc());
         if (param.getDateStamp() != null) {
             DateStamp dateStamp = param.getDateStamp();
             Calendar c = Calendar.getInstance();
