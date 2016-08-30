@@ -12,6 +12,8 @@ import org.testng.internal.TestResult;
 import java.lang.reflect.Field;
 import java.util.*;
 
+import static com.qa.framework.classfinder.ClassHelper.findImplementClass;
+
 /**
  * Test result Listener.
  */
@@ -28,6 +30,16 @@ public class TestResultListener extends TestListenerAdapter {
     @Override
     public void onTestFailure(ITestResult tr) {
         super.onTestFailure(tr);
+        Class<?> clazz = findImplementClass(ICustomTestListener.class);
+        if (clazz != null) {
+            ICustomTestListener testListenerImp = null;
+            try {
+                testListenerImp = (ICustomTestListener) clazz.newInstance();
+                testListenerImp.onTestFailure(tr);
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
         Executor executor = (Executor) tr.getInstance();
         executor.processAfter(executor.getTestData());
         String testName = IOHelper.getBaseName(executor.getTestData().getCurrentFileName()) + "_" + executor.getTestData().getName();
@@ -38,6 +50,16 @@ public class TestResultListener extends TestListenerAdapter {
     @Override
     public void onTestSkipped(ITestResult tr) {
         super.onTestSkipped(tr);
+        Class<?> clazz = findImplementClass(ICustomTestListener.class);
+        if (clazz != null) {
+            ICustomTestListener testListenerImp = null;
+            try {
+                testListenerImp = (ICustomTestListener) clazz.newInstance();
+                testListenerImp.onTestSkipped(tr);
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
         Executor executor = (Executor) tr.getInstance();
         executor.processAfter(executor.getTestData());
         String testName = IOHelper.getBaseName(executor.getTestData().getCurrentFileName()) + "_" + executor.getTestData().getName();
@@ -57,6 +79,16 @@ public class TestResultListener extends TestListenerAdapter {
     @Override
     public void onTestStart(ITestResult tr) {
         super.onTestStart(tr);
+        Class<?> clazz = findImplementClass(ICustomTestListener.class);
+        if (clazz != null) {
+            ICustomTestListener testListenerImp = null;
+            try {
+                testListenerImp = (ICustomTestListener) clazz.newInstance();
+                testListenerImp.onTestStart(tr);
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
         Executor executor = (Executor) tr.getInstance();
         String testName = IOHelper.getBaseName(executor.getTestData().getCurrentFileName()) + "_" + executor.getTestData().getName();
         try {
