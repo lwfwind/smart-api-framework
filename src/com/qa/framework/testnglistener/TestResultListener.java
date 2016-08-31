@@ -70,6 +70,16 @@ public class TestResultListener extends TestListenerAdapter {
     @Override
     public void onTestSuccess(ITestResult tr) {
         super.onTestSuccess(tr);
+        Class<?> clazz = findImplementClass(ICustomTestListener.class);
+        if (clazz != null) {
+            ICustomTestListener testListenerImp = null;
+            try {
+                testListenerImp = (ICustomTestListener) clazz.newInstance();
+                testListenerImp.onTestFailure(tr);
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
         Executor executor = (Executor) tr.getInstance();
         executor.processAfter(executor.getTestData());
         String testName = IOHelper.getBaseName(executor.getTestData().getCurrentFileName()) + "_" + executor.getTestData().getName();
