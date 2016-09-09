@@ -3,6 +3,7 @@ package com.qa.framework.verify;
 import com.qa.framework.bean.Pair;
 import com.qa.framework.library.base.JsonHelper;
 import com.qa.framework.library.base.StringHelper;
+import com.qa.framework.util.StringUtil;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 
@@ -86,6 +87,11 @@ public class PairExpectResult implements IExpectResult {
     @SuppressWarnings("unchecked")
     public void compareReal(String content) {
         Map<String, String> resultMap = new HashMap<String, String>();
+        try {
+            content= StringUtil.decode(content.toCharArray());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Map<String, Object> jsonObject = JsonHelper.getJsonMapString(content);
         String expectCode = null;
         String code = null;
