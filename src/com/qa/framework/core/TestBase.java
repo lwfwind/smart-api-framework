@@ -14,6 +14,7 @@ import org.testng.Assert;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,8 +62,8 @@ public abstract class TestBase {
                 break;
         }
 
-        content = JsonHelper.decodeUnicode(content);
-        logger.info("返回的信息:" + content);
+        content = URLDecoder.decode(content);
+        logger.info("返回的信息:" + JsonHelper.decodeUnicode(content));
         Assert.assertNotNull(content, "response返回空");
         return content;
     }
