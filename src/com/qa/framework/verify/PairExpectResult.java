@@ -86,12 +86,6 @@ public class PairExpectResult implements IExpectResult {
 
     @SuppressWarnings("unchecked")
     public void compareReal(String content) {
-        Map<String, String> resultMap = new HashMap<String, String>();
-        try {
-            content= StringUtil.decode(content.toCharArray());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         Map<String, Object> jsonObject = JsonHelper.getJsonMapString(content);
         String expectCode = null;
         String code = null;
