@@ -41,11 +41,17 @@ public class WorkerThread implements Runnable {
         logger.info("---->"+Thread.currentThread().getName()+fileName+" End.");
     }
     public static List<Object[]> handleXml() throws InterruptedException{
+        int maxPoolSize;
         //Get the ThreadFactory implementation to use
         ThreadFactory threadFactory = Executors.defaultThreadFactory();
         //creating the ThreadPoolExecutor
         List<String> files = TestXmlData.getTestCaseFiles();
-        ThreadPoolExecutor executorPool = new ThreadPoolExecutor(10, files.size()-20, 10, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(20),
+        if (files.size()>20){
+            maxPoolSize=files.size()-20;
+        }else{
+            maxPoolSize=5;
+        }
+        ThreadPoolExecutor executorPool = new ThreadPoolExecutor(10, maxPoolSize, 10, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(20),
                 threadFactory, new ThreadPoolExecutor.CallerRunsPolicy());
         //start the monitoring thread
         MonitorThread monitor = new MonitorThread(executorPool, 1);
