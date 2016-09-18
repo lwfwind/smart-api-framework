@@ -2,7 +2,9 @@ package com.qa.framework.core;
 
 import com.qa.framework.bean.DataConfig;
 import com.qa.framework.bean.TestData;
+import com.qa.framework.config.PropConfig;
 import com.qa.framework.library.base.IOHelper;
+import com.qa.framework.library.multithread.WorkerThread;
 import org.apache.log4j.Logger;
 import org.testng.annotations.DataProvider;
 
@@ -22,10 +24,13 @@ public class TestXmlData {
      * @return the iterator
      */
     @DataProvider(name = "xmlFactoryData")
-    public static Iterator<Object[]> xmlFactoryData() {
+    public static Iterator<Object[]> xmlFactoryData() throws InterruptedException {
         List<Object[]> xmldata = new ArrayList<Object[]>();
         List<String> files = getTestCaseFiles();
-        for (String filePath : files) {
+        if (PropConfig.getIsMultithread()){
+            xmldata= WorkerThread.handleXml();
+        }else {
+            for (String filePath : files) {
             DataConvertor dataConvertor = new DataConvertor(filePath);
             DataConfig dataConfig = dataConvertor.getDataConfig();
             ParamValueProcessor paramValueProcessor = new ParamValueProcessor(dataConfig);
@@ -36,6 +41,8 @@ public class TestXmlData {
                 xmldata.add(d);
             }
         }
+        }
+
         return xmldata.iterator();
     }
 

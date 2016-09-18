@@ -30,6 +30,7 @@ public class PropConfig {
     private static String sourceCodeDir = "src";
     //base package name
     private static String basePackage;
+    private static boolean isMultithread = false;
 
     static {
         File file = new File(System.getProperty("user.dir") + File.separator + "config.properties");
@@ -226,4 +227,11 @@ public class PropConfig {
         sourceCodeDir = val;
     }
 
+    public static boolean getIsMultithread() {
+        return isMultithread;
+    }
+
+    public static void setIsMultithread(String val) {
+        isMultithread = StringHelper.changeString2boolean(val);
+    }
 }
