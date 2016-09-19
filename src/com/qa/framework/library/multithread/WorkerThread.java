@@ -46,13 +46,15 @@ public class WorkerThread implements Runnable {
         ThreadFactory threadFactory = Executors.defaultThreadFactory();
         //creating the ThreadPoolExecutor
         List<String> files = TestXmlData.getTestCaseFiles();
-        if (files.size()>20){
-            maxPoolSize=files.size()-20;
+        if (Math.abs(files.size()-20)<15){
+            maxPoolSize=15;
         }else{
-            maxPoolSize=5;
+            maxPoolSize=Math.abs(files.size()-20);
         }
         ThreadPoolExecutor executorPool = new ThreadPoolExecutor(10, maxPoolSize, 10, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(20),
                 threadFactory, new ThreadPoolExecutor.CallerRunsPolicy());
+      /*  ThreadPoolExecutor executorPool = new ThreadPoolExecutor(2, 4, 3, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(3),
+                new ThreadPoolExecutor.CallerRunsPolicy());*/
         //start the monitoring thread
         MonitorThread monitor = new MonitorThread(executorPool, 1);
         Thread monitorThread = new Thread(monitor);
