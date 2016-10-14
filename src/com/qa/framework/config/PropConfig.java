@@ -1,7 +1,7 @@
 package com.qa.framework.config;
 
 
-import com.qa.framework.library.base.StringHelper;
+import com.library.common.StringHelper;
 import com.qa.framework.library.reflect.ReflectHelper;
 
 import java.io.File;

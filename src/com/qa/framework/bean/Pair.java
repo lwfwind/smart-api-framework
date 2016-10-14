@@ -1,6 +1,7 @@
 package com.qa.framework.bean;
 
-import com.qa.framework.library.base.StringHelper;
+
+import com.library.common.StringHelper;
 
 import java.util.Arrays;
 
@@ -146,7 +147,7 @@ public class Pair {
             } else {
                 setKey(statements[0].trim());
                 String[] newStatementsValue = Arrays.copyOfRange(statements, 1, statements.length);
-                setValue(StringHelper.arrayToString(newStatementsValue, ":"));
+                setValue(StringHelper.join(newStatementsValue, ":"));
             }
         }
     }

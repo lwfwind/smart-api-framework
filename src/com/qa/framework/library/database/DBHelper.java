@@ -1,9 +1,9 @@
 package com.qa.framework.library.database;
 
+import com.library.common.ClassHelper;
+import com.library.common.CollectionHelper;
+import com.library.common.StringHelper;
 import com.qa.framework.config.PropConfig;
-import com.qa.framework.library.base.ClassHelper;
-import com.qa.framework.library.base.CollectionHelper;
-import com.qa.framework.library.base.StringHelper;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;

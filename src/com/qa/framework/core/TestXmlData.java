@@ -1,9 +1,9 @@
 package com.qa.framework.core;
 
+import com.library.common.IOHelper;
 import com.qa.framework.bean.DataConfig;
 import com.qa.framework.bean.TestData;
 import com.qa.framework.config.PropConfig;
-import com.qa.framework.library.base.IOHelper;
 import com.qa.framework.library.multithread.WorkerThread;
 import org.apache.log4j.Logger;
 import org.testng.annotations.DataProvider;
@@ -28,19 +28,24 @@ public class TestXmlData {
         List<Object[]> xmldata = new ArrayList<Object[]>();
         List<String> files = getTestCaseFiles();
         if (PropConfig.getIsMultithread()){
-            xmldata= WorkerThread.handleXml();
+            WorkerThread workerThread=new WorkerThread();
+//            HandleThread.buildThreadPool(workerThread, files.size());
+            xmldata=workerThread.getXmlDate();
+            for (String filePath : files) {
+
+            }
         }else {
             for (String filePath : files) {
-            DataConvertor dataConvertor = new DataConvertor(filePath);
-            DataConfig dataConfig = dataConvertor.getDataConfig();
-            ParamValueProcessor paramValueProcessor = new ParamValueProcessor(dataConfig);
-            paramValueProcessor.process();
-            List<TestData> testDataList = dataConfig.getTestDataList();
-            for (TestData data : testDataList) {
-                Object[] d = {data, dataConfig.getUrl(), dataConfig.getHttpMethod()};
-                xmldata.add(d);
+                DataConvertor dataConvertor = new DataConvertor(filePath);
+                DataConfig dataConfig = dataConvertor.getDataConfig();
+                ParamValueProcessor paramValueProcessor = new ParamValueProcessor(dataConfig);
+                paramValueProcessor.process();
+                List<TestData> testDataList = dataConfig.getTestDataList();
+                for (TestData data : testDataList) {
+                    Object[] d = {data, dataConfig.getUrl(), dataConfig.getHttpMethod()};
+                    xmldata.add(d);
+                }
             }
-        }
         }
 
         return xmldata.iterator();

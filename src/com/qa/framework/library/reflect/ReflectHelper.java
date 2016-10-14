@@ -1,6 +1,8 @@
 package com.qa.framework.library.reflect;
 
-import com.qa.framework.library.base.StringHelper;
+
+
+import com.library.common.StringHelper;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

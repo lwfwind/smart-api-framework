@@ -1,6 +1,7 @@
 package com.qa.framework.bean;
 
-import com.qa.framework.library.base.StringHelper;
+
+import com.library.common.StringHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,8 +1,8 @@
 package com.qa.framework.core;
 
+import com.library.common.JsonHelper;
+import com.library.common.StringHelper;
 import com.qa.framework.bean.*;
-import com.qa.framework.library.base.JsonHelper;
-import com.qa.framework.library.base.StringHelper;
 import com.qa.framework.library.database.DBHelper;
 import com.qa.framework.library.httpclient.HttpMethod;
 import com.qa.framework.util.StringUtil;

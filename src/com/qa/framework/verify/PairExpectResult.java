@@ -1,9 +1,8 @@
 package com.qa.framework.verify;
 
+import com.library.common.JsonHelper;
+import com.library.common.StringHelper;
 import com.qa.framework.bean.Pair;
-import com.qa.framework.library.base.JsonHelper;
-import com.qa.framework.library.base.StringHelper;
-import com.qa.framework.util.StringUtil;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 

@@ -1,7 +1,6 @@
 package com.qa.framework.classfinder.impl.support;
-
-import com.qa.framework.library.base.ClassHelper;
-import com.qa.framework.library.base.StringHelper;
+import com.library.common.ClassHelper;
+import com.library.common.StringHelper;
 import org.apache.log4j.Logger;
 
 import java.io.File;

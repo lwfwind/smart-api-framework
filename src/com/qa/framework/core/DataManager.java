@@ -1,7 +1,7 @@
 package com.qa.framework.core;
 
+import com.library.common.IOHelper;
 import com.qa.framework.config.ProjectEnvironment;
-import com.qa.framework.library.base.IOHelper;
 import org.apache.log4j.Logger;
 import org.testng.annotations.DataProvider;
 

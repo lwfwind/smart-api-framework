@@ -1,12 +1,11 @@
 package com.qa.framework.core;
 
+import com.library.common.IOHelper;
+import com.library.common.XmlHelper;
 import com.qa.framework.bean.DataConfig;
-import com.qa.framework.bean.Pair;
 import com.qa.framework.bean.TestData;
 import com.qa.framework.exception.TestDataDescDuplicatedException;
 import com.qa.framework.exception.TestDataNameDuplicatedException;
-import com.qa.framework.library.base.IOHelper;
-import com.qa.framework.library.base.XMLHelper;
 import com.qa.framework.library.reflect.ReflectHelper;
 import com.qa.framework.verify.IExpectResult;
 import org.apache.log4j.Logger;
@@ -34,7 +33,7 @@ public class DataConvertor {
     public DataConvertor(String filePath) {
         this.fileName = IOHelper.getName(filePath);
         logger.info("convert data from xml-" + this.fileName);
-        XMLHelper xmlHelper = new XMLHelper();
+        XmlHelper xmlHelper = new XmlHelper();
         Document document = xmlHelper.readXMLFile(filePath);
         dataConfig = new DataConfig();
         List attributes = document.getRootElement().attributes();

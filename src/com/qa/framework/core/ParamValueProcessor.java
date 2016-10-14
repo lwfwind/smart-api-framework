@@ -1,9 +1,9 @@
 package com.qa.framework.core;
 
+import com.library.common.DynamicCompileHelper;
+import com.library.common.StringHelper;
 import com.qa.framework.bean.*;
 import com.qa.framework.cache.StringCache;
-import com.qa.framework.library.base.DynamicCompile;
-import com.qa.framework.library.base.StringHelper;
 import com.qa.framework.library.database.DBHelper;
 import com.qa.framework.library.reflect.ReflectHelper;
 import com.qa.framework.util.StringUtil;
@@ -542,7 +542,7 @@ public class ParamValueProcessor {
                         }
                     }
                     try {
-                        Object cal = DynamicCompile.evalCalculate(calculateStr);
+                        Object cal = DynamicCompileHelper.evalCalculate(calculateStr);
                         OriginalString = OriginalString.replace(list, cal.toString());
                     } catch (Exception e) {
                         e.printStackTrace();

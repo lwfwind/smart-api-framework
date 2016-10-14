@@ -1,8 +1,9 @@
 package com.qa.framework;
 
+import com.library.common.ReflectHelper;
 import com.qa.framework.classfinder.ClassScanner;
 import com.qa.framework.classfinder.impl.DefaultClassScanner;
-import com.qa.framework.library.base.ReflectHelper;
+
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

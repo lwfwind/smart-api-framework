@@ -1,7 +1,7 @@
 package com.qa.framework.classfinder;
 
+import com.library.common.CollectionHelper;
 import com.qa.framework.classfinder.annotation.Impl;
-import com.qa.framework.library.base.CollectionHelper;
 
 import java.util.List;
 
