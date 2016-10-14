@@ -1,11 +1,11 @@
 package com.qa.framework.library.multithread;
 
+import com.library.common.IOHelper;
 import com.qa.framework.bean.DataConfig;
 import com.qa.framework.bean.TestData;
 import com.qa.framework.core.DataConvertor;
 import com.qa.framework.core.ParamValueProcessor;
 import com.qa.framework.core.TestXmlData;
-import com.qa.framework.library.base.IOHelper;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ public class WorkerThread implements Runnable {
         String fileName;
         synchronized (files) {
                filePath=this.files.get(0);
-               fileName=IOHelper.getName(filePath);
+               fileName= IOHelper.getName(filePath);
             this.files.remove(0);
         }
         logger.info("---->" + Thread.currentThread().getName() + " Start. Command = " + fileName);
