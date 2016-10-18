@@ -4,7 +4,7 @@ import com.library.common.IOHelper;
 import com.qa.framework.bean.DataConfig;
 import com.qa.framework.bean.TestData;
 import com.qa.framework.config.PropConfig;
-import com.qa.framework.library.multithread.WorkerThread;
+import com.qa.framework.library.multithread.multiThreadHandle;
 import org.apache.log4j.Logger;
 import org.testng.annotations.DataProvider;
 
@@ -28,11 +28,27 @@ public class TestXmlData {
         List<Object[]> xmldata = new ArrayList<Object[]>();
         List<String> files = getTestCaseFiles();
         if (PropConfig.getIsMultithread()){
-            WorkerThread workerThread=new WorkerThread();
-//            HandleThread.buildThreadPool(workerThread, files.size());
-            xmldata=workerThread.getXmlDate();
-            for (String filePath : files) {
-
+            final List<Object[]> xmldataMulti = new ArrayList<Object[]>();
+            for (final String filePath : files) {
+                Runnable e= new Runnable(){
+               String fileName;
+                @Override
+                public void run() {
+                    DataConvertor dataConvertor = new DataConvertor(filePath);
+                    DataConfig dataConfig = dataConvertor.getDataConfig();
+                    ParamValueProcessor paramValueProcessor = new ParamValueProcessor(dataConfig);
+                    paramValueProcessor.process();
+                    for (TestData data : dataConfig.getTestDataList()) {
+                        Object[] d = {data, dataConfig.getUrl(), dataConfig.getHttpMethod()};
+                        xmldataMulti.add(d);
+                    }
+                }
+            };
+            multiThreadHandle.buildThreadPool(e);
+            }
+            if (multiThreadHandle.isEnd()) {
+                xmldata=xmldataMulti;
+                logger.info("processed xmldata is end");
             }
         }else {
             for (String filePath : files) {
