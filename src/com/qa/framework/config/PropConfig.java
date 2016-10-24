@@ -31,6 +31,7 @@ public class PropConfig {
     //base package name
     private static String basePackage;
     private static boolean isMultithread = false;
+    private static boolean sendMsg = false;
 
     static {
         File file = new File(System.getProperty("user.dir") + File.separator + "config.properties");
@@ -233,5 +234,13 @@ public class PropConfig {
 
     public static void setIsMultithread(String val) {
         isMultithread = StringHelper.changeString2boolean(val);
+    }
+
+    public static boolean isSendMsg() {
+        return sendMsg;
+    }
+
+    public static void setSendMsg(String val) {
+        sendMsg = StringHelper.changeString2boolean(val);
     }
 }
