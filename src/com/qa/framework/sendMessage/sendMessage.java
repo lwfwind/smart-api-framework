@@ -11,20 +11,22 @@ import org.testng.Assert;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 /**
  * Created by Administrator on 2016/9/21.
  */
 public class sendMessage {
-    private static boolean useProxy = PropConfig.isUseProxy();
+//    private static boolean useProxy = PropConfig.isUseProxy();
 
-    public static String sendMsg(String mobile,String message) throws UnsupportedEncodingException, IOException {
+    public static String sendMsg(String mobile,String message) throws  IOException {
         String Mobiltext=message+"【XX公司或XX网名称】";
-        HttpPost httpPost = new HttpPost("http://utf8.sms.webchinese.cn/");
+        HttpPost httpPost = new HttpPost("http://sdk2.entinfo.cn/webservice.asmx/SendSMS");
         RequestConfig requestConfig;
         int timeout=50000;
-        if (useProxy) {
+        if (true) {
             HttpHost proxy = new HttpHost("127.0.0.1", 8888, "http");
             requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout).setProxy(proxy).build();
         } else {
@@ -32,10 +34,10 @@ public class sendMessage {
         }
         httpPost.setConfig(requestConfig);
         Map<String,String> params=new LinkedHashMap<String,String>();
-        params.put("Uid","abc360");
-        params.put("Key","5bedb463296c7a27285f");
-        params.put("smsMob","15757126371");
-        params.put("smsText",Mobiltext);
+        params.put("sn","SDK-LMQ-010-00040");
+        params.put("pwd","BBf96-B9");
+        params.put("mobile",mobile);
+        params.put("content",Mobiltext);
         Set<String> keys=params.keySet();
         List<BasicNameValuePair> basicNameValuePairs = new ArrayList<BasicNameValuePair>();
         for (String key : keys) {
@@ -49,7 +51,7 @@ public class sendMessage {
         }
         HttpConnectionImp imp = new HttpConnectionImp(httpPost);
         String result=imp.getResponseResult(false,false);
-        if (Integer.valueOf(result)==1){
+        if (result.contains("成功")){
             return mobile+"发送短信成功";
         }else{
             return mobile+"发送短信失败，错误代码为:"+result;

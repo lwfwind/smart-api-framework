@@ -172,6 +172,16 @@ public class TestResultListener extends TestListenerAdapter {
                 iterator.remove();
             }
         }
+        Class<?> clazz = findImplementClass(ICustomTestListener.class);
+        if (clazz != null) {
+            ICustomTestListener testListenerImp = null;
+            try {
+                testListenerImp = (ICustomTestListener) clazz.newInstance();
+                testListenerImp.onFinish(testContext);
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private int getId(ITestResult result) {

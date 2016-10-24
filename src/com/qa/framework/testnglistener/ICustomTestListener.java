@@ -1,6 +1,9 @@
 package com.qa.framework.testnglistener;
 
+import org.testng.ITestContext;
 import org.testng.ITestResult;
+
+import java.io.IOException;
 
 /**
  * Created by Administrator on 2016/8/30.
@@ -33,4 +36,6 @@ public interface ICustomTestListener{
      * @param tr the tr
      */
     void onTestSuccess(ITestResult tr);
+
+    void onFinish(ITestContext testContext);
 }
