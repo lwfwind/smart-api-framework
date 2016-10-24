@@ -19,14 +19,14 @@ import java.util.*;
  * Created by Administrator on 2016/9/21.
  */
 public class sendMessage {
-//    private static boolean useProxy = PropConfig.isUseProxy();
+    private static boolean useProxy = PropConfig.isUseProxy();
 
     public static String sendMsg(String mobile,String message) throws  IOException {
         String Mobiltext=message+"【XX公司或XX网名称】";
         HttpPost httpPost = new HttpPost("http://sdk2.entinfo.cn/webservice.asmx/SendSMS");
         RequestConfig requestConfig;
         int timeout=50000;
-        if (true) {
+        if (useProxy) {
             HttpHost proxy = new HttpHost("127.0.0.1", 8888, "http");
             requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout).setProxy(proxy).build();
         } else {
