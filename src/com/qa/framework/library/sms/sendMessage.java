@@ -1,4 +1,4 @@
-package com.qa.framework.sendMessage;
+package com.qa.framework.library.sms;
 
 import com.qa.framework.config.PropConfig;
 import com.qa.framework.library.httpclient.HttpConnectionImp;
@@ -7,12 +7,9 @@ import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
-import org.testng.Assert;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 /**
@@ -26,7 +23,7 @@ public class sendMessage {
         HttpPost httpPost = new HttpPost("http://sdk2.entinfo.cn/webservice.asmx/SendSMS");
         RequestConfig requestConfig;
         int timeout=50000;
-        if (useProxy) {
+        if (true) {
             HttpHost proxy = new HttpHost("127.0.0.1", 8888, "http");
             requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout).setProxy(proxy).build();
         } else {
@@ -58,12 +55,11 @@ public class sendMessage {
         }
     }
     public static String sendMsg(List<String> mobiles,String message) throws IOException {
-        String afterSend="短信全部发送成功";
+        String afterSend="短信结果：\n";
         for(String mobile:mobiles){
             String reslut=sendMsg(mobile,message);
             if (reslut.contains("失败")){
-                afterSend=reslut;
-                break;
+                afterSend=afterSend+reslut+"\n";
             }
         }
         return afterSend;

@@ -47,7 +47,9 @@ public class HttpConnectionImp {
 
         String line = null;
         try {
-            line = reader.readLine();
+            while (reader.readLine()!=null) {
+                line =line+reader.readLine();
+            }
             reader.close();
         } catch (IOException e) {
             e.printStackTrace();
