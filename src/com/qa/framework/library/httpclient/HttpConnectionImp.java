@@ -46,16 +46,17 @@ public class HttpConnectionImp {
         reader = new BufferedReader(new InputStreamReader(new BOMInputStream(is)));
 
         String line = null;
+        String lines="";
         try {
-            while (reader.readLine()!=null) {
-                line =line+reader.readLine();
+            while ((line=reader.readLine())!=null) {
+                lines=lines+line;
             }
             reader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return line;
+        return lines;
 
     }
 
