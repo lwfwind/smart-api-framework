@@ -23,7 +23,7 @@ public class sendMessage {
         HttpPost httpPost = new HttpPost("http://sdk2.entinfo.cn/webservice.asmx/SendSMS");
         RequestConfig requestConfig;
         int timeout=50000;
-        if (true) {
+        if (useProxy) {
             HttpHost proxy = new HttpHost("127.0.0.1", 8888, "http");
             requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout).setProxy(proxy).build();
         } else {
