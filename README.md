@@ -8,7 +8,7 @@ Smart-api-framework is a light, common http api automation framework based on [T
 
 * No Coding and easy to config
 * Support restful web server such as get, post, put and delete http method
-* Support concurrent testing with TestNG
+* Support concurrent
 * Re-run failed test cases
 
 ## XML Structure
