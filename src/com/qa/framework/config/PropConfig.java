@@ -32,6 +32,9 @@ public class PropConfig {
     private static String basePackage;
     private static boolean isMultithread = false;
     private static boolean sendMsg = false;
+    //SMS配置
+    private static String SN;
+    private static String SNPWD;
 
     static {
         File file = new File(System.getProperty("user.dir") + File.separator + "config.properties");
@@ -242,5 +245,21 @@ public class PropConfig {
 
     public static void setSendMsg(String val) {
         sendMsg = StringHelper.changeString2boolean(val);
+    }
+
+    public static String getSN() {
+        return SN;
+    }
+
+    public static void setSN(String val) {
+        SN = val;
+    }
+
+    public static String getSNPWD() {
+        return SNPWD;
+    }
+
+    public static void setSNPWD(String val) {
+        SNPWD = val;
     }
 }
