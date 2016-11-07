@@ -19,7 +19,6 @@ public class sendMessage {
     private static boolean useProxy = PropConfig.isUseProxy();
 
     public static String sendMsg(String mobile,String message) throws  IOException {
-        String Mobiltext=message+"【XX公司或XX网名称】";
         HttpPost httpPost = new HttpPost("http://sdk2.entinfo.cn/webservice.asmx/SendSMS");
         RequestConfig requestConfig;
         int timeout=50000;
@@ -31,10 +30,10 @@ public class sendMessage {
         }
         httpPost.setConfig(requestConfig);
         Map<String,String> params=new LinkedHashMap<String,String>();
-        params.put("sn","SDK-LMQ-010-00040");
-        params.put("pwd","BBf96-B9");
+        params.put("sn",PropConfig.getSN());
+        params.put("pwd",PropConfig.getSNPWD());
         params.put("mobile",mobile);
-        params.put("content",Mobiltext);
+        params.put("content",message);
         Set<String> keys=params.keySet();
         List<BasicNameValuePair> basicNameValuePairs = new ArrayList<BasicNameValuePair>();
         for (String key : keys) {
