@@ -2,63 +2,64 @@ package com.qa.framework.config;
 
 
 import com.library.common.StringHelper;
-import com.qa.framework.library.reflect.ReflectHelper;
+import com.qa.framework.classfinder.annotation.Value;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.Properties;
+import static com.qa.framework.classfinder.ValueHelp.initConfigFields;
 
 /**
  * Created by apple on 15/11/18.
  */
 public class PropConfig {
-    private static Properties props = new Properties();
     //代理配置
+    @Value("useProxy")
     private static boolean useProxy = false;
+    @Value("localhost")
     private static String localhost = "127.0.0.1";
+    @Value("localport")
     private static String localport = "8888";
+    @Value("timeout")
     private static String timeout = "30000";
     //测试服务器配置
+    @Value("webPath")
     private static String webPath;
+    @Value("dbPoolName")
     private static String dbPoolName;
     //失败重试次数
+    @Value("retryCount")
     private static int retryCount = 1;
     //自定义report
+    @Value("sourceCodeEncoding")
     private static String sourceCodeEncoding = "UTF-8";
+    @Value("sourceCodeDir")
     private static String sourceCodeDir = "src";
     //base package name
+    @Value("basePackage")
     private static String basePackage;
+    @Value("isMultithread")
     private static boolean isMultithread = false;
+    @Value("sendMsg")
     private static boolean sendMsg = false;
     //SMS配置
+    @Value("SN")
     private static String SN;
+    @Value("SNPWD")
     private static String SNPWD;
 
-    static {
-        File file = new File(System.getProperty("user.dir") + File.separator + "config.properties");
-        FileReader fileReader = null;
-        try {
-            fileReader = new FileReader(file);
-            props.load(fileReader);
-            Field[] fields = PropConfig.class.getDeclaredFields();
-            for (Field field : fields) {
-                if (!field.getName().equals("props") && props.getProperty(field.getName()) != null) {
-                    ReflectHelper.setMethod(PropConfig.class, field.getName(), props.getProperty(field.getName()), String.class);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (fileReader != null) {
-                    fileReader.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+//    单例模式
+    private static PropConfig propConfig;
+    private PropConfig (){
+        initConfigFields(this);
+    }
+    public static PropConfig getInstance() {
+        if (propConfig == null) {
+            synchronized (PropConfig.class) {
+                propConfig = new PropConfig();
             }
         }
+        return propConfig;
+    }
+    static {
+        PropConfig prop=new PropConfig();
     }
 
     public static String getBasePackage() {
