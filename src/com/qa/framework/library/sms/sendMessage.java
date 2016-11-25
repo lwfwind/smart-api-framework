@@ -2,7 +2,6 @@ package com.qa.framework.library.sms;
 
 import com.qa.framework.bean.Param;
 import com.qa.framework.config.PropConfig;
-import com.qa.framework.library.httpclient.HttpConnectionImp;
 import com.qa.framework.library.httpclient.HttpMethod;
 
 import java.io.IOException;

@@ -85,7 +85,7 @@ public class HttpMethod {
      * @return the string
      */
     public static String useGetMethod(String url, List<Param> params, boolean storeCookie, boolean useCookie) {
-        String uri = getUrl(postUrl(url), params);
+        String uri = getUrl(url, params);
         logger.info("拼接后的web地址为:" + uri);
         HttpGet get = new HttpGet(uri);
         if (useProxy) {
