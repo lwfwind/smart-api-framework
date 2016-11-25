@@ -4,14 +4,8 @@ import com.qa.framework.bean.Param;
 import com.qa.framework.config.PropConfig;
 import com.qa.framework.library.httpclient.HttpConnectionImp;
 import com.qa.framework.library.httpclient.HttpMethod;
-import org.apache.http.HttpHost;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 /**

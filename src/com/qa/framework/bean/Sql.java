@@ -76,7 +76,7 @@ public class Sql {
         for (int i = 0; i < returnStringValues.length; i++) {
             returnStringValues[i] = returnStringValues[i].trim();
             if (returnStringValues[i].contains(" as ")) {
-                returnStringValues[i] = returnStringValues[i].split("as")[1].trim();
+                returnStringValues[i] = returnStringValues[i].split(" as ")[1].trim();
             }
         }
 

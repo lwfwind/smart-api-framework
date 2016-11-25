@@ -113,7 +113,6 @@ public class ParamValueProcessor {
                             processParamPair(param,setup,testData);
                             processParamDate(param,setup,testData);
                             processParamFromSetup(testData, param);
-                            processExpectResult(testData);
                         }
                     }
                 }
@@ -266,7 +265,11 @@ public class ParamValueProcessor {
                         }
                         param.setValue(newParamValue.toString());
                     } else {
-                        param.setValue(stringCache.getValue(testDataNameAndParam));
+                        String value=stringCache.getValue(testDataNameAndParam);
+                        if (value==null){
+                            logger.info("无法找到关键字为"+testDataNameAndParam+"的值，请检查");
+                        }
+                        param.setValue(value);
                     }
                 }
             }

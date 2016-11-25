@@ -38,7 +38,9 @@ public class HttpMethod {
      */
     public static String getUrl(String url, List<Param> params) {
         StringBuilder webPath = new StringBuilder();
-        webPath.append(PropConfig.getWebPath());
+        if (!(url.startsWith("http://")||url.startsWith("HTTP://"))){
+            webPath.append(PropConfig.getWebPath());
+        }
         if (url.contains("/")) {
             webPath.append(url);
         } else {
@@ -83,7 +85,7 @@ public class HttpMethod {
      * @return the string
      */
     public static String useGetMethod(String url, List<Param> params, boolean storeCookie, boolean useCookie) {
-        String uri = getUrl(url, params);
+        String uri = getUrl(postUrl(url), params);
         logger.info("拼接后的web地址为:" + uri);
         HttpGet get = new HttpGet(uri);
         if (useProxy) {
