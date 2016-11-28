@@ -62,7 +62,7 @@ public abstract class TestBase {
                 break;
         }
 
-        content = URLDecoder.decode(content);
+        content = JsonHelper.decodeUnicode(content);
         logger.info("返回的信息:" + JsonHelper.decodeUnicode(content));
         Assert.assertNotNull(content, "response返回空");
         return content;
