@@ -55,6 +55,9 @@ public class ParamValueProcessor {
                 this.testDataList.add(testData);
             }
         }
+        if (this.testDataList.size()==0){
+            logger.info("没有找打相匹配的TestData Name 请检查！");
+        }
         stringCache = new StringCache();
     }
 

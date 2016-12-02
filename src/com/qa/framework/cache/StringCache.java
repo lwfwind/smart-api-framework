@@ -1,5 +1,7 @@
 package com.qa.framework.cache;
 
+import org.apache.log4j.Logger;
+
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -7,6 +9,7 @@ import java.util.Map;
  * Created by apple on 15/11/25.
  */
 public class StringCache {
+    protected Logger logger=Logger.getLogger(StringCache.class);
     /**
      * The constant mapCache.
      */
@@ -30,6 +33,7 @@ public class StringCache {
      * @return the value
      */
     public String getValue(String key) {
+        logger.info("取出的Key为"+key+" value为"+mapCache.get(key));
         return mapCache.get(key);
     }
 

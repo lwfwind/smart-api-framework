@@ -55,11 +55,13 @@ public class DataConvertor {
             if (!testDataNameList.contains(testData.getName())) {
                 testDataNameList.add(testData.getName());
             } else {
+                logger.info("TestDate 的名字重复"+this.fileName);
                 throw new TestDataNameDuplicatedException(this.fileName, testData.getName());
             }
             if (!testDataDescList.contains(testData.getDesc())) {
                 testDataDescList.add(testData.getDesc());
             } else {
+                logger.info("TestDate 的描述重复"+this.fileName);
                 throw new TestDataDescDuplicatedException(this.fileName, testData.getDesc());
             }
         }
