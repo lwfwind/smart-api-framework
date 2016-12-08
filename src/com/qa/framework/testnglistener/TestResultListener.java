@@ -41,10 +41,13 @@ public class TestResultListener extends TestListenerAdapter {
                 e.printStackTrace();
             }
         }
-        Executor executor = (Executor) tr.getInstance();
-        executor.processAfter(executor.getTestData());
-        String testName = IOHelper.getBaseName(executor.getTestData().getCurrentFileName()) + "_" + executor.getTestData().getName();
-        logger.error(testName + " Failure");
+        Object obj = tr.getInstance();
+        if(obj instanceof Executor) {
+            Executor executor = (Executor) obj;
+            executor.processAfter(executor.getTestData());
+            String testName = IOHelper.getBaseName(executor.getTestData().getCurrentFileName()) + "_" + executor.getTestData().getName();
+            logger.error(testName + " Failure");
+        }
         printStackTrace(tr);
     }
 
@@ -61,10 +64,13 @@ public class TestResultListener extends TestListenerAdapter {
                 e.printStackTrace();
             }
         }
-        Executor executor = (Executor) tr.getInstance();
-        executor.processAfter(executor.getTestData());
-        String testName = IOHelper.getBaseName(executor.getTestData().getCurrentFileName()) + "_" + executor.getTestData().getName();
-        logger.info(testName + " Skipped");
+        Object obj = tr.getInstance();
+        if(obj instanceof Executor) {
+            Executor executor = (Executor) obj;
+            executor.processAfter(executor.getTestData());
+            String testName = IOHelper.getBaseName(executor.getTestData().getCurrentFileName()) + "_" + executor.getTestData().getName();
+            logger.info(testName + " Skipped");
+        }
         printStackTrace(tr);
     }
 
@@ -81,10 +87,13 @@ public class TestResultListener extends TestListenerAdapter {
                 e.printStackTrace();
             }
         }
-        Executor executor = (Executor) tr.getInstance();
-        executor.processAfter(executor.getTestData());
-        String testName = IOHelper.getBaseName(executor.getTestData().getCurrentFileName()) + "_" + executor.getTestData().getName();
-        logger.info(testName + " Success");
+        Object obj = tr.getInstance();
+        if(obj instanceof Executor) {
+            Executor executor = (Executor) obj;
+            executor.processAfter(executor.getTestData());
+            String testName = IOHelper.getBaseName(executor.getTestData().getCurrentFileName()) + "_" + executor.getTestData().getName();
+            logger.info(testName + " Success");
+        }
     }
 
     @Override
@@ -100,22 +109,25 @@ public class TestResultListener extends TestListenerAdapter {
                 e.printStackTrace();
             }
         }
-        Executor executor = (Executor) tr.getInstance();
-        String testName = IOHelper.getBaseName(executor.getTestData().getCurrentFileName()) + "_" + executor.getTestData().getName();
-        try {
-            BaseTestMethod bm = (BaseTestMethod) tr.getMethod();
-            Field methodNameField = bm.getClass().getSuperclass().getDeclaredField("m_methodName");
-            methodNameField.setAccessible(true);
-            methodNameField.set(bm, testName);
+        Object obj = tr.getInstance();
+        if(obj instanceof Executor) {
+            Executor executor = (Executor) obj;
+            String testName = IOHelper.getBaseName(executor.getTestData().getCurrentFileName()) + "_" + executor.getTestData().getName();
+            try {
+                BaseTestMethod bm = (BaseTestMethod) tr.getMethod();
+                Field methodNameField = bm.getClass().getSuperclass().getDeclaredField("m_methodName");
+                methodNameField.setAccessible(true);
+                methodNameField.set(bm, testName);
 
-            TestResult trImp = (TestResult) tr;
-            Field nameField = trImp.getClass().getDeclaredField("m_name");
-            nameField.setAccessible(true);
-            nameField.set(trImp, testName);
-        } catch (Exception ex) {
-            logger.error(ex.getMessage());
+                TestResult trImp = (TestResult) tr;
+                Field nameField = trImp.getClass().getDeclaredField("m_name");
+                nameField.setAccessible(true);
+                nameField.set(trImp, testName);
+            } catch (Exception ex) {
+                logger.error(ex.getMessage());
+            }
+            logger.info(testName + " Start");
         }
-        logger.info(testName + " Start");
     }
 
     @Override
