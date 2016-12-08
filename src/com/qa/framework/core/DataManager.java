@@ -18,7 +18,7 @@ public class DataManager {
 
     private static final Logger logger = Logger.getLogger(DataManager.class);
     private static String xmlName = null;
-    private static String xmlDataNmae = null;
+    private static String xmlDataName = null;
 
     /**
      * Gets data provider.
@@ -59,8 +59,8 @@ public class DataManager {
     public static Iterator getDataProvider() {
         List<String> files = IOHelper.listFilesInDirectoryRecursive(System.getProperty("user.dir"), xmlName + ".xml");
         String filePath = files.get(0);
-        if (xmlDataNmae != null) {
-            return new XmlDataProvider(filePath, xmlDataNmae);
+        if (xmlDataName != null) {
+            return new XmlDataProvider(filePath, xmlDataName);
         } else {
             return new XmlDataProvider(filePath);
         }
@@ -79,10 +79,10 @@ public class DataManager {
     /**
      * Sets xml name.
      *
-     * @param xmlName the xml name
+     * @param val the xml name
      */
-    public static void setXmlName(String xmlName) {
-        DataManager.xmlName = xmlName;
+    public static void setXmlName(String val) {
+        xmlName = val;
     }
 
     /**
@@ -90,16 +90,16 @@ public class DataManager {
      *
      * @return the xml data nmae
      */
-    public static String getXmlDataNmae() {
-        return xmlDataNmae;
+    public static String getXmlDataName() {
+        return xmlDataName;
     }
 
     /**
      * Sets xml data nmae.
      *
-     * @param xmlDataNmae the xml data nmae
+     * @param val the xml data nmae
      */
-    public static void setXmlDataNmae(String xmlDataNmae) {
-        DataManager.xmlDataNmae = xmlDataNmae;
+    public static void setXmlDataName(String val) {
+        xmlDataName = val;
     }
 }
