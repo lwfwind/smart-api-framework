@@ -122,6 +122,7 @@ public class ParamValueProcessor {
 
     public void clearStringCache() {
         stringCache.mapCache.clear();
+        logger.debug("清空StringCahe");
     }
 }
 
