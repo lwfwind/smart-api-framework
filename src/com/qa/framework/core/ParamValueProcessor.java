@@ -68,7 +68,6 @@ public class ParamValueProcessor {
     public void process() {
         processBefore();
         processSetupParam();
-        processSetupResultParam();
         processTestDataParam();
     }
 

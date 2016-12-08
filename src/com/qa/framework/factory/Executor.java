@@ -64,6 +64,8 @@ public class Executor extends TestBase {
     public void testcase(TestData testData, String url, String httpMethod) {
         if (PropConfig.isSingle()) {
             ParamValueProcessor.processSingleTestdata(testData);
+        }else {
+            processSetupResultParam(testData);
         }
         String content = request(url, testData.getParams(), httpMethod, testData.isStoreCookie(), testData.isUseCookie());
         verifyResult(testData, content);
