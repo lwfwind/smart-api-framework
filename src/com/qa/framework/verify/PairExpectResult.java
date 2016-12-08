@@ -110,7 +110,7 @@ public class PairExpectResult implements IExpectResult {
                 Assert.assertTrue(matcher.matches(), String.format("期望返回:%s, 实际返回:%s", expectCode, code));
                 logger.info(matcher.matches() + "====" + expectCode.equals(code));
             }else {
-                Assert.assertTrue(expectCode.equals(code), String.format("期望返回:%s, 实际返回:%s", expectCode, code));
+                Assert.assertTrue(expectCode.trim().equals(code.trim()), String.format("期望返回:%s, 实际返回:%s", expectCode, code));
             }
 
         }

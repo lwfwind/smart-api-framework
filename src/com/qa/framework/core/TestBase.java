@@ -40,7 +40,7 @@ public abstract class TestBase {
      * @param useCookie   the use cookie
      * @return the string
      */
-    public String request(String url, List<Param> params, String httpMethod, boolean storeCookie, boolean useCookie) {
+    public static String request(String url, List<Param> params, String httpMethod, boolean storeCookie, boolean useCookie) {
         String content = null;
         if (params!=null) {
             for (Param param : params) {

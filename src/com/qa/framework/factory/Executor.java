@@ -1,6 +1,8 @@
 package com.qa.framework.factory;
 
 import com.qa.framework.bean.TestData;
+import com.qa.framework.config.PropConfig;
+import com.qa.framework.core.ParamValueProcessor;
 import com.qa.framework.core.TestBase;
 import com.qa.framework.testnglistener.PowerEmailableReporter;
 import com.qa.framework.testnglistener.TestResultListener;
@@ -60,8 +62,11 @@ public class Executor extends TestBase {
      */
     @Test(dataProvider = "data")
     public void testcase(TestData testData, String url, String httpMethod) {
-        processSetupResultParam(testData);
+        if (PropConfig.isSingle()) {
+            ParamValueProcessor.processSingleTestdata(testData);
+        }
         String content = request(url, testData.getParams(), httpMethod, testData.isStoreCookie(), testData.isUseCookie());
         verifyResult(testData, content);
+
     }
 }

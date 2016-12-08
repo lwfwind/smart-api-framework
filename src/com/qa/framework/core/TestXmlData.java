@@ -5,6 +5,7 @@ import com.qa.framework.bean.DataConfig;
 import com.qa.framework.bean.TestData;
 import com.qa.framework.config.PropConfig;
 import com.qa.framework.library.multithread.multiThreadHandle;
+import com.qa.framework.library.single.TestDataProvider;
 import org.apache.log4j.Logger;
 import org.testng.annotations.DataProvider;
 
@@ -25,26 +26,35 @@ public class TestXmlData {
      */
     @DataProvider(name = "xmlFactoryData")
     public static Iterator<Object[]> xmlFactoryData() throws InterruptedException {
+        if (PropConfig.isSingle()){
+            return new TestDataProvider();
+        }else {
+            return getXmlTestDate();
+        }
+
+    }
+
+    private static Iterator<Object[]> getXmlTestDate() {
         List<Object[]> xmldata = new ArrayList<Object[]>();
         List<String> files = getTestCaseFiles();
         if (PropConfig.getIsMultithread()){
             final List<Object[]> xmldataMulti = new ArrayList<Object[]>();
             for (final String filePath : files) {
                 Runnable e= new Runnable(){
-               String fileName;
-                @Override
-                public void run() {
-                    DataConvertor dataConvertor = new DataConvertor(filePath);
-                    DataConfig dataConfig = dataConvertor.getDataConfig();
-                    ParamValueProcessor paramValueProcessor = new ParamValueProcessor(dataConfig);
-                    paramValueProcessor.process();
-                    for (TestData data : dataConfig.getTestDataList()) {
-                        Object[] d = {data, dataConfig.getUrl(), dataConfig.getHttpMethod()};
-                        xmldataMulti.add(d);
+                    String fileName;
+                    @Override
+                    public void run() {
+                        DataConvertor dataConvertor = new DataConvertor(filePath);
+                        DataConfig dataConfig = dataConvertor.getDataConfig();
+                        ParamValueProcessor paramValueProcessor = new ParamValueProcessor(dataConfig);
+                        paramValueProcessor.process();
+                        for (TestData data : dataConfig.getTestDataList()) {
+                            Object[] d = {data, dataConfig.getUrl(), dataConfig.getHttpMethod()};
+                            xmldataMulti.add(d);
+                        }
                     }
-                }
-            };
-            multiThreadHandle.buildThreadPool(e);
+                };
+                multiThreadHandle.buildThreadPool(e);
             }
             if (multiThreadHandle.isEnd()) {
                 xmldata=xmldataMulti;
@@ -63,6 +73,7 @@ public class TestXmlData {
                 }
             }
         }
+
 
         return xmldata.iterator();
     }

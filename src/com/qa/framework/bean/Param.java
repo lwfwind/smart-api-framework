@@ -23,7 +23,7 @@ public class Param {
     private List<Pair> pairs;     //Map
     private Function function;
     private boolean show = true;           //是否出现在链接中
-
+    private boolean isHaveValue=false;
     /**
      * Gets name.
      *
@@ -90,6 +90,7 @@ public class Param {
      */
     public void setValue(String value) {
         this.value = StringHelper.urlEncode(value);
+        isHaveValue=true;
     }
 
     /**
@@ -262,5 +263,9 @@ public class Param {
     @Override
     public String toString() {
         return name + "= " + value;
+    }
+
+    public boolean isHaveValue() {
+        return isHaveValue;
     }
 }

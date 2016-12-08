@@ -45,6 +45,10 @@ public class PropConfig {
     @Value("SNPWD")
     private static String SNPWD;
 
+    @Value("isSingle")
+    private static boolean isSingle=false;
+
+
 //    单例模式
     private static PropConfig propConfig;
     private PropConfig (){
@@ -262,5 +266,13 @@ public class PropConfig {
 
     public static void setSNPWD(String val) {
         SNPWD = val;
+    }
+
+    public static boolean isSingle() {
+        return isSingle;
+    }
+
+    public static void setIsSingle(boolean isSingle) {
+        PropConfig.isSingle = isSingle;
     }
 }
