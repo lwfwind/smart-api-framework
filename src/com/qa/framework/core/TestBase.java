@@ -58,7 +58,7 @@ public abstract class TestBase {
                 content = HttpMethod.usePutMethod(url, params, storeCookie, useCookie);
                 break;
             case "delete":
-                content = HttpMethod.usePutMethod(url, params, storeCookie, useCookie);
+                content = HttpMethod.useDeleteMethod(url, params, storeCookie, useCookie);
                 break;
         }
 

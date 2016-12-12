@@ -6,6 +6,7 @@ import com.qa.framework.config.PropConfig;
 import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
@@ -212,6 +213,22 @@ public class HttpMethod {
             e.printStackTrace();
         }
         HttpConnectionImp imp = new HttpConnectionImp(httpPut);
+        return imp.getResponseResult(storeCookie, useCookie);
+    }
+
+    public static String useDeleteMethod(String url, List<Param> params, boolean storeCookie, boolean useCookie) {
+        String uri = getUrl(url, params);
+        logger.info("拼接后的web地址为:" + uri);
+        HttpDelete httpDelete = new HttpDelete(uri);
+        if (useProxy) {
+            HttpHost proxy = new HttpHost(localhost, localport, "http");
+            RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout).setProxy(proxy).build();
+            httpDelete.setConfig(requestConfig);
+        } else {
+            RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout).build();
+            httpDelete.setConfig(requestConfig);
+        }
+        HttpConnectionImp imp = new HttpConnectionImp(httpDelete);
         return imp.getResponseResult(storeCookie, useCookie);
     }
 }
