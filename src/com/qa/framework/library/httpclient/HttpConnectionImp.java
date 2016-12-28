@@ -1,18 +1,24 @@
 package com.qa.framework.library.httpclient;
 
 
+import com.qa.framework.bean.Cookie;
 import org.apache.commons.io.input.BOMInputStream;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import java.io.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * The type Http connection imp.
@@ -112,5 +118,20 @@ public class HttpConnectionImp {
         logger.debug("response result:" + responseBody);
         return removeBOM(responseBody);
     }
+
+    public static void StoreCookies(List<Cookie> cookieList) {
+
+        CookieCache.clear();
+        CookieStore cookieStore=new BasicCookieStore();
+        for (Cookie cookie:cookieList){
+            BasicClientCookie basicCookie=new BasicClientCookie(cookie.getName(),cookie.getValue());
+            basicCookie.setDomain(cookie.getDomain());
+            basicCookie.setPath(cookie.getPath());
+            basicCookie.setExpiryDate(cookie.getExpiry());
+            cookieStore.addCookie(basicCookie);
+        }
+        CookieCache.set(cookieStore);
+    }
+
 
 }

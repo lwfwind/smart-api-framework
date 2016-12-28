@@ -26,6 +26,7 @@ public class TestData {
     private Before before;
     private After after;
     private String currentFileName;
+    private Header header;
 
     /**
      * Gets current file name.
@@ -325,5 +326,13 @@ public class TestData {
      */
     public void setAfter(After after) {
         this.after = after;
+    }
+
+    public Header getHeader() {
+        return header;
+    }
+
+    public void setHeader(Header header) {
+        this.header = header;
     }
 }

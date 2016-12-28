@@ -4,6 +4,7 @@ import com.library.common.JsonHelper;
 import com.library.common.StringHelper;
 import com.qa.framework.bean.*;
 import com.qa.framework.library.database.DBHelper;
+import com.qa.framework.library.httpclient.HttpConnectionImp;
 import com.qa.framework.library.httpclient.HttpMethod;
 import com.qa.framework.util.StringUtil;
 import com.qa.framework.verify.ContainExpectResult;
@@ -125,7 +126,15 @@ public abstract class TestBase {
             }
         }
     }
+    public void processHeader(TestData testData) {
+        if (testData.getHeader() != null) {
+            Header header=testData.getHeader();
+            if (header.getCookieList()!=null){
+                HttpConnectionImp.StoreCookies(header.getCookieList());
+            }
+        }
 
+    }
     /**
      * Verify result. 验证结果
      *

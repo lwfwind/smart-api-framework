@@ -55,7 +55,7 @@ public class DataConvertor {
             if (!testDataNameList.contains(testData.getName())) {
                 testDataNameList.add(testData.getName());
             } else {
-                logger.info("TestDate 的名字重复"+this.fileName);
+                logger.info("TestDate 的名字重复"+this.fileName+":" +testData.getName());
                 throw new TestDataNameDuplicatedException(this.fileName, testData.getName());
             }
             if (!testDataDescList.contains(testData.getDesc())) {

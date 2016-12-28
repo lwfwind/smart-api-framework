@@ -67,6 +67,7 @@ public class Executor extends TestBase {
         }else {
             processSetupResultParam(testData);
         }
+        processHeader(testData);
         String content = request(url, testData.getParams(), httpMethod, testData.isStoreCookie(), testData.isUseCookie());
         verifyResult(testData, content);
 
