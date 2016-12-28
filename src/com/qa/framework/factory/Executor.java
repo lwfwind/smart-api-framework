@@ -6,6 +6,9 @@ import com.qa.framework.core.ParamValueProcessor;
 import com.qa.framework.core.TestBase;
 import com.qa.framework.testnglistener.PowerEmailableReporter;
 import com.qa.framework.testnglistener.TestResultListener;
+import org.testng.ITestContext;
+import org.testng.ITestNGMethod;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
@@ -51,6 +54,20 @@ public class Executor extends TestBase {
         return new Object[][]{
                 {testData, url, httpMethod},
         };
+    }
+
+    @BeforeMethod
+    public void beforeMethod(ITestContext context) {
+        ITestNGMethod currentTestNGMethod = null;
+        for (ITestNGMethod testNGMethod : context.getAllTestMethods()) {
+            if (testNGMethod.getInstance() == this) {
+                currentTestNGMethod = testNGMethod;
+                break;
+            }
+        }
+        if (currentTestNGMethod != null) {
+            currentTestNGMethod.setInvocationCount(this.testData.getInvocationCount());
+        }
     }
 
     /**

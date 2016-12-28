@@ -113,7 +113,7 @@ public class DataConvertor {
             }
             //设置xml的文件名到TestData类里
             if (element.getName().equalsIgnoreCase("TestData")) {
-                ReflectHelper.setMethod(elementObj, "currentFileName", this.fileName, String.class);
+                ReflectHelper.setMethod(elementObj, "currentFileName", this.fileName);
             }
             //设置属性
             if (attributes.size() != 0) {
@@ -121,7 +121,7 @@ public class DataConvertor {
                     Attribute attr = (Attribute) attribute;
                     String attributeName = attr.getName();     //element对应对象的属性值
                     String attributeValue = attr.getStringValue();
-                    ReflectHelper.setMethod(elementObj, attributeName, attributeValue, String.class);
+                    ReflectHelper.setMethod(elementObj, attributeName, attributeValue);
                 }
             }
             //处理sql与ExpectResult

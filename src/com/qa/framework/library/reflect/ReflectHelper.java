@@ -15,6 +15,56 @@ import java.util.List;
  * Created by apple on 15/11/18.
  */
 public class ReflectHelper {
+
+    /**
+     * Sets method.
+     *
+     * @param obj        the obj
+     * @param fieldName  the field name
+     * @param value      the value
+     */
+    @SuppressWarnings("unchecked")
+    public static void setMethod(Object obj, String fieldName, Object value) {
+        Class cls = obj.getClass();
+        try {
+            Class fieldType = cls.getDeclaredField(fieldName).getType();
+            Method method = cls.getDeclaredMethod("set" + StringHelper.capitalFirstLetter(fieldName), fieldType);
+            if (String.class.equals(fieldType)) {
+                method.invoke(obj, value.toString());
+            } else if (byte.class.equals(fieldType)) {
+                method.invoke(obj, Byte.parseByte(value.toString()));
+            } else if (Byte.class.equals(fieldType)) {
+                method.invoke(obj, Byte.valueOf(value.toString()));
+            } else if (boolean.class.equals(fieldType)) {
+                method.invoke(obj, Boolean.parseBoolean(value.toString()));
+            } else if (Boolean.class.equals(fieldType)) {
+                method.invoke(obj, Boolean.valueOf(value.toString()));
+            } else if (short.class.equals(fieldType)) {
+                method.invoke(obj, Short.parseShort(value.toString()));
+            } else if (Short.class.equals(fieldType)) {
+                method.invoke(obj, Short.valueOf(value.toString()));
+            } else if (int.class.equals(fieldType)) {
+                method.invoke(obj, Integer.parseInt(value.toString()));
+            } else if (Integer.class.equals(fieldType)) {
+                method.invoke(obj, Integer.valueOf(value.toString()));
+            } else if (long.class.equals(fieldType)) {
+                method.invoke(obj, Long.parseLong(value.toString()));
+            } else if (Long.class.equals(fieldType)) {
+                method.invoke(obj, Long.valueOf(value.toString()));
+            } else if (float.class.equals(fieldType)) {
+                method.invoke(obj, Float.parseFloat(value.toString()));
+            } else if (Float.class.equals(fieldType)) {
+                method.invoke(obj, Float.valueOf(value.toString()));
+            } else if (double.class.equals(fieldType)) {
+                method.invoke(obj, Double.parseDouble(value.toString()));
+            } else if (Double.class.equals(fieldType)) {
+                method.invoke(obj, Double.valueOf(value.toString()));
+            }
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Sets method.
      *

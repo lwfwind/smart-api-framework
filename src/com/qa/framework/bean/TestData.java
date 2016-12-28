@@ -28,6 +28,16 @@ public class TestData {
     private String currentFileName;
     private Header header;
 
+    public int getInvocationCount() {
+        return invocationCount;
+    }
+
+    public void setInvocationCount(int invocationCount) {
+        this.invocationCount = invocationCount;
+    }
+
+    private int invocationCount = 1;
+
     /**
      * Gets current file name.
      *
