@@ -31,6 +31,11 @@ public class ExecutorFactory {
         }
     }
 
+    @BeforeMethod
+    public void beforeMethod(ITestContext context) {
+
+        System.out.println("test");
+    }
 
 
     /**

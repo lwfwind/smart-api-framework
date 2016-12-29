@@ -15,7 +15,6 @@ import org.testng.Assert;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +42,7 @@ public abstract class TestBase {
      */
     public static String request(String url, List<Param> params, String httpMethod, boolean storeCookie, boolean useCookie) {
         String content = null;
-        if (params!=null) {
+        if (params != null) {
             for (Param param : params) {
                 logger.info("--------" + param.toString());
             }
@@ -126,15 +125,17 @@ public abstract class TestBase {
             }
         }
     }
+
     public void processHeader(TestData testData) {
         if (testData.getHeader() != null) {
-            Header header=testData.getHeader();
-            if (header.getCookieList()!=null){
+            Header header = testData.getHeader();
+            if (header.getCookieList() != null) {
                 HttpConnectionImp.StoreCookies(header.getCookieList());
             }
         }
 
     }
+
     /**
      * Verify result. 验证结果
      *

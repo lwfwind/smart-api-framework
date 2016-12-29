@@ -26,9 +26,9 @@ public class TestXmlData {
      */
     @DataProvider(name = "xmlFactoryData")
     public static Iterator<Object[]> xmlFactoryData() throws InterruptedException {
-        if (PropConfig.isSingle()){
+        if (PropConfig.isSingle()) {
             return new TestDataProvider();
-        }else {
+        } else {
             return getXmlTestDate();
         }
 
@@ -37,11 +37,12 @@ public class TestXmlData {
     private static Iterator<Object[]> getXmlTestDate() {
         List<Object[]> xmldata = new ArrayList<Object[]>();
         List<String> files = getTestCaseFiles();
-        if (PropConfig.getIsMultithread()){
+        if (PropConfig.getIsMultithread()) {
             final List<Object[]> xmldataMulti = new ArrayList<Object[]>();
             for (final String filePath : files) {
-                Runnable e= new Runnable(){
+                Runnable e = new Runnable() {
                     String fileName;
+
                     @Override
                     public void run() {
                         DataConvertor dataConvertor = new DataConvertor(filePath);
@@ -57,10 +58,10 @@ public class TestXmlData {
                 multiThreadHandle.buildThreadPool(e);
             }
             if (multiThreadHandle.isEnd()) {
-                xmldata=xmldataMulti;
+                xmldata = xmldataMulti;
                 logger.info("processed xmldata is end");
             }
-        }else {
+        } else {
             for (String filePath : files) {
                 DataConvertor dataConvertor = new DataConvertor(filePath);
                 DataConfig dataConfig = dataConvertor.getDataConfig();

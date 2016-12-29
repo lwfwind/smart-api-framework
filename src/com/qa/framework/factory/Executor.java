@@ -8,10 +8,9 @@ import com.qa.framework.testnglistener.PowerEmailableReporter;
 import com.qa.framework.testnglistener.TestResultListener;
 import org.testng.ITestContext;
 import org.testng.ITestNGMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Listeners;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
+
+import java.lang.reflect.Method;
 
 /**
  * The type Executor.
@@ -56,8 +55,12 @@ public class Executor extends TestBase {
         };
     }
 
-    @BeforeMethod
-    public void beforeMethod(ITestContext context) {
+    @BeforeMethod(alwaysRun = true)
+    public void BeforeMethod(Method method, Object[] para) throws Exception {
+    }
+
+    @BeforeSuite
+    public void beforeSuite(ITestContext context) {
         ITestNGMethod currentTestNGMethod = null;
         for (ITestNGMethod testNGMethod : context.getAllTestMethods()) {
             if (testNGMethod.getInstance() == this) {
@@ -81,7 +84,7 @@ public class Executor extends TestBase {
     public void testcase(TestData testData, String url, String httpMethod) {
         if (PropConfig.isSingle()) {
             ParamValueProcessor.processSingleTestdata(testData);
-        }else {
+        } else {
             processSetupResultParam(testData);
         }
         processHeader(testData);

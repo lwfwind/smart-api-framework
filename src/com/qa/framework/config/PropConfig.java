@@ -46,14 +46,20 @@ public class PropConfig {
     private static String SNPWD;
 
     @Value("isSingle")
-    private static boolean isSingle=false;
+    private static boolean isSingle = false;
 
 
-//    单例模式
+    //    单例模式
     private static PropConfig propConfig;
-    private PropConfig (){
+
+    static {
+        PropConfig prop = new PropConfig();
+    }
+
+    private PropConfig() {
         initConfigFields(this);
     }
+
     public static PropConfig getInstance() {
         if (propConfig == null) {
             synchronized (PropConfig.class) {
@@ -61,9 +67,6 @@ public class PropConfig {
             }
         }
         return propConfig;
-    }
-    static {
-        PropConfig prop=new PropConfig();
     }
 
     public static String getBasePackage() {

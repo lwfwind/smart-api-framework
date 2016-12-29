@@ -1,40 +1,46 @@
 package com.qa.framework.library.multithread;
 
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Administrator on 2016/9/19.
  */
 public class multiThreadHandle {
-    public static multiThreadHandle handleThread=null;
+    public static multiThreadHandle handleThread = null;
     private static ExecutorService executorService;
     private static Thread monitorThread;
-    public multiThreadHandle(){
-        if(handleThread==null){
-            synchronized (multiThreadHandle.class){
-                handleThread=new multiThreadHandle();
-            }
-        }
-    }
+
     static {
-        executorService=Executors.newCachedThreadPool();
+        executorService = Executors.newCachedThreadPool();
         multiThreadMontitor monitor = new multiThreadMontitor(executorService, 1);
         monitorThread = new Thread(monitor);
         monitorThread.start();
     }
+
+    public multiThreadHandle() {
+        if (handleThread == null) {
+            synchronized (multiThreadHandle.class) {
+                handleThread = new multiThreadHandle();
+            }
+        }
+    }
+
     public static void buildThreadPool(Runnable t) {
         executorService.execute(t);
     }
-    public static void buildThreadPool(Runnable t,int circulateSum) {
-        for (int i=0;i<circulateSum;i++) {
+
+    public static void buildThreadPool(Runnable t, int circulateSum) {
+        for (int i = 0; i < circulateSum; i++) {
             executorService.execute(t);
         }
     }
-    public static boolean isEnd(){
-        boolean isend=false;
+
+    public static boolean isEnd() {
+        boolean isend = false;
         try {
             monitorThread.join();
-            isend=true;
+            isend = true;
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

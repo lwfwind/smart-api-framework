@@ -16,6 +16,7 @@ public class Header {
     public void setCookieList(List<Cookie> cookieList) {
         this.cookieList = cookieList;
     }
+
     public void addCookie(Cookie cookie) {
         if (cookieList == null) {
             cookieList = new ArrayList<Cookie>();

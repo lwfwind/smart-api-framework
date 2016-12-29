@@ -12,9 +12,9 @@ public class processXmlDataExample {
     public static void main(String[] args) {
         List<Object[]> xmldata = new ArrayList<Object[]>();
         List<String> files = TestXmlData.getTestCaseFiles();
-        pocessXmlDataThread workerThread=new pocessXmlDataThread();
+        pocessXmlDataThread workerThread = new pocessXmlDataThread();
         multiThreadHandle.buildThreadPool(workerThread, files.size());
-        xmldata=workerThread.getXmlDate();
+        xmldata = workerThread.getXmlDate();
 //
 //        final ExecutorService executorService=Executors.newCachedThreadPool();
 //        final List<Object[]> xmldata = new ArrayList<Object[]>();
@@ -42,4 +42,4 @@ public class processXmlDataExample {
         }
 
     }
-    }
+}

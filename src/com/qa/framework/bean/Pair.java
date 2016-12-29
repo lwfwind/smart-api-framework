@@ -13,7 +13,7 @@ public class Pair {
     private String value;
     private String mapStatement;
     private boolean sort;
-    private  boolean patternMatch=true;
+    private boolean patternMatch = true;
 
     /**
      * Instantiates a new Pair.
@@ -32,16 +32,18 @@ public class Pair {
     public Pair() {
     }
 
-    public  Boolean getPatternMatch() {
+    public Boolean getPatternMatch() {
         return patternMatch;
     }
 
-    public  void setPatternMatch(Boolean patter) {
-        this.patternMatch = patter;
-    }
-    public  void setPatternMatch(String patter) {
+    public void setPatternMatch(String patter) {
         this.patternMatch = StringHelper.changeString2boolean(patter);
     }
+
+    public void setPatternMatch(Boolean patter) {
+        this.patternMatch = patter;
+    }
+
     /**
      * Gets key.
      *
@@ -165,9 +167,6 @@ public class Pair {
         }
         return false;
     }
-
-
-
 
 
     @Override

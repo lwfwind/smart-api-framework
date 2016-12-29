@@ -14,27 +14,27 @@ import java.util.Properties;
  */
 public class ValueHelp {
     public static void initConfigFields(Object obj) {
-            Properties props = new Properties();
-            Class<?> clazz = obj.getClass();
-            props = getProperties();
-            Field[] fields = clazz.getDeclaredFields();
-            for (Field field : fields) {
-                String fieldKey;
-                String fieldValue;
-                if (field.isAnnotationPresent(Value.class)) {
-                    Value value = field.getAnnotation(Value.class);
-                    fieldKey = value.value();
-                    if (!field.getName().equals("props") && props.getProperty(fieldKey) != null) {
-                        fieldValue = props.getProperty(fieldKey);
-                        field.setAccessible(true);
-                        setValue(obj,field,fieldValue);
-                            }
-                    }
+        Properties props = new Properties();
+        Class<?> clazz = obj.getClass();
+        props = getProperties();
+        Field[] fields = clazz.getDeclaredFields();
+        for (Field field : fields) {
+            String fieldKey;
+            String fieldValue;
+            if (field.isAnnotationPresent(Value.class)) {
+                Value value = field.getAnnotation(Value.class);
+                fieldKey = value.value();
+                if (!field.getName().equals("props") && props.getProperty(fieldKey) != null) {
+                    fieldValue = props.getProperty(fieldKey);
+                    field.setAccessible(true);
+                    setValue(obj, field, fieldValue);
                 }
             }
+        }
+    }
 
     private static void setValue(Object obj, Field method, String value) {
-        Object fieldType=method.getType();
+        Object fieldType = method.getType();
         try {
             if (String.class.equals(fieldType)) {
                 method.set(obj, value.toString());
@@ -68,8 +68,8 @@ public class ValueHelp {
                 method.set(obj, Double.valueOf(value.toString()));
             }
         } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
+            e.printStackTrace();
+        }
     }
 
 

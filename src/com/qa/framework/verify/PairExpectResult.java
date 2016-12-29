@@ -6,7 +6,10 @@ import com.qa.framework.bean.Pair;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -109,7 +112,7 @@ public class PairExpectResult implements IExpectResult {
                 Matcher matcher = pattern.matcher(code);
                 Assert.assertTrue(matcher.matches(), String.format("期望返回:%s, 实际返回:%s", expectCode, code));
                 logger.info(matcher.matches() + "====" + expectCode.equals(code));
-            }else {
+            } else {
                 Assert.assertTrue(expectCode.trim().equals(code.trim()), String.format("期望返回:%s, 实际返回:%s", expectCode, code));
             }
 

@@ -9,12 +9,12 @@ import java.util.Map;
  * Created by apple on 15/11/25.
  */
 public class StringCache {
-    protected Logger logger=Logger.getLogger(StringCache.class);
     /**
      * The constant mapCache.
      */
 //private static ThreadLocal<Map<String, String>> threadLocal = new ThreadLocal<Map<String, String>>();
     public Map<String, String> mapCache = new Hashtable<String, String>();
+    protected Logger logger = Logger.getLogger(StringCache.class);
 
     /**
      * Put.
@@ -33,7 +33,7 @@ public class StringCache {
      * @return the value
      */
     public String getValue(String key) {
-        logger.info("取出的Key为"+key+" value为"+mapCache.get(key));
+        logger.info("取出的Key为" + key + " value为" + mapCache.get(key));
         return mapCache.get(key);
     }
 

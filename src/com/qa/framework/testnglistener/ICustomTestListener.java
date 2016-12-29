@@ -3,12 +3,10 @@ package com.qa.framework.testnglistener;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 
-import java.io.IOException;
-
 /**
  * Created by Administrator on 2016/8/30.
  */
-public interface ICustomTestListener{
+public interface ICustomTestListener {
     /**
      * On test failure.
      *

@@ -26,10 +26,11 @@ import java.util.*;
  * Created by Administrator on 2016/12/6.
  */
 public class ProcessorMethod {
-    protected static Logger logger=Logger.getLogger(ProcessorMethod.class);
+    protected static Logger logger = Logger.getLogger(ProcessorMethod.class);
+
     public static String request(String url, List<Param> params, String httpMethod, boolean storeCookie, boolean useCookie) {
         String content = null;
-        if (params!=null) {
+        if (params != null) {
             for (Param param : params) {
                 logger.info("--------" + param.toString());
             }
@@ -88,10 +89,10 @@ public class ProcessorMethod {
                 List<Param> setupParamList = setup.getParams();
                 if (setupParamList != null) {
                     for (Param param : setupParamList) {
-                        executeFunction(param, setup, testData,stringCache);
-                        executeSql(param, setup, testData,stringCache);
-                        processParamPair(param,setup,testData, stringCache);
-                        processParamDate(param,setup,testData, stringCache);
+                        executeFunction(param, setup, testData, stringCache);
+                        executeSql(param, setup, testData, stringCache);
+                        processParamPair(param, setup, testData, stringCache);
+                        processParamDate(param, setup, testData, stringCache);
                         processParamFromSetup(testData, param, stringCache);
                     }
                 }
@@ -99,20 +100,20 @@ public class ProcessorMethod {
         }
     }
 
-    public static  void processTestDataParam(TestData testData, StringCache stringCache) {
+    public static void processTestDataParam(TestData testData, StringCache stringCache) {
         List<Param> paramList = testData.getParams();
         if (paramList != null) {
             for (Param param : paramList) {
-                processParamDate(param,null,testData,stringCache);
+                processParamDate(param, null, testData, stringCache);
                 executeFunction(param, null, testData, stringCache);
-                executeSql(param, null, testData,stringCache);
-                processParamPair(param,null,testData,stringCache);
-                processParamFromSetup(testData, param,stringCache);
-                processParamFromOtherTestData(param,stringCache);
+                executeSql(param, null, testData, stringCache);
+                processParamPair(param, null, testData, stringCache);
+                processParamFromSetup(testData, param, stringCache);
+                processParamFromOtherTestData(param, stringCache);
                 //processParamPair(param);
             }
         }
-        processExpectResult(testData,stringCache);
+        processExpectResult(testData, stringCache);
 
     }
 
@@ -135,17 +136,19 @@ public class ProcessorMethod {
             }
         }
     }
+
     /**
      * Process test data param.
-     *  @param param    the param
-     * @param setup    the setup
-     * @param testData the test data
+     *
+     * @param param       the param
+     * @param setup       the setup
+     * @param testData    the test data
      * @param stringCache
      */
     public static void executeSql(Param param, Setup setup, TestData testData, StringCache stringCache) {
         if (param.getSqls() != null) {
             List<Sql> sqlList = param.getSqls();
-            executeSql(sqlList, param, setup, testData,stringCache);
+            executeSql(sqlList, param, setup, testData, stringCache);
             if (param.getValue().contains("#{")) {
                 //处理语句中的#{}问题
                 //第一步将#{\\S+}的值找出来
@@ -169,6 +172,7 @@ public class ProcessorMethod {
             }
         }
     }
+
     public static void executeSql(List<Sql> sqlList, StringCache stringCache) {
         for (Sql sql : sqlList) {
             if (sql.getSqlStatement().contains("#{")) {
@@ -237,7 +241,7 @@ public class ProcessorMethod {
                 String testDatakey = testData.getName() + "." + paramSqlKey;
                 Assert.assertNotNull(recordInfo, "sql为" + sql.getSqlStatement());
                 String value = null;
-                if (recordInfo==null||recordInfo.get(key) == null) {
+                if (recordInfo == null || recordInfo.get(key) == null) {
                     value = " ";
                 } else {
                     value = recordInfo.get(key).toString();
@@ -266,17 +270,18 @@ public class ProcessorMethod {
 
     /**
      * Process param pair. 处理Param中的键值对, 转化成url能识别的格式
-     *  @param param the param
+     *
+     * @param param       the param
      * @param setup
      * @param testData
      * @param stringCache
      */
-    public  static void processParamPair(Param param, Setup setup, TestData testData, StringCache stringCache) {
+    public static void processParamPair(Param param, Setup setup, TestData testData, StringCache stringCache) {
         if (param.getPairs() != null) {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("{");
             for (Pair pair : param.getPairs()) {
-                processPair(pair,stringCache);
+                processPair(pair, stringCache);
                 stringBuilder.append("\"" + pair.getKey() + "\"" + pair.getValue() + ",");
             }
             stringBuilder.deleteCharAt(stringBuilder.length() - 1);
@@ -294,10 +299,10 @@ public class ProcessorMethod {
     /**
      * Process pair.
      *
-     * @param pair the pair
+     * @param pair        the pair
      * @param stringCache
      */
-    public  static void processPair(Pair pair, StringCache stringCache) {
+    public static void processPair(Pair pair, StringCache stringCache) {
         if (pair.getValue().contains("#{")) {
             String OriginalString = pair.getValue();
             logger.info("original expect pair string:" + OriginalString);
@@ -355,10 +360,12 @@ public class ProcessorMethod {
             pair.setValue(OriginalString);
         }
     }
+
     /**
      * 处理param中需要接受setup中param值的问题
-     *  @param testData the test data
-     * @param param    the param
+     *
+     * @param testData    the test data
+     * @param param       the param
      * @param stringCache
      */
     public static void processParamFromSetup(TestData testData, Param param, StringCache stringCache) {
@@ -370,6 +377,7 @@ public class ProcessorMethod {
             }
         }
     }
+
     public static void processSetupResultParam(TestData testData, StringCache stringCache) {
         if (testData.getSetupList() != null) {
             testData.setUseCookie(true);
@@ -404,6 +412,7 @@ public class ProcessorMethod {
             }
         }
     }
+
     private static void processParamDate(Param param, Setup setup, TestData testData, StringCache stringCache) {
         if (param.getDateStamp() != null) {
             DateStamp dateStamp = param.getDateStamp();
@@ -485,6 +494,7 @@ public class ProcessorMethod {
             }
         }
     }
+
     public static void processParamFromOtherTestData(Param param, StringCache stringCache) {
         if (param.getSqls() == null && param.getFunction() == null && param.getDateStamp() == null && param.getPairs() == null) {
             if (param.getValue() != null) {
@@ -499,9 +509,9 @@ public class ProcessorMethod {
                         }
                         param.setValue(newParamValue.toString());
                     } else {
-                        String value=stringCache.getValue(testDataNameAndParam);
-                        if (value==null){
-                            logger.info("无法找到关键字为"+testDataNameAndParam+"的值，请检查");
+                        String value = stringCache.getValue(testDataNameAndParam);
+                        if (value == null) {
+                            logger.info("无法找到关键字为" + testDataNameAndParam + "的值，请检查");
                         }
                         param.setValue(value);
                     }
@@ -509,10 +519,11 @@ public class ProcessorMethod {
             }
         }
     }
+
     /**
      * Process expect result.
      *
-     * @param testData the test data
+     * @param testData    the test data
      * @param stringCache
      */
     public static void processExpectResult(TestData testData, StringCache stringCache) {
@@ -522,7 +533,7 @@ public class ProcessorMethod {
                 ContainExpectResult containExpectResult = (ContainExpectResult) result;
                 if (containExpectResult.getSqls() != null) {
                     List<Sql> sqlList = containExpectResult.getSqls();
-                    executeSql(sqlList,stringCache);
+                    executeSql(sqlList, stringCache);
                 }
                 if (containExpectResult.getTextStatement().contains("#{")) {
                     //处理语句中的#{}问题

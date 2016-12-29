@@ -6,7 +6,6 @@ import com.qa.framework.bean.TestData;
 import com.qa.framework.core.DataConvertor;
 import com.qa.framework.core.ParamValueProcessor;
 import com.qa.framework.core.TestXmlData;
-
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -18,15 +17,15 @@ import java.util.List;
 public class pocessXmlDataThread implements Runnable {
     protected static final Logger logger = Logger.getLogger(pocessXmlDataThread.class);
     private List<String> files = TestXmlData.getTestCaseFiles();
-    private  List<Object[]> xmldata = new ArrayList<Object[]>();
+    private List<Object[]> xmldata = new ArrayList<Object[]>();
 
     @Override
     public void run() {
         String filePath;
         String fileName;
         synchronized (files) {
-               filePath=this.files.get(0);
-               fileName= IOHelper.getName(filePath);
+            filePath = this.files.get(0);
+            fileName = IOHelper.getName(filePath);
             this.files.remove(0);
         }
         logger.info("---->" + Thread.currentThread().getName() + " Start. Command = " + fileName);
@@ -38,9 +37,10 @@ public class pocessXmlDataThread implements Runnable {
             Object[] d = {data, dataConfig.getUrl(), dataConfig.getHttpMethod()};
             this.xmldata.add(d);
         }
-        logger.info("---->"+Thread.currentThread().getName()+fileName+" End.");
+        logger.info("---->" + Thread.currentThread().getName() + fileName + " End.");
     }
-    public  List<Object[]> getXmlDate(){
+
+    public List<Object[]> getXmlDate() {
         return xmldata;
     }
 

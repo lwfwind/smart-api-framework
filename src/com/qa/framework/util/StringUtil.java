@@ -15,7 +15,7 @@ public class StringUtil {
     public static String handleSpecialChar(String sql, String[] replacedStr) {
         StringBuilder newSql = new StringBuilder();
         String[] sqlContent = sql.split("#\\{[a-zA-Z0-9._]*\\}");
-        if (replacedStr.length>0&&replacedStr[0]!=null) {
+        if (replacedStr.length > 0 && replacedStr[0] != null) {
             if (sqlContent.length == 0) {
                 newSql.append(replacedStr[0]);
             } else {
@@ -33,7 +33,7 @@ public class StringUtil {
                 }
             }
             return newSql.toString();
-        }else {
+        } else {
             return sql;
         }
     }

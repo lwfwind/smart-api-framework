@@ -55,13 +55,13 @@ public class DataConvertor {
             if (!testDataNameList.contains(testData.getName())) {
                 testDataNameList.add(testData.getName());
             } else {
-                logger.info("TestDate 的名字重复"+this.fileName+":" +testData.getName());
+                logger.info("TestDate 的名字重复" + this.fileName + ":" + testData.getName());
                 throw new TestDataNameDuplicatedException(this.fileName, testData.getName());
             }
             if (!testDataDescList.contains(testData.getDesc())) {
                 testDataDescList.add(testData.getDesc());
             } else {
-                logger.info("TestDate 的描述重复"+this.fileName);
+                logger.info("TestDate 的描述重复" + this.fileName);
                 throw new TestDataDescDuplicatedException(this.fileName, testData.getDesc());
             }
         }
@@ -89,7 +89,7 @@ public class DataConvertor {
         String verifyPackage = "com.qa.framework.verify";
         if ("Contain".equalsIgnoreCase(element.getName())) {
             className = verifyPackage + "." + "ContainExpectResult";
-        } else if ("Pair".equalsIgnoreCase(element.getName())&&element.getParent().getName().equals("ExpectResult")) {
+        } else if ("Pair".equalsIgnoreCase(element.getName()) && element.getParent().getName().equals("ExpectResult")) {
             className = verifyPackage + "." + "PairExpectResult";
         } else {
             className = beanPackage + "." + element.getName();  //组成className的完整路径
@@ -102,7 +102,7 @@ public class DataConvertor {
             if (IExpectResult.class.isAssignableFrom(clazz)) {
                 ReflectHelper.addMethod(parentObj, elementObj, "ExpectResultImp", IExpectResult.class);
                 if ("Pair".equalsIgnoreCase(element.getName())) {
-                    parentObj=elementObj;
+                    parentObj = elementObj;
                     String PairClsaa = beanPackage + "." + "Pair";
                     clazz = Class.forName(PairClsaa);          //获取className的class对象
                     elementObj = clazz.newInstance();

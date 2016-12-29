@@ -1,7 +1,6 @@
 package com.qa.framework.library.reflect;
 
 
-
 import com.library.common.StringHelper;
 
 import java.lang.reflect.Field;
@@ -19,9 +18,9 @@ public class ReflectHelper {
     /**
      * Sets method.
      *
-     * @param obj        the obj
-     * @param fieldName  the field name
-     * @param value      the value
+     * @param obj       the obj
+     * @param fieldName the field name
+     * @param value     the value
      */
     @SuppressWarnings("unchecked")
     public static void setMethod(Object obj, String fieldName, Object value) {

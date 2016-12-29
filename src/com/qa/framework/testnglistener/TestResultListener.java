@@ -2,7 +2,6 @@ package com.qa.framework.testnglistener;
 
 import com.library.common.IOHelper;
 import com.qa.framework.factory.Executor;
-
 import org.apache.log4j.Logger;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
@@ -42,7 +41,7 @@ public class TestResultListener extends TestListenerAdapter {
             }
         }
         Object obj = tr.getInstance();
-        if(obj instanceof Executor) {
+        if (obj instanceof Executor) {
             Executor executor = (Executor) obj;
             executor.processAfter(executor.getTestData());
             String testName = IOHelper.getBaseName(executor.getTestData().getCurrentFileName()) + "_" + executor.getTestData().getName();
@@ -65,7 +64,7 @@ public class TestResultListener extends TestListenerAdapter {
             }
         }
         Object obj = tr.getInstance();
-        if(obj instanceof Executor) {
+        if (obj instanceof Executor) {
             Executor executor = (Executor) obj;
             executor.processAfter(executor.getTestData());
             String testName = IOHelper.getBaseName(executor.getTestData().getCurrentFileName()) + "_" + executor.getTestData().getName();
@@ -88,7 +87,7 @@ public class TestResultListener extends TestListenerAdapter {
             }
         }
         Object obj = tr.getInstance();
-        if(obj instanceof Executor) {
+        if (obj instanceof Executor) {
             Executor executor = (Executor) obj;
             executor.processAfter(executor.getTestData());
             String testName = IOHelper.getBaseName(executor.getTestData().getCurrentFileName()) + "_" + executor.getTestData().getName();
@@ -110,7 +109,7 @@ public class TestResultListener extends TestListenerAdapter {
             }
         }
         Object obj = tr.getInstance();
-        if(obj instanceof Executor) {
+        if (obj instanceof Executor) {
             Executor executor = (Executor) obj;
             String testName = IOHelper.getBaseName(executor.getTestData().getCurrentFileName()) + "_" + executor.getTestData().getName();
             try {

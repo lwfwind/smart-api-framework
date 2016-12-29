@@ -16,8 +16,6 @@ import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
 import java.io.*;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -52,10 +50,10 @@ public class HttpConnectionImp {
         reader = new BufferedReader(new InputStreamReader(new BOMInputStream(is)));
 
         String line = null;
-        String lines="";
+        String lines = "";
         try {
-            while ((line=reader.readLine())!=null) {
-                lines=lines+line;
+            while ((line = reader.readLine()) != null) {
+                lines = lines + line;
             }
             reader.close();
         } catch (IOException e) {
@@ -64,6 +62,20 @@ public class HttpConnectionImp {
 
         return lines;
 
+    }
+
+    public static void StoreCookies(List<Cookie> cookieList) {
+
+        CookieCache.clear();
+        CookieStore cookieStore = new BasicCookieStore();
+        for (Cookie cookie : cookieList) {
+            BasicClientCookie basicCookie = new BasicClientCookie(cookie.getName(), cookie.getValue());
+            basicCookie.setDomain(cookie.getDomain());
+            basicCookie.setPath(cookie.getPath());
+            basicCookie.setExpiryDate(cookie.getExpiry());
+            cookieStore.addCookie(basicCookie);
+        }
+        CookieCache.set(cookieStore);
     }
 
     /**
@@ -117,20 +129,6 @@ public class HttpConnectionImp {
         }
         logger.debug("response result:" + responseBody);
         return removeBOM(responseBody);
-    }
-
-    public static void StoreCookies(List<Cookie> cookieList) {
-
-        CookieCache.clear();
-        CookieStore cookieStore=new BasicCookieStore();
-        for (Cookie cookie:cookieList){
-            BasicClientCookie basicCookie=new BasicClientCookie(cookie.getName(),cookie.getValue());
-            basicCookie.setDomain(cookie.getDomain());
-            basicCookie.setPath(cookie.getPath());
-            basicCookie.setExpiryDate(cookie.getExpiry());
-            cookieStore.addCookie(basicCookie);
-        }
-        CookieCache.set(cookieStore);
     }
 
 

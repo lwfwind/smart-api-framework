@@ -19,9 +19,9 @@ public class ContainExpectResult implements IExpectResult {
      * The constant logger.
      */
     protected static final Logger logger = Logger.getLogger(ContainExpectResult.class);
-    private String textStatement="";
+    private String textStatement = "";
     private List<Sql> sqls;
-    private  Boolean patternMatch=true;
+    private Boolean patternMatch = true;
     private Map<String, Sql> stringSqlMap;
 
 
@@ -47,7 +47,7 @@ public class ContainExpectResult implements IExpectResult {
     public void compareReal(String content) {
         if (patternMatch) {
             Assert.assertTrue(Pattern.matches(this.textStatement, content), String.format("实际返回:%s, 期望返回:%s", content, this.textStatement));
-        }else{
+        } else {
             Assert.assertTrue(content.contains(this.textStatement), String.format("实际返回:%s, 期望包含:%s", content, this.textStatement));
         }
     }
@@ -115,14 +115,15 @@ public class ContainExpectResult implements IExpectResult {
         }
     }
 
-    public  Boolean getPatternMatch() {
+    public Boolean getPatternMatch() {
         return patternMatch;
     }
 
-    public  void setPatternMatch(Boolean patten) {
-        patternMatch = patten;
-    }
-    public  void setPatternMatch(String patten) {
+    public void setPatternMatch(String patten) {
         patternMatch = StringHelper.changeString2boolean(patten);
+    }
+
+    public void setPatternMatch(Boolean patten) {
+        patternMatch = patten;
     }
 }

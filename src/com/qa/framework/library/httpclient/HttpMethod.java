@@ -39,7 +39,7 @@ public class HttpMethod {
      */
     public static String getUrl(String url, List<Param> params) {
         StringBuilder webPath = new StringBuilder();
-        if (!(url.startsWith("http://")||url.startsWith("HTTP://"))){
+        if (!(url.startsWith("http://") || url.startsWith("HTTP://"))) {
             webPath.append(PropConfig.getWebPath());
         }
         if (url.contains("/")) {
@@ -68,9 +68,9 @@ public class HttpMethod {
      * @return the string
      */
     public static String postUrl(String url) {
-        if (url.startsWith("http://")||url.startsWith("HTTP://")){
+        if (url.startsWith("http://") || url.startsWith("HTTP://")) {
             return url;
-        }else {
+        } else {
             return PropConfig.getWebPath() + url;
         }
 

@@ -15,7 +15,14 @@ public class Cookie {
     private String path;
     private Date expiry;
 
-
+    private static Date getExpiryDate() {
+        Calendar calendar = Calendar.getInstance();
+        Date date = new Date();
+        calendar.setTime(date);
+        calendar.add(Calendar.YEAR, 1);
+        date = calendar.getTime();
+        return date;
+    }
 
     public String getValue() {
         return value;
@@ -34,8 +41,8 @@ public class Cookie {
     }
 
     public String getDomain() {
-        if (domain==null){
-            domain= PropConfig.getWebPath().split("/")[2].trim();
+        if (domain == null) {
+            domain = PropConfig.getWebPath().split("/")[2].trim();
         }
         return domain;
     }
@@ -45,8 +52,8 @@ public class Cookie {
     }
 
     public String getPath() {
-        if (path==null){
-            path="/";
+        if (path == null) {
+            path = "/";
         }
         return path;
     }
@@ -55,23 +62,14 @@ public class Cookie {
         this.path = path;
     }
 
-
     public Date getExpiry() {
-        if (expiry==null){
-            expiry=getExpiryDate();
+        if (expiry == null) {
+            expiry = getExpiryDate();
         }
         return expiry;
     }
 
     public void setExpiry(Date expiry) {
         this.expiry = expiry;
-    }
-    private static Date getExpiryDate() {
-        Calendar calendar=Calendar.getInstance();
-        Date date=new Date();
-        calendar.setTime(date);
-        calendar.add(Calendar.YEAR,1);
-        date=calendar.getTime();
-        return date;
     }
 }

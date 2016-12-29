@@ -27,6 +27,7 @@ public class TestData {
     private After after;
     private String currentFileName;
     private Header header;
+    private int invocationCount = 1;
 
     public int getInvocationCount() {
         return invocationCount;
@@ -35,8 +36,6 @@ public class TestData {
     public void setInvocationCount(int invocationCount) {
         this.invocationCount = invocationCount;
     }
-
-    private int invocationCount = 1;
 
     /**
      * Gets current file name.
@@ -106,8 +105,8 @@ public class TestData {
      *
      * @param storeCookie the store cookie
      */
-    public void setStoreCookie(boolean storeCookie) {
-        this.storeCookie = storeCookie;
+    public void setStoreCookie(String storeCookie) {
+        setStoreCookie(StringHelper.changeString2boolean(storeCookie));
     }
 
     /**
@@ -115,8 +114,8 @@ public class TestData {
      *
      * @param storeCookie the store cookie
      */
-    public void setStoreCookie(String storeCookie) {
-        setStoreCookie(StringHelper.changeString2boolean(storeCookie));
+    public void setStoreCookie(boolean storeCookie) {
+        this.storeCookie = storeCookie;
     }
 
     /**
@@ -133,8 +132,8 @@ public class TestData {
      *
      * @param useCookie the use cookie
      */
-    public void setUseCookie(String useCookie) {
-        this.useCookie = StringHelper.changeString2boolean(useCookie);
+    public void setUseCookie(boolean useCookie) {
+        this.useCookie = useCookie;
     }
 
     /**
@@ -142,8 +141,8 @@ public class TestData {
      *
      * @param useCookie the use cookie
      */
-    public void setUseCookie(boolean useCookie) {
-        this.useCookie = useCookie;
+    public void setUseCookie(String useCookie) {
+        this.useCookie = StringHelper.changeString2boolean(useCookie);
     }
 
     /**

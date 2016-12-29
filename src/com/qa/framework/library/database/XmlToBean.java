@@ -2,7 +2,6 @@ package com.qa.framework.library.database;
 
 import com.library.common.XmlHelper;
 import com.qa.framework.config.ProjectEnvironment;
-
 import org.dom4j.Element;
 
 import java.util.ArrayList;

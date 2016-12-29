@@ -23,7 +23,8 @@ public class Param {
     private List<Pair> pairs;     //Map
     private Function function;
     private boolean show = true;           //是否出现在链接中
-    private boolean isHaveValue=false;
+    private boolean isHaveValue = false;
+
     /**
      * Gets name.
      *
@@ -90,7 +91,7 @@ public class Param {
      */
     public void setValue(String value) {
         this.value = StringHelper.urlEncode(value);
-        isHaveValue=true;
+        isHaveValue = true;
     }
 
     /**
@@ -247,8 +248,8 @@ public class Param {
      *
      * @param show the show
      */
-    public void setShow(String show) {
-        this.show = StringHelper.changeString2boolean(show);
+    public void setShow(boolean show) {
+        this.show = show;
     }
 
     /**
@@ -256,8 +257,8 @@ public class Param {
      *
      * @param show the show
      */
-    public void setShow(boolean show) {
-        this.show = show;
+    public void setShow(String show) {
+        this.show = StringHelper.changeString2boolean(show);
     }
 
     @Override
