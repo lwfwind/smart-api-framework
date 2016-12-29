@@ -85,7 +85,7 @@ DataConfig -- config test url and httpMethod
 </DataConfig>
 ```
 
-### &nbsp;&nbsp; 4.the expect result in contain/pair both support regular expression
+### &nbsp;&nbsp; 4.support regular expression for expect result in contain/pair both 
 ```xml
 <DataConfig url="V2/ClassRecords/classDetail/" httpMethod="get">
     <TestData name="GetClassDetailSuccess" desc="获取数据成功">
@@ -126,6 +126,39 @@ DataConfig -- config test url and httpMethod
             <Function clsName="test.java.LogicHandler" methodName="resertStudentMobile"/>
             <Sql>update ebk_students set mobile=888888888 where id=123456;</Sql>
         </After>
+    </TestData>
+<DataConfig>
+```
+
+### &nbsp;&nbsp; 6.support execute repeated times(invocationCount)
+```xml
+<DataConfig url="V1/Students/login" httpMethod="post" invocationCount="2000">
+    <TestData name="data1" desc="更改手机号登录">
+        <Param name="username" value="#{sql1=.mobile}">
+            <Sql name="sql">select trim(mobile) as mobile,password from ebk_students where id=123456;
+            </Sql>
+        </Param>
+        <Param name="password" value="#{sql.password}"></Param>
+        <ExpectResult>
+            <Pair>errorCode:200</Pair>
+            <Pair>errorMsg:登录成功</Pair>
+        </ExpectResult>
+    </TestData>
+<DataConfig>
+```
+
+### &nbsp;&nbsp; 6.support request header
+```xml
+<DataConfig url="V1/Students/login" httpMethod="post">
+    <TestData name="data1" desc="更改手机号登录">
+        <Header>
+            <Cookie name="PHPSESSIONID" value="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
+        </Header>
+        <Param name="key" value="value" /Param>
+        <ExpectResult>
+            <Pair>errorCode:200</Pair>
+            <Pair>errorMsg:成功</Pair>
+        </ExpectResult>
     </TestData>
 <DataConfig>
 ```
