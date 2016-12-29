@@ -40,7 +40,7 @@ public class Pair {
         this.patternMatch = StringHelper.changeString2boolean(patter);
     }
 
-    public void setPatternMatch(Boolean patter) {
+    public void setPatternMatch(boolean patter) {
         this.patternMatch = patter;
     }
 
