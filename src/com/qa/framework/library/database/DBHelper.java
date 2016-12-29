@@ -1,6 +1,5 @@
 package com.qa.framework.library.database;
 
-import com.library.common.ClassHelper;
 import com.library.common.CollectionHelper;
 import com.library.common.StringHelper;
 import com.qa.framework.config.PropConfig;
@@ -9,10 +8,8 @@ import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.BeanListHandler;
 import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
-import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -127,24 +124,6 @@ public class DBHelper {
             } finally {
                 connContainer.remove();
             }
-        }
-    }
-
-    /**
-     * 初始化 SQL 脚本
-     *
-     * @param sqlPath the sql path
-     */
-    public static void initSQL(String sqlPath) {
-        try {
-            File sqlFile = new File(ClassHelper.getClassPath() + sqlPath);
-            List<String> sqlList = FileUtils.readLines(sqlFile);
-            for (String sql : sqlList) {
-                executeUpdate(sql);
-            }
-        } catch (Exception e) {
-            logger.error("初始化 SQL 脚本出错！", e);
-            throw new RuntimeException(e);
         }
     }
 

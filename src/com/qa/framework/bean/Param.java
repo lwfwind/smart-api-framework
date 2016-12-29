@@ -248,8 +248,8 @@ public class Param {
      *
      * @param show the show
      */
-    public void setShow(boolean show) {
-        this.show = show;
+    public void setShow(String show) {
+        this.show = StringHelper.changeString2boolean(show);
     }
 
     /**
@@ -257,8 +257,8 @@ public class Param {
      *
      * @param show the show
      */
-    public void setShow(String show) {
-        this.show = StringHelper.changeString2boolean(show);
+    public void setShow(boolean show) {
+        this.show = show;
     }
 
     @Override

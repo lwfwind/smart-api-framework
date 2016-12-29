@@ -119,11 +119,11 @@ public class ContainExpectResult implements IExpectResult {
         return patternMatch;
     }
 
-    public void setPatternMatch(String patten) {
-        patternMatch = StringHelper.changeString2boolean(patten);
-    }
-
     public void setPatternMatch(Boolean patten) {
         patternMatch = patten;
+    }
+
+    public void setPatternMatch(String patten) {
+        patternMatch = StringHelper.changeString2boolean(patten);
     }
 }
