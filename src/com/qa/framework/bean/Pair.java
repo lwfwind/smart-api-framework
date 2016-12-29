@@ -36,12 +36,12 @@ public class Pair {
         return patternMatch;
     }
 
-    public void setPatternMatch(String patter) {
-        this.patternMatch = StringHelper.changeString2boolean(patter);
-    }
-
     public void setPatternMatch(boolean patter) {
         this.patternMatch = patter;
+    }
+
+    public void setPatternMatch(String patter) {
+        this.patternMatch = StringHelper.changeString2boolean(patter);
     }
 
     /**

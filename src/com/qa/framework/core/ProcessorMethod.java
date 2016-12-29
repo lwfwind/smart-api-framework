@@ -2,12 +2,12 @@ package com.qa.framework.core;
 
 import com.library.common.DynamicCompileHelper;
 import com.library.common.JsonHelper;
+import com.library.common.ReflectHelper;
 import com.library.common.StringHelper;
 import com.qa.framework.bean.*;
 import com.qa.framework.cache.StringCache;
 import com.qa.framework.library.database.DBHelper;
 import com.qa.framework.library.httpclient.HttpMethod;
-import com.qa.framework.library.reflect.ReflectHelper;
 import com.qa.framework.util.StringUtil;
 import com.qa.framework.verify.ContainExpectResult;
 import com.qa.framework.verify.IExpectResult;

@@ -105,8 +105,8 @@ public class TestData {
      *
      * @param storeCookie the store cookie
      */
-    public void setStoreCookie(String storeCookie) {
-        setStoreCookie(StringHelper.changeString2boolean(storeCookie));
+    public void setStoreCookie(boolean storeCookie) {
+        this.storeCookie = storeCookie;
     }
 
     /**
@@ -114,8 +114,8 @@ public class TestData {
      *
      * @param storeCookie the store cookie
      */
-    public void setStoreCookie(boolean storeCookie) {
-        this.storeCookie = storeCookie;
+    public void setStoreCookie(String storeCookie) {
+        setStoreCookie(StringHelper.changeString2boolean(storeCookie));
     }
 
     /**
@@ -132,8 +132,8 @@ public class TestData {
      *
      * @param useCookie the use cookie
      */
-    public void setUseCookie(boolean useCookie) {
-        this.useCookie = useCookie;
+    public void setUseCookie(String useCookie) {
+        this.useCookie = StringHelper.changeString2boolean(useCookie);
     }
 
     /**
@@ -141,8 +141,8 @@ public class TestData {
      *
      * @param useCookie the use cookie
      */
-    public void setUseCookie(String useCookie) {
-        this.useCookie = StringHelper.changeString2boolean(useCookie);
+    public void setUseCookie(boolean useCookie) {
+        this.useCookie = useCookie;
     }
 
     /**

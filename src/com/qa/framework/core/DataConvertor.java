@@ -1,12 +1,12 @@
 package com.qa.framework.core;
 
 import com.library.common.IOHelper;
+import com.library.common.ReflectHelper;
 import com.library.common.XmlHelper;
 import com.qa.framework.bean.DataConfig;
 import com.qa.framework.bean.TestData;
 import com.qa.framework.exception.TestDataDescDuplicatedException;
 import com.qa.framework.exception.TestDataNameDuplicatedException;
-import com.qa.framework.library.reflect.ReflectHelper;
 import com.qa.framework.verify.IExpectResult;
 import org.apache.log4j.Logger;
 import org.dom4j.Attribute;
