@@ -57,19 +57,14 @@ public class Executor extends TestBase {
 
     @BeforeMethod(alwaysRun = true)
     public void BeforeMethod(Method method, Object[] para) throws Exception {
+        logger.info("test");
     }
 
     @BeforeSuite
     public void beforeSuite(ITestContext context) {
-        ITestNGMethod currentTestNGMethod = null;
         for (ITestNGMethod testNGMethod : context.getAllTestMethods()) {
-            if (testNGMethod.getInstance() == this) {
-                currentTestNGMethod = testNGMethod;
-                break;
-            }
-        }
-        if (currentTestNGMethod != null) {
-            currentTestNGMethod.setInvocationCount(this.testData.getInvocationCount());
+            Executor executor = (Executor) testNGMethod.getInstance();
+            testNGMethod.setInvocationCount(executor.getTestData().getInvocationCount());
         }
     }
 
