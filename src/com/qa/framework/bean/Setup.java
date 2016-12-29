@@ -19,6 +19,7 @@ public class Setup {
     private String name;
     private String url;
     private String httpMethod = "get";
+    private boolean addParam=false;
 
     /**
      * Gets url.
@@ -202,4 +203,16 @@ public class Setup {
                 ", params=" + params +
                 '}';
     }
+
+
+    public boolean isAddParam() {
+        return addParam;
+    }
+    public void setAddParam(String addParam){
+        this.addParam= StringHelper.changeString2boolean(addParam);
+    }
+    public void setAddParam(boolean addParam) {
+        this.addParam = addParam;
+    }
+
 }

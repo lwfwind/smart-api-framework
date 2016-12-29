@@ -40,7 +40,7 @@ public class ProcessorMethod {
                 content = HttpMethod.useGetMethod(url, params, storeCookie, useCookie);
                 break;
             case "post":
-                content = HttpMethod.usePostMethod(url, params, storeCookie, useCookie);
+                content = HttpMethod.usePostMethod(url, params, storeCookie, useCookie,false);
                 break;
             case "put":
                 content = HttpMethod.usePutMethod(url, params, storeCookie, useCookie);

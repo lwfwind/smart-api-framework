@@ -151,8 +151,13 @@ public class HttpMethod {
      * @param useCookie   the use cookie
      * @return the string
      */
-    public static String usePostMethod(String url, List<Param> params, boolean storeCookie, boolean useCookie) {
-        String uri = postUrl(url);
+    public static String usePostMethod(String url, List<Param> params, boolean storeCookie, boolean useCookie,boolean isAddparam) {
+        String uri=null;
+        if (isAddparam){
+            uri=getUrl(url,params);
+        }else {
+            uri= postUrl(url);
+        }
         logger.info("拼接后的web地址为:" + uri);
         HttpPost httpPost = new HttpPost(uri);
         RequestConfig requestConfig = null;

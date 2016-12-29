@@ -28,6 +28,18 @@ public class TestData {
     private String currentFileName;
     private Header header;
     private int invocationCount = 1;
+    private boolean addParam=false;
+
+
+    public boolean isAddParam() {
+        return addParam;
+    }
+    public void setAddParam(String addParam){
+        this.addParam= StringHelper.changeString2boolean(addParam);
+    }
+    public void setAddParam(boolean addParam) {
+        this.addParam = addParam;
+    }
 
     public int getInvocationCount() {
         return invocationCount;
