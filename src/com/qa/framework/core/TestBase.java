@@ -126,11 +126,11 @@ public abstract class TestBase {
         }
     }
 
-    public void processHeader(TestData testData) {
-        if (testData.getHeader() != null) {
-            Header header = testData.getHeader();
-            if (header.getCookieList() != null) {
-                HttpConnectionImp.StoreCookies(header.getCookieList());
+    public void processHeaders(TestData testData) {
+        if (testData.getHeaders() != null) {
+            Headers headers = testData.getHeaders();
+            if (headers.getCookieList() != null) {
+                HttpConnectionImp.StoreCookies(headers.getCookieList());
             }
         }
 

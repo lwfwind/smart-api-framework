@@ -26,7 +26,7 @@ public class TestData {
     private Before before;
     private After after;
     private String currentFileName;
-    private Header header;
+    private Headers headers;
     private int invocationCount = 1;
     private boolean addParam=false;
 
@@ -349,11 +349,11 @@ public class TestData {
         this.after = after;
     }
 
-    public Header getHeader() {
-        return header;
+    public Headers getHeaders() {
+        return headers;
     }
 
-    public void setHeader(Header header) {
-        this.header = header;
+    public void setHeaders(Headers headers) {
+        this.headers = headers;
     }
 }

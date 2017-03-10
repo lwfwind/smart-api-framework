@@ -82,7 +82,7 @@ public class Executor extends TestBase {
         } else {
             processSetupResultParam(testData);
         }
-        processHeader(testData);
+        processHeaders(testData);
         String content = request(url, testData.getParams(), httpMethod, testData.isStoreCookie(), testData.isUseCookie(),testData.isAddParam());
         verifyResult(testData, content);
 

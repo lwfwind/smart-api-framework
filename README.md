@@ -2,14 +2,15 @@
 
 Smart-api-framework is a light, common http api automation framework based on [TestNG](http://testng.org/doc/index.html) and [HttpClient](http://hc.apache.org/httpcomponents-client-ga/).
 
-* Tags: TestNG, HttpClient, XML, API, Automation, Test
+* Tags: TestNG, HttpClient, XML, API, Automation, Test, Keyword-driver
 
 ## Features
 
-* No Coding and easy to config
+* Support keyword-driver, No Coding and easy to config
 * Support restful web server such as get, post, put and delete http method
 * Support concurrent
 * Re-run failed test cases
+* Easy integration with CI system
 
 ## XML Structure
 ```xml
@@ -18,6 +19,7 @@ DataConfig -- config test url and httpMethod
         Before -- preset environment such as database
         Setup -- config setup url and httpMethod, such as login action
             Param	-- config setup parameters
+        Header -- config request headers 
         Param -- config test parameters
         ExpectResult -- config expect result
             Contain	-- assert actual result contain specify string
@@ -147,13 +149,13 @@ DataConfig -- config test url and httpMethod
 <DataConfig>
 ```
 
-### &nbsp;&nbsp; 6.support request header
+### &nbsp;&nbsp; 6.support request headers
 ```xml
 <DataConfig url="V1/Students/login" httpMethod="post">
     <TestData name="data1" desc="更改手机号登录">
-        <Header>
+        <Headers>
             <Cookie name="PHPSESSIONID" value="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
-        </Header>
+        </Headers>
         <Param name="key" value="value" /Param>
         <ExpectResult>
             <Pair>errorCode:200</Pair>

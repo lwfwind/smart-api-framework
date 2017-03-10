@@ -1,26 +1,66 @@
 package com.qa.framework.bean;
 
-import java.util.ArrayList;
-import java.util.List;
 
-/**
- * Created by Administrator on 2016/12/28.
- */
+import com.library.common.StringHelper;
+
+import java.util.Arrays;
+
+
 public class Header {
-    private List<Cookie> cookieList;
+    private String key;
+    private String value;
 
-    public List<Cookie> getCookieList() {
-        return cookieList;
+    /**
+     * Instantiates a new Pair.
+     *
+     * @param key   the key
+     * @param value the value
+     */
+    public Header(String key, String value) {
+        this.key = key;
+        this.value = value;
     }
 
-    public void setCookieList(List<Cookie> cookieList) {
-        this.cookieList = cookieList;
+    /**
+     * Instantiates a new Pair.
+     */
+    public Header() {
     }
 
-    public void addCookie(Cookie cookie) {
-        if (cookieList == null) {
-            cookieList = new ArrayList<Cookie>();
-        }
-        cookieList.add(cookie);
+    /**
+     * Gets key.
+     *
+     * @return the key
+     */
+    public String getKey() {
+        return key;
     }
+
+    /**
+     * Sets key.
+     *
+     * @param key the key
+     */
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    /**
+     * Gets value.
+     *
+     * @return the value
+     */
+    public String getValue() {
+        return value;
+    }
+
+    /**
+     * Sets value.
+     *
+     * @param value the value
+     */
+    public void setValue(String value) {
+        this.value = value;
+    }
+
 }

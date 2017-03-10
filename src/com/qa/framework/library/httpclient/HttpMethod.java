@@ -42,23 +42,36 @@ public class HttpMethod {
         if (!(url.startsWith("http://") || url.startsWith("HTTP://"))) {
             webPath.append(PropConfig.getWebPath());
         }
-        if (url.contains("/")) {
+        if (url.endsWith("?")){
             webPath.append(url);
-        } else {
-            webPath.append(url).append("/");
-        }
-        if (params != null) {
-            for (Param param : params) {
-                if (param.isShow()) {
-                    webPath.append(param.getName()).append("/").append(param.getValue(false)).append("/");
+            if (params != null) {
+                for (Param param : params) {
+                    if (param.isShow()) {
+                        webPath.append(param.getName()).append("=").append(param.getValue(false)).append("&");
+                    }
                 }
             }
-        }
-        if (webPath.substring(webPath.length() - 1).equals("/")) {
-            return webPath.substring(0, webPath.length() - 1);
+            return webPath.toString();
+        }else {
+            if (url.contains("/")) {
+                webPath.append(url);
+            } else {
+                webPath.append(url).append("/");
+            }
+            if (params != null) {
+                for (Param param : params) {
+                    if (param.isShow()) {
+                        webPath.append(param.getName()).append("/").append(param.getValue(false)).append("/");
+                    }
+                }
+            }
+            if (webPath.substring(webPath.length() - 1).equals("/")) {
+                return webPath.substring(0, webPath.length() - 1);
+            }
+
+            return webPath.toString();
         }
 
-        return webPath.toString();
     }
 
     /**
