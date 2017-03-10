@@ -1,6 +1,8 @@
 package com.qa.framework.library.httpclient;
 
 
+import com.qa.framework.bean.Header;
+import com.qa.framework.bean.Headers;
 import com.qa.framework.bean.Param;
 import com.qa.framework.config.PropConfig;
 import org.apache.http.HttpHost;
@@ -98,7 +100,7 @@ public class HttpMethod {
      * @param useCookie   the use cookie
      * @return the string
      */
-    public static String useGetMethod(String url, List<Param> params, boolean storeCookie, boolean useCookie) {
+    public static String useGetMethod(String url, Headers headers, List<Param> params, boolean storeCookie, boolean useCookie) {
         String uri = getUrl(url, params);
         logger.info("拼接后的web地址为:" + uri);
         HttpGet get = new HttpGet(uri);
@@ -109,6 +111,11 @@ public class HttpMethod {
         } else {
             RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout).build();
             get.setConfig(requestConfig);
+        }
+        if(headers != null) {
+            for (Header header : headers.getHeaderList()) {
+                get.addHeader(header.getName(), header.getValue());
+            }
         }
         HttpConnectionImp imp = new HttpConnectionImp(get);
         return imp.getResponseResult(storeCookie, useCookie);
@@ -124,7 +131,7 @@ public class HttpMethod {
      * @param trytimes    the trytimes
      * @return the string
      */
-    public static String useGetMethod(String url, List<Param> params, boolean storeCookie, boolean useCookie, int trytimes) {
+    public static String useGetMethod(String url, Headers headers, List<Param> params, boolean storeCookie, boolean useCookie, int trytimes) {
         String uri = getUrl(url, params);
         logger.info("拼接后的web地址为:" + uri);
         HttpGet get = new HttpGet(uri);
@@ -135,6 +142,11 @@ public class HttpMethod {
         } else {
             RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout).build();
             get.setConfig(requestConfig);
+        }
+        if(headers != null) {
+            for (Header header : headers.getHeaderList()) {
+                get.addHeader(header.getName(), header.getValue());
+            }
         }
         HttpConnectionImp imp = new HttpConnectionImp(get);
         String returnResult = imp.getResponseResult(storeCookie, useCookie);
@@ -164,7 +176,7 @@ public class HttpMethod {
      * @param useCookie   the use cookie
      * @return the string
      */
-    public static String usePostMethod(String url, List<Param> params, boolean storeCookie, boolean useCookie,boolean isAddparam) {
+    public static String usePostMethod(String url, Headers headers, List<Param> params, boolean storeCookie, boolean useCookie, boolean isAddparam) {
         String uri=null;
         if (isAddparam){
             uri=getUrl(url,params);
@@ -181,6 +193,11 @@ public class HttpMethod {
             requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout).build();
         }
         httpPost.setConfig(requestConfig);
+        if(headers != null) {
+            for (Header header : headers.getHeaderList()) {
+                httpPost.addHeader(header.getName(), header.getValue());
+            }
+        }
         List<BasicNameValuePair> basicNameValuePairs = new ArrayList<BasicNameValuePair>();
         if (params != null) {
             for (Param param : params) {
@@ -206,7 +223,7 @@ public class HttpMethod {
      * @param useCookie   the use cookie
      * @return the string
      */
-    public static String usePutMethod(String url, List<Param> params, boolean storeCookie, boolean useCookie) {
+    public static String usePutMethod(String url, Headers headers, List<Param> params, boolean storeCookie, boolean useCookie) {
         String uri = postUrl(url);
         logger.info("拼接后的web地址为:" + uri);
         HttpPut httpPut = new HttpPut(uri);
@@ -218,6 +235,11 @@ public class HttpMethod {
             requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout).build();
         }
         httpPut.setConfig(requestConfig);
+        if(headers != null) {
+            for (Header header : headers.getHeaderList()) {
+                httpPut.addHeader(header.getName(), header.getValue());
+            }
+        }
         List<BasicNameValuePair> basicNameValuePairs = new ArrayList<BasicNameValuePair>();
         if (params != null) {
             for (Param param : params) {
@@ -234,7 +256,7 @@ public class HttpMethod {
         return imp.getResponseResult(storeCookie, useCookie);
     }
 
-    public static String useDeleteMethod(String url, List<Param> params, boolean storeCookie, boolean useCookie) {
+    public static String useDeleteMethod(String url, Headers headers, List<Param> params, boolean storeCookie, boolean useCookie) {
         String uri = getUrl(url, params);
         logger.info("拼接后的web地址为:" + uri);
         HttpDelete httpDelete = new HttpDelete(uri);
@@ -245,6 +267,11 @@ public class HttpMethod {
         } else {
             RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout).build();
             httpDelete.setConfig(requestConfig);
+        }
+        if(headers != null) {
+            for (Header header : headers.getHeaderList()) {
+                httpDelete.addHeader(header.getName(), header.getValue());
+            }
         }
         HttpConnectionImp imp = new HttpConnectionImp(httpDelete);
         return imp.getResponseResult(storeCookie, useCookie);

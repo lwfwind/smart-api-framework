@@ -65,7 +65,6 @@ public class HttpConnectionImp {
     }
 
     public static void StoreCookies(List<Cookie> cookieList) {
-
         CookieCache.clear();
         CookieStore cookieStore = new BasicCookieStore();
         for (Cookie cookie : cookieList) {

@@ -28,7 +28,7 @@ import java.util.*;
 public class ProcessorMethod {
     protected static Logger logger = Logger.getLogger(ProcessorMethod.class);
 
-    public static String request(String url, List<Param> params, String httpMethod, boolean storeCookie, boolean useCookie) {
+    public static String request(String url, Headers headers, List<Param> params, String httpMethod, boolean storeCookie, boolean useCookie) {
         String content = null;
         if (params != null) {
             for (Param param : params) {
@@ -37,16 +37,16 @@ public class ProcessorMethod {
         }
         switch (httpMethod) {
             case "get":
-                content = HttpMethod.useGetMethod(url, params, storeCookie, useCookie);
+                content = HttpMethod.useGetMethod(url, headers, params, storeCookie, useCookie);
                 break;
             case "post":
-                content = HttpMethod.usePostMethod(url, params, storeCookie, useCookie,false);
+                content = HttpMethod.usePostMethod(url, headers, params, storeCookie, useCookie, false);
                 break;
             case "put":
-                content = HttpMethod.usePutMethod(url, params, storeCookie, useCookie);
+                content = HttpMethod.usePutMethod(url, headers, params, storeCookie, useCookie);
                 break;
             case "delete":
-                content = HttpMethod.usePutMethod(url, params, storeCookie, useCookie);
+                content = HttpMethod.useDeleteMethod(url, headers, params, storeCookie, useCookie);
                 break;
         }
 
@@ -383,7 +383,7 @@ public class ProcessorMethod {
             testData.setUseCookie(true);
             for (Setup setup : testData.getSetupList()) {
                 logger.info("Process Setup in xml-" + testData.getCurrentFileName() + " TestData-" + testData.getName() + " Setup-" + setup.getName());
-                String content = ProcessorMethod.request(setup.getUrl(), setup.getParams(), setup.getHttpMethod(), setup.isStoreCookie(), setup.isUseCookie());
+                String content = request(setup.getUrl(), setup.getHeaders(), setup.getParams(), setup.getHttpMethod(), setup.isStoreCookie(), setup.isUseCookie());
                 Map<String, Object> jsonObject = JsonHelper.getJsonMapString(content);
                 if (jsonObject.size() > 0) {
                     Set<String> Set = jsonObject.keySet();

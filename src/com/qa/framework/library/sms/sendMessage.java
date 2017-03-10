@@ -16,7 +16,7 @@ public class sendMessage {
         String url = "http://sdk2.entinfo.cn/webservice.asmx/SendSMS";
 
         List<Param> params = addParams(mobile, message);
-        String result = HttpMethod.usePostMethod(url, params, false, false,false);
+        String result = HttpMethod.usePostMethod(url, null, params, false, false,false);
         if (result.contains("成功")) {
             return mobile + "发送短信成功";
         } else {

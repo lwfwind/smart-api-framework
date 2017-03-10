@@ -18,8 +18,10 @@ DataConfig -- config test url and httpMethod
     TestData
         Before -- preset environment such as database
         Setup -- config setup url and httpMethod, such as login action
-            Param	-- config setup parameters
+            Param -- config setup parameters
         Header -- config request headers 
+            Header -- config Header parameters
+            Cookie -- config Cookie parameters
         Param -- config test parameters
         ExpectResult -- config expect result
             Contain	-- assert actual result contain specify string
@@ -38,7 +40,7 @@ DataConfig -- config test url and httpMethod
                 and level is not null;
                 </Sql>
             </Param>
-            <Param name="password" value="#{sql1.password}"></Param>
+            <Param name="password" value="#{sql1.password}" />
         </Setup>
         <Param name="cid" value="#{sql4.id}">
             <Sql name="sql4">select id from ebk_class_records where status=0 and begin_time>unix_timestamp()
@@ -62,7 +64,7 @@ DataConfig -- config test url and httpMethod
                 'e10adc3949ba59abbe56e057f20f883e'  and tx_sig_expiredtime> curdate()+86400;
             </Sql>
         </Param>
-        <Param name="password" value="e10adc3949ba59abbe56e057f20f883e"></Param>
+        <Param name="password" value="e10adc3949ba59abbe56e057f20f883e" />
         <ExpectResult>
             <Pair>errorCode:200</Pair>
             <Pair>errorMsg:登录成功</Pair>
@@ -76,9 +78,9 @@ DataConfig -- config test url and httpMethod
 <DataConfig url="V1/Students/login" httpMethod="post">
      <TestData name="data1" desc="用户不存在">
          <Param name="username">
-             <Function clsName="test.java.LogicHandler" methodName="mobileGenerator"></Function>
+             <Function clsName="test.java.LogicHandler" methodName="mobileGenerator" />
          </Param>
-         <Param name="password" value="e10adc3949ba59abbe56e057f20f883e"></Param>
+         <Param name="password" value="e10adc3949ba59abbe56e057f20f883e" />
          <ExpectResult>
              <Pair>errorCode:404</Pair>
              <Pair>errorMsg:用户不存在</Pair>
@@ -119,7 +121,7 @@ DataConfig -- config test url and httpMethod
             <Sql name="sql">select trim(mobile) as mobile,password from ebk_students where id=123456;
             </Sql>
         </Param>
-        <Param name="password" value="#{sql.password}"></Param>
+        <Param name="password" value="#{sql.password}" />
         <ExpectResult>
             <Pair>errorCode:200</Pair>
             <Pair>errorMsg:登录成功</Pair>
@@ -140,7 +142,7 @@ DataConfig -- config test url and httpMethod
             <Sql name="sql">select trim(mobile) as mobile,password from ebk_students where id=123456;
             </Sql>
         </Param>
-        <Param name="password" value="#{sql.password}"></Param>
+        <Param name="password" value="#{sql.password}" />
         <ExpectResult>
             <Pair>errorCode:200</Pair>
             <Pair>errorMsg:登录成功</Pair>
@@ -154,6 +156,7 @@ DataConfig -- config test url and httpMethod
 <DataConfig url="V1/Students/login" httpMethod="post">
     <TestData name="data1" desc="更改手机号登录">
         <Headers>
+            <Header name="Content-Type" value="application/x-www-form-urlencoded;charset=UTF-8" />
             <Cookie name="PHPSESSIONID" value="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
         </Headers>
         <Param name="key" value="value" /Param>

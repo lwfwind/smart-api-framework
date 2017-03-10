@@ -20,6 +20,7 @@ public class Setup {
     private String url;
     private String httpMethod = "get";
     private boolean addParam=false;
+    private Headers headers;
 
     /**
      * Gets url.
@@ -213,6 +214,14 @@ public class Setup {
     }
     public void setAddParam(boolean addParam) {
         this.addParam = addParam;
+    }
+
+    public Headers getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(Headers headers) {
+        this.headers = headers;
     }
 
 }
