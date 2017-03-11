@@ -15,7 +15,7 @@ import java.lang.reflect.Method;
 /**
  * The type Executor.
  */
-@Listeners({TestResultListener.class, PowerEmailableReporter.class})
+@Listeners({TestResultListener.class})
 public class Executor extends TestBase {
     private TestData testData;
     private String url;
@@ -77,13 +77,8 @@ public class Executor extends TestBase {
      */
     @Test(dataProvider = "data")
     public void testcase(TestData testData, String url, String httpMethod) {
-        if (PropConfig.isSingle()) {
-            ParamValueProcessor.processSingleTestdata(testData);
-        } else {
-            processSetupResultParam(testData);
-        }
+        ParamValueProcessor.processTestData(testData);
         String content = request(url, testData.getHeaders(), testData.getParams(), httpMethod, testData.isStoreCookie(), testData.isUseCookie());
         verifyResult(testData, content);
-
     }
 }

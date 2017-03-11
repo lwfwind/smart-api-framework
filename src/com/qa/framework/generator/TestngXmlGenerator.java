@@ -33,7 +33,7 @@ public class TestngXmlGenerator {
         XmlHelper xml = new XmlHelper();
         xml.createDocument();
         Element root = xml.createDocumentRoot("suite");
-        xml.addAttribute(root, "name", "Factory_" + threadCnt + "_Thread");
+        xml.addAttribute(root, "name", "FactoryRun");
         xml.addAttribute(root, "thread-count", threadCnt);
         xml.addAttribute(root, "parallel", "methods");
         xml.addAttribute(root, "verbose", "1");
@@ -52,9 +52,9 @@ public class TestngXmlGenerator {
         IOHelper.deleteDirectory(outputPath);
         IOHelper.createNestDirectory(outputPath);
         if (outputPath.endsWith("/")) {
-            xml.saveTo(outputPath + "Factory_" + threadCnt + "_Thread.xml");
+            xml.saveTo(outputPath + "FactoryRun.xml");
         } else {
-            xml.saveTo(outputPath + File.separator + "Factory_" + threadCnt + "_Thread.xml");
+            xml.saveTo(outputPath + File.separator + "FactoryRun.xml");
         }
     }
 }

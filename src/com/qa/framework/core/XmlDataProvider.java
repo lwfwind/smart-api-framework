@@ -26,10 +26,7 @@ public class XmlDataProvider implements Iterator {
     public XmlDataProvider(String xmlPath) {
         dataConvertor = new DataConvertor(xmlPath);
         dataConfig = dataConvertor.getDataConfig();
-        paramValueProcessor = new ParamValueProcessor(dataConfig);
-        paramValueProcessor.process();
         iterator = dataConfig.getTestDataList().iterator();
-
     }
 
     /**
@@ -41,8 +38,6 @@ public class XmlDataProvider implements Iterator {
     public XmlDataProvider(String xmlPath, String testDataName) {
         dataConvertor = new DataConvertor(xmlPath);
         dataConfig = dataConvertor.getDataConfig();
-        paramValueProcessor = new ParamValueProcessor(dataConfig, testDataName);
-        paramValueProcessor.process();
         List<TestData> testDataList = new ArrayList<TestData>();
         for (TestData testData : dataConfig.getTestDataList()) {
             if (testData.getName().equals(testDataName)) {

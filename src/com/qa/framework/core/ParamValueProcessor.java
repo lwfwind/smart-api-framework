@@ -49,60 +49,12 @@ public class ParamValueProcessor {
         stringCache = new StringCache();
     }
 
-    public static void processSingleTestdata(TestData testData) {
+    public static void processTestData(TestData testData) {
         StringCache stringCache1 = new StringCache();
         ProcessorMethod.processBefore(testData);
         ProcessorMethod.processSetupParam(testData, stringCache1);
         ProcessorMethod.processSetupResultParam(testData, stringCache1);
         ProcessorMethod.processTestDataParam(testData, stringCache1);
-    }
-
-    /**
-     * Process.
-     */
-    public void process() {
-        processBefore();
-        processSetupParam();
-        processTestDataParam();
-    }
-
-    /**
-     * Process before.
-     */
-    @SuppressWarnings("unchecked")
-    public void processBefore() {
-        for (TestData testData : testDataList) {
-            ProcessorMethod.processBefore(testData);
-        }
-    }
-
-    /**
-     * 处理setup中param的占位
-     */
-    public void processSetupParam() {
-        for (TestData testData : testDataList) {
-            ProcessorMethod.processSetupParam(testData, stringCache);
-        }
-    }
-
-    /**
-     * 处理setup中param的占位
-     */
-    private void processSetupResultParam() {
-        for (TestData testData : testDataList) {
-            ProcessorMethod.processSetupResultParam(testData, stringCache);
-        }
-    }
-
-    /**
-     * Process test data param.
-     * 处理正常流程中的param的sql,从其他函数和setup接受值问题
-     */
-    public void processTestDataParam() {
-        for (TestData testData : testDataList) {
-            ProcessorMethod.processTestDataParam(testData, stringCache);
-        }
-
     }
 
     public void clearStringCache() {

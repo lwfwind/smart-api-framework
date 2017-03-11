@@ -22,7 +22,6 @@ public class PropertiesSetting {
      */
     public static void main(String[] args) {
         autoSetting(args);
-        System.out.println("------------------wo jinlai la " + args);
     }
 
     /**
@@ -37,7 +36,6 @@ public class PropertiesSetting {
         } else {
             path = System.getProperty("user.dir");
         }
-        System.out.println("------------------wo jinlai la " + path);
         final File propsFile = new File(path + File.separator, "config.properties");
         Properties props = new Properties();
         try {
