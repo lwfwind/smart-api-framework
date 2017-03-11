@@ -55,11 +55,6 @@ public class Executor extends TestBase {
         };
     }
 
-    @BeforeMethod(alwaysRun = true)
-    public void BeforeMethod(Method method, Object[] para) throws Exception {
-        logger.info("test");
-    }
-
     @BeforeSuite
     public void beforeSuite(ITestContext context) {
         for (ITestNGMethod testNGMethod : context.getAllTestMethods()) {
