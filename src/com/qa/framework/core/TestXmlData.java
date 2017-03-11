@@ -29,12 +29,12 @@ public class TestXmlData {
         if (PropConfig.isSingle()) {
             return new TestDataProvider();
         } else {
-            return getXmlTestDate();
+            return getXmlTestData();
         }
 
     }
 
-    private static Iterator<Object[]> getXmlTestDate() {
+    private static Iterator<Object[]> getXmlTestData() {
         List<Object[]> xmldata = new ArrayList<Object[]>();
         List<String> files = getTestCaseFiles();
         if (PropConfig.getIsMultithread()) {

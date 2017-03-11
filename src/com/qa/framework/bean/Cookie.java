@@ -1,5 +1,6 @@
 package com.qa.framework.bean;
 
+import com.library.common.StringHelper;
 import com.qa.framework.config.PropConfig;
 
 import java.util.Calendar;
@@ -42,7 +43,17 @@ public class Cookie {
 
     public String getDomain() {
         if (domain == null) {
-            domain = PropConfig.getWebPath().split("/")[2].trim();
+            String webPath = PropConfig.getWebPath();
+            if (StringHelper.startsWithIgnoreCase(webPath, "http://")) {
+                if (webPath.substring(7).contains("/")) {
+                    domain = StringHelper.getTokensList(webPath.substring(7), "/").get(0);
+                } else {
+                    domain = webPath.substring(7);
+                }
+            }
+            if(domain.contains(":")) {
+                domain = domain.split(":")[0].trim();
+            }
         }
         return domain;
     }

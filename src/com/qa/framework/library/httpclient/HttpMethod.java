@@ -112,59 +112,19 @@ public class HttpMethod {
             RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout).build();
             get.setConfig(requestConfig);
         }
-        if(headers != null) {
+        if(headers != null && headers.getHeaderList() != null) {
             for (Header header : headers.getHeaderList()) {
                 get.addHeader(header.getName(), header.getValue());
             }
         }
-        HttpConnectionImp imp = new HttpConnectionImp(get);
-        return imp.getResponseResult(storeCookie, useCookie);
-    }
-
-    /**
-     * Use get method string.
-     *
-     * @param url         the url
-     * @param params      the params
-     * @param storeCookie the store cookie
-     * @param useCookie   the use cookie
-     * @param trytimes    the trytimes
-     * @return the string
-     */
-    public static String useGetMethod(String url, Headers headers, List<Param> params, boolean storeCookie, boolean useCookie, int trytimes) {
-        String uri = getUrl(url, params);
-        logger.info("拼接后的web地址为:" + uri);
-        HttpGet get = new HttpGet(uri);
-        if (useProxy) {
-            HttpHost proxy = new HttpHost(localhost, localport, "http");
-            RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout).setProxy(proxy).build();
-            get.setConfig(requestConfig);
-        } else {
-            RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout).build();
-            get.setConfig(requestConfig);
+        if(headers != null && headers.getCookieList() != null) {
+            HttpConnectionImp imp = new HttpConnectionImp(get, headers.getCookieList());
+            return imp.getResponseResult(storeCookie, useCookie);
         }
-        if(headers != null) {
-            for (Header header : headers.getHeaderList()) {
-                get.addHeader(header.getName(), header.getValue());
-            }
+        else {
+            HttpConnectionImp imp = new HttpConnectionImp(get);
+            return imp.getResponseResult(storeCookie, useCookie);
         }
-        HttpConnectionImp imp = new HttpConnectionImp(get);
-        String returnResult = imp.getResponseResult(storeCookie, useCookie);
-        if (returnResult != null) {
-            return returnResult;
-        } else {
-            int count = 0;
-            while (count < trytimes && returnResult == null) {
-                returnResult = imp.getResponseResult(storeCookie, useCookie);
-                count++;
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return returnResult;
     }
 
     /**
@@ -176,13 +136,8 @@ public class HttpMethod {
      * @param useCookie   the use cookie
      * @return the string
      */
-    public static String usePostMethod(String url, Headers headers, List<Param> params, boolean storeCookie, boolean useCookie, boolean isAddparam) {
-        String uri=null;
-        if (isAddparam){
-            uri=getUrl(url,params);
-        }else {
-            uri= postUrl(url);
-        }
+    public static String usePostMethod(String url, Headers headers, List<Param> params, boolean storeCookie, boolean useCookie) {
+        String uri=postUrl(url);
         logger.info("拼接后的web地址为:" + uri);
         HttpPost httpPost = new HttpPost(uri);
         RequestConfig requestConfig = null;
@@ -193,7 +148,7 @@ public class HttpMethod {
             requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout).build();
         }
         httpPost.setConfig(requestConfig);
-        if(headers != null) {
+        if(headers != null && headers.getHeaderList() != null) {
             for (Header header : headers.getHeaderList()) {
                 httpPost.addHeader(header.getName(), header.getValue());
             }
@@ -210,8 +165,14 @@ public class HttpMethod {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        HttpConnectionImp imp = new HttpConnectionImp(httpPost);
-        return imp.getResponseResult(storeCookie, useCookie);
+        if(headers != null && headers.getCookieList() != null) {
+            HttpConnectionImp imp = new HttpConnectionImp(httpPost, headers.getCookieList());
+            return imp.getResponseResult(storeCookie, useCookie);
+        }
+        else {
+            HttpConnectionImp imp = new HttpConnectionImp(httpPost);
+            return imp.getResponseResult(storeCookie, useCookie);
+        }
     }
 
     /**
@@ -235,7 +196,7 @@ public class HttpMethod {
             requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout).build();
         }
         httpPut.setConfig(requestConfig);
-        if(headers != null) {
+        if(headers != null && headers.getHeaderList() != null) {
             for (Header header : headers.getHeaderList()) {
                 httpPut.addHeader(header.getName(), header.getValue());
             }
@@ -252,8 +213,14 @@ public class HttpMethod {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        HttpConnectionImp imp = new HttpConnectionImp(httpPut);
-        return imp.getResponseResult(storeCookie, useCookie);
+        if(headers != null && headers.getCookieList() != null) {
+            HttpConnectionImp imp = new HttpConnectionImp(httpPut, headers.getCookieList());
+            return imp.getResponseResult(storeCookie, useCookie);
+        }
+        else {
+            HttpConnectionImp imp = new HttpConnectionImp(httpPut);
+            return imp.getResponseResult(storeCookie, useCookie);
+        }
     }
 
     public static String useDeleteMethod(String url, Headers headers, List<Param> params, boolean storeCookie, boolean useCookie) {
@@ -268,12 +235,18 @@ public class HttpMethod {
             RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout).build();
             httpDelete.setConfig(requestConfig);
         }
-        if(headers != null) {
+        if(headers != null && headers.getHeaderList() != null) {
             for (Header header : headers.getHeaderList()) {
                 httpDelete.addHeader(header.getName(), header.getValue());
             }
         }
-        HttpConnectionImp imp = new HttpConnectionImp(httpDelete);
-        return imp.getResponseResult(storeCookie, useCookie);
+        if(headers != null && headers.getCookieList() != null) {
+            HttpConnectionImp imp = new HttpConnectionImp(httpDelete, headers.getCookieList());
+            return imp.getResponseResult(storeCookie, useCookie);
+        }
+        else {
+            HttpConnectionImp imp = new HttpConnectionImp(httpDelete);
+            return imp.getResponseResult(storeCookie, useCookie);
+        }
     }
 }

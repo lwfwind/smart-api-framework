@@ -40,7 +40,7 @@ public abstract class TestBase {
      * @param useCookie   the use cookie
      * @return the string
      */
-    public static String request(String url, Headers headers, List<Param> params, String httpMethod, boolean storeCookie, boolean useCookie,boolean isAddParam) {
+    public static String request(String url, Headers headers, List<Param> params, String httpMethod, boolean storeCookie, boolean useCookie) {
         String content = null;
         if (params != null) {
             for (Param param : params) {
@@ -52,7 +52,7 @@ public abstract class TestBase {
                 content = HttpMethod.useGetMethod(url, headers, params, storeCookie, useCookie);
                 break;
             case "post":
-                content = HttpMethod.usePostMethod(url, headers, params, storeCookie, useCookie,isAddParam);
+                content = HttpMethod.usePostMethod(url, headers, params, storeCookie, useCookie);
                 break;
             case "put":
                 content = HttpMethod.usePutMethod(url, headers, params, storeCookie, useCookie);
@@ -80,7 +80,7 @@ public abstract class TestBase {
             testData.setUseCookie(true);
             for (Setup setup : testData.getSetupList()) {
                 logger.info("Process Setup in xml-" + testData.getCurrentFileName() + " TestData-" + testData.getName() + " Setup-" + setup.getName());
-                String content = request(setup.getUrl(), setup.getHeaders(), setup.getParams(), setup.getHttpMethod(), setup.isStoreCookie(), setup.isUseCookie(),setup.isAddParam());
+                String content = request(setup.getUrl(), setup.getHeaders(), setup.getParams(), setup.getHttpMethod(), setup.isStoreCookie(), setup.isUseCookie());
                 Map<String, Object> jsonObject = JsonHelper.getJsonMapString(content);
                 if (jsonObject.size() > 0) {
                     Set<String> Set = jsonObject.keySet();
@@ -124,16 +124,6 @@ public abstract class TestBase {
                 }
             }
         }
-    }
-
-    public void processHeaders(TestData testData) {
-        if (testData.getHeaders() != null) {
-            Headers headers = testData.getHeaders();
-            if (headers.getCookieList() != null) {
-                HttpConnectionImp.StoreCookies(headers.getCookieList());
-            }
-        }
-
     }
 
     /**

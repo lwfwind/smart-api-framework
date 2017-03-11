@@ -33,7 +33,7 @@ public class DBHelper {
         if (dbPoolName == null) {
             String webPath = PropConfig.getWebPath();
             if (StringHelper.startsWithIgnoreCase(webPath, "http://")) {
-                if (webPath.contains("/")) {
+                if (webPath.substring(7).contains("/")) {
                     poolName = StringHelper.getTokensList(webPath.substring(7), "/").get(0);
                 } else {
                     poolName = webPath.substring(7);

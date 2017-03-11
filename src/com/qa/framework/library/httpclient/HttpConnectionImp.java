@@ -25,6 +25,7 @@ public class HttpConnectionImp {
     private final Logger logger = Logger
             .getLogger(this.getClass());
     private HttpRequestBase baseRequest;
+    private List<Cookie> cookieList;
 
     /**
      * Instantiates a new Http connection imp.
@@ -35,6 +36,10 @@ public class HttpConnectionImp {
         this.baseRequest = baseRequest;
     }
 
+    public HttpConnectionImp(HttpRequestBase baseRequest,List<Cookie> cookieList) {
+        this.baseRequest = baseRequest;
+        this.cookieList = cookieList;
+    }
     /**
      * Remove bom string.
      *
@@ -64,19 +69,6 @@ public class HttpConnectionImp {
 
     }
 
-    public static void StoreCookies(List<Cookie> cookieList) {
-        CookieCache.clear();
-        CookieStore cookieStore = new BasicCookieStore();
-        for (Cookie cookie : cookieList) {
-            BasicClientCookie basicCookie = new BasicClientCookie(cookie.getName(), cookie.getValue());
-            basicCookie.setDomain(cookie.getDomain());
-            basicCookie.setPath(cookie.getPath());
-            basicCookie.setExpiryDate(cookie.getExpiry());
-            cookieStore.addCookie(basicCookie);
-        }
-        CookieCache.set(cookieStore);
-    }
-
     /**
      * Gets response result.
      *
@@ -94,6 +86,15 @@ public class HttpConnectionImp {
             }
             clientContext.setCookieStore(cookieStore);
             logger.info("useCookie:" + cookieStore.toString());
+        }
+        if(cookieList != null){
+            for (Cookie cookie : cookieList) {
+                BasicClientCookie basicCookie = new BasicClientCookie(cookie.getName(), cookie.getValue());
+                basicCookie.setDomain(cookie.getDomain());
+                basicCookie.setPath(cookie.getPath());
+                basicCookie.setExpiryDate(cookie.getExpiry());
+                clientContext.getCookieStore().addCookie(basicCookie);
+            }
         }
         String responseBody = null;
         try {

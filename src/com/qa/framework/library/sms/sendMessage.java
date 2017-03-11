@@ -8,15 +8,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Administrator on 2016/9/21.
- */
 public class sendMessage {
     public static String sendMsg(String mobile, String message) throws IOException {
         String url = "http://sdk2.entinfo.cn/webservice.asmx/SendSMS";
 
         List<Param> params = addParams(mobile, message);
-        String result = HttpMethod.usePostMethod(url, null, params, false, false,false);
+        String result = HttpMethod.usePostMethod(url, null, params, false, false);
         if (result.contains("成功")) {
             return mobile + "发送短信成功";
         } else {
