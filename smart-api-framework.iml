@@ -56,7 +56,6 @@
     <orderEntry type="library" name="Maven: commons-dbcp:commons-dbcp:1.4" level="project" />
     <orderEntry type="library" name="Maven: commons-pool:commons-pool:1.5.4" level="project" />
     <orderEntry type="library" name="Maven: net.sf.jacob-project:jacob:1.14.3" level="project" />
-    <orderEntry type="library" name="Maven: com.oracle:ojdbc6:11.2.0.3" level="project" />
     <orderEntry type="library" name="Maven: commons-net:commons-net:3.0.1" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.jtstand:jtstand-desktop:1.2" level="project" />
     <orderEntry type="library" name="Maven: net.sf.json-lib:json-lib:jdk15:2.4" level="project" />
