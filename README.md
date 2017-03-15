@@ -55,7 +55,29 @@ DataConfig -- config test url and httpMethod
 </DataConfig>
 ```
 
-### &nbsp;&nbsp; 2.support to get param's value from sql
+### &nbsp;&nbsp; 2.support get param's value from setup action response
+```xml
+<DataConfig url="V1/ClassRecords/bookClass/" httpMethod="put">
+  <TestData name="data1" desc="约课成功">
+        <Setup name="setup1" url="V1/Students/login/" httpMethod="post">
+            <Param name="username" value="#{sql1.mobile}">
+                <Sql name="sql1">select id,mobile,password from ebk_students where status=1 and acoin>100 
+                and level is not null;
+                </Sql>
+            </Param>
+            <Param name="password" value="#{sql1.password}" />
+        </Setup>
+        <Param name="cid" value="#{setup1.id}">
+        </Param>
+        <ExpectResult>
+            <Pair>errorCode:200</Pair>
+            <Pair>errorMsg:约课成功</Pair>
+        </ExpectResult>
+    </TestData>
+</DataConfig>
+```
+
+### &nbsp;&nbsp; 3.support to get param's value from sql
 ```xml
 <DataConfig url="V1/Students/login" httpMethod="post">
     <TestData name="data3" desc="登录成功">
@@ -73,7 +95,7 @@ DataConfig -- config test url and httpMethod
 <DataConfig>
 ```
     
-### &nbsp;&nbsp; 3.support to get param's value from function
+### &nbsp;&nbsp; 4.support to get param's value from function
 ```xml
 <DataConfig url="V1/Students/login" httpMethod="post">
      <TestData name="data1" desc="用户不存在">
@@ -89,7 +111,7 @@ DataConfig -- config test url and httpMethod
 </DataConfig>
 ```
 
-### &nbsp;&nbsp; 4.support regular expression for expect result in contain/pair both 
+### &nbsp;&nbsp; 5.support regular expression for expect result in contain/pair both 
 ```xml
 <DataConfig url="V2/ClassRecords/classDetail/" httpMethod="get">
     <TestData name="GetClassDetailSuccess" desc="获取数据成功">
@@ -109,7 +131,7 @@ DataConfig -- config test url and httpMethod
 </DataConfig>
 ```
 
-### &nbsp;&nbsp; 5.support function/sql action in before/after
+### &nbsp;&nbsp; 6.support function/sql action in before/after
 ```xml
 <DataConfig url="V1/Students/login" httpMethod="post">
     <TestData name="data1" desc="更改手机号登录">
@@ -134,7 +156,7 @@ DataConfig -- config test url and httpMethod
 <DataConfig>
 ```
 
-### &nbsp;&nbsp; 6.support execute repeated times(invocationCount)
+### &nbsp;&nbsp; 7.support execute repeated times(invocationCount)
 ```xml
 <DataConfig url="V1/Students/login" httpMethod="post" invocationCount="2000">
     <TestData name="data1" desc="更改手机号登录">
@@ -151,7 +173,7 @@ DataConfig -- config test url and httpMethod
 <DataConfig>
 ```
 
-### &nbsp;&nbsp; 6.support request headers
+### &nbsp;&nbsp; 8.support request headers
 ```xml
 <DataConfig url="V1/Students/login" httpMethod="post">
     <TestData name="data1" desc="更改手机号登录">

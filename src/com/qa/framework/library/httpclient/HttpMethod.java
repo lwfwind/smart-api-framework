@@ -44,7 +44,7 @@ public class HttpMethod {
         if (!(url.startsWith("http://") || url.startsWith("HTTP://"))) {
             webPath.append(PropConfig.getWebPath());
         }
-        if (url.endsWith("?")){
+        if (url.endsWith("?")) {
             webPath.append(url);
             if (params != null) {
                 for (Param param : params) {
@@ -54,7 +54,7 @@ public class HttpMethod {
                 }
             }
             return webPath.toString();
-        }else {
+        } else {
             if (url.contains("/")) {
                 webPath.append(url);
             } else {
@@ -112,16 +112,15 @@ public class HttpMethod {
             RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout).build();
             get.setConfig(requestConfig);
         }
-        if(headers != null && headers.getHeaderList() != null) {
+        if (headers != null && headers.getHeaderList() != null) {
             for (Header header : headers.getHeaderList()) {
                 get.addHeader(header.getName(), header.getValue());
             }
         }
-        if(headers != null && headers.getCookieList() != null) {
+        if (headers != null && headers.getCookieList() != null) {
             HttpConnectionImp imp = new HttpConnectionImp(get, headers.getCookieList());
             return imp.getResponseResult(storeCookie, useCookie);
-        }
-        else {
+        } else {
             HttpConnectionImp imp = new HttpConnectionImp(get);
             return imp.getResponseResult(storeCookie, useCookie);
         }
@@ -137,7 +136,7 @@ public class HttpMethod {
      * @return the string
      */
     public static String usePostMethod(String url, Headers headers, List<Param> params, boolean storeCookie, boolean useCookie) {
-        String uri=postUrl(url);
+        String uri = postUrl(url);
         logger.info("拼接后的web地址为:" + uri);
         HttpPost httpPost = new HttpPost(uri);
         RequestConfig requestConfig = null;
@@ -148,7 +147,7 @@ public class HttpMethod {
             requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout).build();
         }
         httpPost.setConfig(requestConfig);
-        if(headers != null && headers.getHeaderList() != null) {
+        if (headers != null && headers.getHeaderList() != null) {
             for (Header header : headers.getHeaderList()) {
                 httpPost.addHeader(header.getName(), header.getValue());
             }
@@ -165,11 +164,10 @@ public class HttpMethod {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        if(headers != null && headers.getCookieList() != null) {
+        if (headers != null && headers.getCookieList() != null) {
             HttpConnectionImp imp = new HttpConnectionImp(httpPost, headers.getCookieList());
             return imp.getResponseResult(storeCookie, useCookie);
-        }
-        else {
+        } else {
             HttpConnectionImp imp = new HttpConnectionImp(httpPost);
             return imp.getResponseResult(storeCookie, useCookie);
         }
@@ -196,7 +194,7 @@ public class HttpMethod {
             requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout).build();
         }
         httpPut.setConfig(requestConfig);
-        if(headers != null && headers.getHeaderList() != null) {
+        if (headers != null && headers.getHeaderList() != null) {
             for (Header header : headers.getHeaderList()) {
                 httpPut.addHeader(header.getName(), header.getValue());
             }
@@ -213,11 +211,10 @@ public class HttpMethod {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        if(headers != null && headers.getCookieList() != null) {
+        if (headers != null && headers.getCookieList() != null) {
             HttpConnectionImp imp = new HttpConnectionImp(httpPut, headers.getCookieList());
             return imp.getResponseResult(storeCookie, useCookie);
-        }
-        else {
+        } else {
             HttpConnectionImp imp = new HttpConnectionImp(httpPut);
             return imp.getResponseResult(storeCookie, useCookie);
         }
@@ -235,16 +232,15 @@ public class HttpMethod {
             RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout).build();
             httpDelete.setConfig(requestConfig);
         }
-        if(headers != null && headers.getHeaderList() != null) {
+        if (headers != null && headers.getHeaderList() != null) {
             for (Header header : headers.getHeaderList()) {
                 httpDelete.addHeader(header.getName(), header.getValue());
             }
         }
-        if(headers != null && headers.getCookieList() != null) {
+        if (headers != null && headers.getCookieList() != null) {
             HttpConnectionImp imp = new HttpConnectionImp(httpDelete, headers.getCookieList());
             return imp.getResponseResult(storeCookie, useCookie);
-        }
-        else {
+        } else {
             HttpConnectionImp imp = new HttpConnectionImp(httpDelete);
             return imp.getResponseResult(storeCookie, useCookie);
         }

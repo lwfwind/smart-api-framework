@@ -12,6 +12,7 @@ import com.qa.framework.util.StringUtil;
 import com.qa.framework.verify.ContainExpectResult;
 import com.qa.framework.verify.IExpectResult;
 import com.qa.framework.verify.PairExpectResult;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 
@@ -50,8 +51,8 @@ public class ProcessorMethod {
                 break;
         }
 
-        content = JsonHelper.decodeUnicode(content);
-        logger.info("返回的信息:" + JsonHelper.decodeUnicode(content));
+        content = StringEscapeUtils.unescapeJava(content);
+        logger.info("返回的信息:" + StringEscapeUtils.unescapeJava(content));
         Assert.assertNotNull(content, "response返回空");
         return content;
     }
@@ -379,34 +380,20 @@ public class ProcessorMethod {
     }
 
     public static void processSetupResultParam(TestData testData, StringCache stringCache) {
+        JsonHelper jsonHelper = new JsonHelper();
         if (testData.getSetupList() != null) {
             testData.setUseCookie(true);
             for (Setup setup : testData.getSetupList()) {
                 logger.info("Process Setup in xml-" + testData.getCurrentFileName() + " TestData-" + testData.getName() + " Setup-" + setup.getName());
                 String content = request(setup.getUrl(), setup.getHeaders(), setup.getParams(), setup.getHttpMethod(), setup.isStoreCookie(), setup.isUseCookie());
-                Map<String, Object> jsonObject = JsonHelper.getJsonMapString(content);
-                if (jsonObject.size() > 0) {
-                    Set<String> Set = jsonObject.keySet();
-                    for (String key : Set) {
-                        Object object = jsonObject.get(key);
-                        if (object instanceof Map) {
-                            Map<String, Object> map = (Map<String, Object>) object;
-                            for (String subKey : map.keySet()) {
-                                stringCache.put(subKey, map.get(subKey).toString());
-                                stringCache.put(setup.getName() + "." + subKey, map.get(subKey).toString());
-                            }
-                        } else if (object instanceof List) {
-                            List<Map<String, Object>> listMap = (List<Map<String, Object>>) object;
-                            for (Map<String, Object> map : listMap) {
-                                for (String subKey : map.keySet()) {
-                                    stringCache.put(subKey, map.get(subKey).toString());
-                                    stringCache.put(setup.getName() + "." + subKey, map.get(subKey).toString());
-                                }
-                            }
-                        } else {
-                            stringCache.put(key, object.toString());
-                            stringCache.put(setup.getName() + "." + key, object.toString());
-                        }
+                Map<String, String> pairMaps = JsonHelper.parseJsonToPairs(content);
+                if (pairMaps.size() > 0) {
+                    for (Object o : pairMaps.entrySet()) {
+                        Map.Entry entry = (Map.Entry) o;
+                        String key = (String) entry.getKey();
+                        String val = (String) entry.getValue();
+                        stringCache.put(key, val);
+                        stringCache.put(setup.getName() + "." + key, val);
                     }
                 }
             }

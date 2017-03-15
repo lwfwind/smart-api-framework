@@ -1,16 +1,15 @@
 package com.qa.framework.factory;
 
 import com.qa.framework.bean.TestData;
-import com.qa.framework.config.PropConfig;
 import com.qa.framework.core.ParamValueProcessor;
 import com.qa.framework.core.TestBase;
-import com.qa.framework.testnglistener.PowerEmailableReporter;
 import com.qa.framework.testnglistener.TestResultListener;
 import org.testng.ITestContext;
 import org.testng.ITestNGMethod;
-import org.testng.annotations.*;
-
-import java.lang.reflect.Method;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Listeners;
+import org.testng.annotations.Test;
 
 /**
  * The type Executor.

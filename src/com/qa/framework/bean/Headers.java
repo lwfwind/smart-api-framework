@@ -9,7 +9,9 @@ public class Headers {
 
     private List<Header> headerList;
 
-    public List<Header> getHeaderList(){ return headerList; }
+    public List<Header> getHeaderList() {
+        return headerList;
+    }
 
     public List<Cookie> getCookieList() {
         return cookieList;
@@ -26,8 +28,8 @@ public class Headers {
         cookieList.add(cookie);
     }
 
-    public void addHeader(Header header){
-        if(headerList == null){
+    public void addHeader(Header header) {
+        if (headerList == null) {
             headerList = new ArrayList<Header>();
         }
         headerList.add(header);

@@ -8,7 +8,6 @@ import org.apache.http.client.CookieStore;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.cookie.BasicClientCookie;
@@ -36,10 +35,11 @@ public class HttpConnectionImp {
         this.baseRequest = baseRequest;
     }
 
-    public HttpConnectionImp(HttpRequestBase baseRequest,List<Cookie> cookieList) {
+    public HttpConnectionImp(HttpRequestBase baseRequest, List<Cookie> cookieList) {
         this.baseRequest = baseRequest;
         this.cookieList = cookieList;
     }
+
     /**
      * Remove bom string.
      *
@@ -87,7 +87,7 @@ public class HttpConnectionImp {
             clientContext.setCookieStore(cookieStore);
             logger.info("useCookie:" + cookieStore.toString());
         }
-        if(cookieList != null){
+        if (cookieList != null) {
             for (Cookie cookie : cookieList) {
                 BasicClientCookie basicCookie = new BasicClientCookie(cookie.getName(), cookie.getValue());
                 basicCookie.setDomain(cookie.getDomain());

@@ -1,24 +1,18 @@
 package com.qa.framework.core;
 
-import com.library.common.JsonHelper;
-import com.library.common.StringHelper;
 import com.qa.framework.bean.*;
 import com.qa.framework.library.database.DBHelper;
-import com.qa.framework.library.httpclient.HttpConnectionImp;
 import com.qa.framework.library.httpclient.HttpMethod;
-import com.qa.framework.util.StringUtil;
 import com.qa.framework.verify.ContainExpectResult;
 import com.qa.framework.verify.IExpectResult;
 import com.qa.framework.verify.PairExpectResult;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * 提供一个模板类
@@ -62,68 +56,10 @@ public abstract class TestBase {
                 break;
         }
 
-        content = JsonHelper.decodeUnicode(content);
-        logger.info("返回的信息:" + JsonHelper.decodeUnicode(content));
+        content = StringEscapeUtils.unescapeJava(content);
+        logger.info("返回的信息:" + StringEscapeUtils.unescapeJava(content));
         Assert.assertNotNull(content, "response返回空");
         return content;
-    }
-
-    /**
-     * Process param. 处理param中需要接收setup中的返回值
-     *
-     * @param testData the test data
-     */
-    @SuppressWarnings("unchecked")
-    public void processSetupResultParam(TestData testData) {
-        if (testData.getSetupList() != null) {
-            Map<String, String> setupMap = new HashMap<String, String>();
-            testData.setUseCookie(true);
-            for (Setup setup : testData.getSetupList()) {
-                logger.info("Process Setup in xml-" + testData.getCurrentFileName() + " TestData-" + testData.getName() + " Setup-" + setup.getName());
-                String content = request(setup.getUrl(), setup.getHeaders(), setup.getParams(), setup.getHttpMethod(), setup.isStoreCookie(), setup.isUseCookie());
-                Map<String, Object> jsonObject = JsonHelper.getJsonMapString(content);
-                if (jsonObject.size() > 0) {
-                    Set<String> Set = jsonObject.keySet();
-                    for (String key : Set) {
-                        Object object = jsonObject.get(key);
-                        if (object instanceof Map) {
-                            Map<String, Object> map = (Map<String, Object>) object;
-                            for (String subKey : map.keySet()) {
-                                setupMap.put(subKey, map.get(subKey).toString());
-                                setupMap.put(setup.getName() + "." + subKey, map.get(subKey).toString());
-                            }
-                        } else if (object instanceof List) {
-                            List<Map<String, Object>> listMap = (List<Map<String, Object>>) object;
-                            for (Map<String, Object> map : listMap) {
-                                for (String subKey : map.keySet()) {
-                                    setupMap.put(subKey, map.get(subKey).toString());
-                                    setupMap.put(setup.getName() + "." + subKey, map.get(subKey).toString());
-                                }
-                            }
-                        } else {
-                            setupMap.put(key, object.toString());
-                            setupMap.put(setup.getName() + "." + key, object.toString());
-                        }
-                    }
-                }
-            }
-            for (Param param : testData.getParams()) { //处理param中接受setup值的问题
-                if (param.getValue().contains("#{")) {
-                    //处理语句中的#{}问题
-                    //第一步将#{\\S+}的值找出来
-                    List<String> lists = StringHelper.find(param.getValue(), "#\\{[a-zA-Z0-9._]*\\}");
-                    String[] replacedStr = new String[lists.size()];   //替换sql语句中的#{}
-                    int i = 0;
-                    for (String list : lists) {
-                        //去掉#{}
-                        String proStr = list.substring(2, list.length() - 1);
-                        //从缓存中去取相应的值
-                        replacedStr[i++] = setupMap.get(proStr);
-                    }
-                    param.setValue(StringUtil.handleSpecialChar(param.getValue(), replacedStr));
-                }
-            }
-        }
     }
 
     /**

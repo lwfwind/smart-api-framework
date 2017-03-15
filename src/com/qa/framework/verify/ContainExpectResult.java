@@ -46,7 +46,7 @@ public class ContainExpectResult implements IExpectResult {
     @SuppressWarnings("unchecked")
     public void compareReal(String content) {
         if (patternMatch) {
-            Assert.assertTrue(Pattern.matches(this.textStatement, content), String.format("实际返回:%s, 期望返回:%s", content, this.textStatement));
+            Assert.assertTrue(Pattern.matches("[\\s\\S]*" + this.textStatement + "[\\s\\S]*", content), String.format("实际返回:%s, 期望返回:%s", content, this.textStatement));
         } else {
             Assert.assertTrue(content.contains(this.textStatement), String.format("实际返回:%s, 期望包含:%s", content, this.textStatement));
         }

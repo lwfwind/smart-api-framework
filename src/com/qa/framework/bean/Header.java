@@ -1,11 +1,6 @@
 package com.qa.framework.bean;
 
 
-import com.library.common.StringHelper;
-
-import java.util.Arrays;
-
-
 public class Header {
     private String name;
     private String value;

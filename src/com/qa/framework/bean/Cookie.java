@@ -51,7 +51,7 @@ public class Cookie {
                     domain = webPath.substring(7);
                 }
             }
-            if(domain.contains(":")) {
+            if (domain.contains(":")) {
                 domain = domain.split(":")[0].trim();
             }
         }
