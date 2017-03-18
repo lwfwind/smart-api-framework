@@ -11,7 +11,6 @@ import java.util.Arrays;
 public class Pair {
     private String key;
     private String value;
-    private String mapStatement;
     private boolean sort;
     private boolean patternMatch = true;
 
@@ -135,14 +134,7 @@ public class Pair {
         return null;
     }
 
-    /**
-     * Gets map statement.
-     *
-     * @return the map statement
-     */
-    public String getMapStatement() {
-        return mapStatement;
-    }
+
 
     /**
      * Sets map statement.

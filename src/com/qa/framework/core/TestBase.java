@@ -28,8 +28,9 @@ public abstract class TestBase {
      * @param content  the content
      */
     public void verifyResult(TestData testData, String content) {
-        ExpectResult expectResult = testData.getExpectResult();
-        for (IExpectResult iExpectResult : expectResult.getExpectResultImp()) {
+        ParamValueProcessor.processExpectResultAfterExecute(testData);
+        ExpectResults expectResult = testData.getExpectResults();
+        for (IExpectResult iExpectResult : expectResult.getExpectResults()) {
             if (iExpectResult instanceof ContainExpectResult) {
                 ContainExpectResult containKeyExpectResult = (ContainExpectResult) iExpectResult;
                 containKeyExpectResult.compareReal(content);

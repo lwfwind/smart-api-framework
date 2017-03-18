@@ -22,7 +22,7 @@ public class TestData {
     private int sendTime = 1;
     private boolean storeCookie;
     private boolean useCookie;
-    private ExpectResult expectResult;
+    private ExpectResults expectResults;
     private Before before;
     private After after;
     private String currentFileName;
@@ -220,17 +220,17 @@ public class TestData {
      *
      * @return the expect result
      */
-    public ExpectResult getExpectResult() {
-        return expectResult;
+    public ExpectResults getExpectResults() {
+        return expectResults;
     }
 
     /**
      * Sets expect result.
      *
-     * @param expectResult the expect result
+     * @param expectResults the expect result
      */
-    public void setExpectResult(ExpectResult expectResult) {
-        this.expectResult = expectResult;
+    public void setExpectResults(ExpectResults expectResults) {
+        this.expectResults = expectResults;
     }
 
     /**

@@ -89,7 +89,7 @@ public class DataConvertor {
         String verifyPackage = "com.qa.framework.verify";
         if ("Contain".equalsIgnoreCase(element.getName())) {
             className = verifyPackage + "." + "ContainExpectResult";
-        } else if ("Pair".equalsIgnoreCase(element.getName()) && element.getParent().getName().equals("ExpectResult")) {
+        } else if ("Pair".equalsIgnoreCase(element.getName()) && element.getParent().getName().equals("ExpectResults")) {
             className = verifyPackage + "." + "PairExpectResult";
         } else {
             className = beanPackage + "." + element.getName();  //组成className的完整路径
@@ -100,14 +100,7 @@ public class DataConvertor {
             List attributes = element.attributes();          //获取所有属性值, 如果含有属性, 将相应的属性设置到对应的实例中
             //添加子对象
             if (IExpectResult.class.isAssignableFrom(clazz)) {
-                ReflectHelper.addMethod(parentObj, elementObj, "ExpectResultImp", IExpectResult.class);
-                if ("Pair".equalsIgnoreCase(element.getName())) {
-                    parentObj = elementObj;
-                    String PairClsaa = beanPackage + "." + "Pair";
-                    clazz = Class.forName(PairClsaa);          //获取className的class对象
-                    elementObj = clazz.newInstance();
-                    ReflectHelper.addMethod(parentObj, elementObj, element.getName(), elementObj.getClass());
-                }
+                ReflectHelper.addMethod(parentObj, elementObj, "ExpectResult", IExpectResult.class);
             } else {
                 ReflectHelper.addMethod(parentObj, elementObj, element.getName(), elementObj.getClass());
             }

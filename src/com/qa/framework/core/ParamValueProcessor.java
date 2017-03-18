@@ -112,7 +112,7 @@ public class ParamValueProcessor {
                 processParamFromSetup(testData, param, jsonPairCache);
             }
         }
-        processExpectResult(testData, jsonPairCache);
+        processExpectResultBeforeExecute(testData, jsonPairCache);
 
     }
 
@@ -378,24 +378,50 @@ public class ParamValueProcessor {
      * @param testData      the test data
      * @param jsonPairCache the json pair cache
      */
-    public static void processExpectResult(TestData testData, JsonPairCache jsonPairCache) {
-        ExpectResult expectResult = testData.getExpectResult();
-        for (IExpectResult result : expectResult.getExpectResultImp()) {
+    public static void processExpectResultBeforeExecute(TestData testData, JsonPairCache jsonPairCache) {
+        ExpectResults expectResult = testData.getExpectResults();
+        for (IExpectResult result : expectResult.getExpectResults()) {
             if (result instanceof ContainExpectResult) {
                 ContainExpectResult containExpectResult = (ContainExpectResult) result;
-                if (containExpectResult.getSqls() != null) {
-                    List<Sql> sqlList = containExpectResult.getSqls();
-                    executeSql(sqlList, jsonPairCache);
-                }
                 if (containExpectResult.getTextStatement().contains("#{")) {
                     containExpectResult.setTextStatement(handleReservedKeyChars(containExpectResult.getTextStatement(), jsonPairCache));
                 }
             } else if (result instanceof PairExpectResult) {
                 PairExpectResult pairExpectResult = (PairExpectResult) result;
-                for (Pair pair : pairExpectResult.getPairs()) {
+                    Pair pair = pairExpectResult.getPair();
                     if (pair.getValue().contains("#{")) {
                         pair.setValue(handleReservedKeyChars(pair.getValue(), jsonPairCache));
                     }
+
+            } else {
+                throw new IllegalArgumentException("没有匹配的期望结果集！");
+            }
+        }
+    }
+
+    /**
+     * Process expect result.
+     *
+     * @param testData      the test data
+     */
+    public static void processExpectResultAfterExecute(TestData testData) {
+        JsonPairCache jsonPairCache = new JsonPairCache();
+        ExpectResults expectResults = testData.getExpectResults();
+        if (expectResults.getSqls() != null) {
+            List<Sql> sqlList = expectResults.getSqls();
+            executeSql(sqlList, jsonPairCache);
+        }
+        for (IExpectResult result : expectResults.getExpectResults()) {
+            if (result instanceof ContainExpectResult) {
+                ContainExpectResult containExpectResult = (ContainExpectResult) result;
+                if (containExpectResult.getTextStatement().contains("#{")) {
+                    containExpectResult.setTextStatement(handleReservedKeyChars(containExpectResult.getTextStatement(), jsonPairCache));
+                }
+            } else if (result instanceof PairExpectResult) {
+                PairExpectResult pairExpectResult = (PairExpectResult) result;
+                Pair pair = pairExpectResult.getPair();
+                if (pair.getValue().contains("#{")) {
+                    pair.setValue(handleReservedKeyChars(pair.getValue(), jsonPairCache));
                 }
             } else {
                 throw new IllegalArgumentException("没有匹配的期望结果集！");
