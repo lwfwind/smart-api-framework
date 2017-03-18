@@ -5,7 +5,7 @@ import com.library.common.JsonHelper;
 import com.library.common.ReflectHelper;
 import com.library.common.StringHelper;
 import com.qa.framework.bean.*;
-import com.qa.framework.cache.StringCache;
+import com.qa.framework.cache.JsonPairCache;
 import com.qa.framework.library.database.DBHelper;
 import com.qa.framework.library.httpclient.HttpMethod;
 import com.qa.framework.util.StringUtil;
@@ -83,42 +83,42 @@ public class ProcessorMethod {
     }
 
 
-    public static void processSetupParam(TestData testData, StringCache stringCache) {
+    public static void processSetupParam(TestData testData, JsonPairCache jsonPairCache) {
         List<Setup> setupList = testData.getSetupList();
         if (setupList != null) {
             for (Setup setup : setupList) {
                 List<Param> setupParamList = setup.getParams();
                 if (setupParamList != null) {
                     for (Param param : setupParamList) {
-                        executeFunction(param, setup, testData, stringCache);
-                        executeSql(param, setup, testData, stringCache);
-                        processParamPair(param, setup, testData, stringCache);
-                        processParamDate(param, setup, testData, stringCache);
-                        processParamFromSetup(testData, param, stringCache);
+                        executeFunction(param, setup, testData, jsonPairCache);
+                        executeSql(param, setup, testData, jsonPairCache);
+                        processParamPair(param, setup, testData, jsonPairCache);
+                        processParamDate(param, setup, testData, jsonPairCache);
+                        processParamFromSetup(testData, param, jsonPairCache);
                     }
                 }
             }
         }
     }
 
-    public static void processTestDataParam(TestData testData, StringCache stringCache) {
+    public static void processTestDataParam(TestData testData, JsonPairCache jsonPairCache) {
         List<Param> paramList = testData.getParams();
         if (paramList != null) {
             for (Param param : paramList) {
-                processParamDate(param, null, testData, stringCache);
-                executeFunction(param, null, testData, stringCache);
-                executeSql(param, null, testData, stringCache);
-                processParamPair(param, null, testData, stringCache);
-                processParamFromSetup(testData, param, stringCache);
-                processParamFromOtherTestData(param, stringCache);
+                processParamDate(param, null, testData, jsonPairCache);
+                executeFunction(param, null, testData, jsonPairCache);
+                executeSql(param, null, testData, jsonPairCache);
+                processParamPair(param, null, testData, jsonPairCache);
+                processParamFromSetup(testData, param, jsonPairCache);
+                processParamFromOtherTestData(param, jsonPairCache);
                 //processParamPair(param);
             }
         }
-        processExpectResult(testData, stringCache);
+        processExpectResult(testData, jsonPairCache);
 
     }
 
-    public static void executeFunction(Param param, Setup setup, TestData testData, StringCache stringCache) {
+    public static void executeFunction(Param param, Setup setup, TestData testData, JsonPairCache jsonPairCache) {
         if (param.getFunction() != null) {
             try {
                 Class cls = Class.forName(param.getFunction().getClsName());
@@ -126,11 +126,11 @@ public class ProcessorMethod {
                 Object object = cls.newInstance();
                 Object value = method.invoke(object);
                 param.setValue(value.toString());
-                stringCache.put(param.getName(), param.getValue());
-                stringCache.put(testData.getName() + "." + param.getName(), param.getValue());
+                jsonPairCache.put(param.getName(), param.getValue());
+                jsonPairCache.put(testData.getName() + "." + param.getName(), param.getValue());
                 if (setup != null) {
-                    stringCache.put(setup.getName() + "." + param.getName(), param.getValue());
-                    stringCache.put(testData.getName() + "." + setup.getName() + "." + param.getName(), param.getValue());
+                    jsonPairCache.put(setup.getName() + "." + param.getName(), param.getValue());
+                    jsonPairCache.put(testData.getName() + "." + setup.getName() + "." + param.getName(), param.getValue());
                 }
             } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
@@ -144,12 +144,12 @@ public class ProcessorMethod {
      * @param param       the param
      * @param setup       the setup
      * @param testData    the test data
-     * @param stringCache
+     * @param jsonPairCache
      */
-    public static void executeSql(Param param, Setup setup, TestData testData, StringCache stringCache) {
+    public static void executeSql(Param param, Setup setup, TestData testData, JsonPairCache jsonPairCache) {
         if (param.getSqls() != null) {
             List<Sql> sqlList = param.getSqls();
-            executeSql(sqlList, param, setup, testData, stringCache);
+            executeSql(sqlList, param, setup, testData, jsonPairCache);
             if (param.getValue().contains("#{")) {
                 //处理语句中的#{}问题
                 //第一步将#{\\S+}的值找出来
@@ -160,21 +160,21 @@ public class ProcessorMethod {
                     //去掉#{}
                     String proStr = list.substring(2, list.length() - 1);
                     //从缓存中去取相应的值
-                    replacedStr[i++] = stringCache.getValue(proStr);
+                    replacedStr[i++] = jsonPairCache.getValue(proStr);
                 }
                 param.setValue(StringUtil.handleSpecialChar(param.getValue(), replacedStr));
             }
 
-            stringCache.put(param.getName(), param.getValue());
-            stringCache.put(testData.getName() + "." + param.getName(), param.getValue());
+            jsonPairCache.put(param.getName(), param.getValue());
+            jsonPairCache.put(testData.getName() + "." + param.getName(), param.getValue());
             if (setup != null) {
-                stringCache.put(setup.getName() + "." + param.getName(), param.getValue());
-                stringCache.put(testData.getName() + "." + setup.getName() + "." + param.getName(), param.getValue());
+                jsonPairCache.put(setup.getName() + "." + param.getName(), param.getValue());
+                jsonPairCache.put(testData.getName() + "." + setup.getName() + "." + param.getName(), param.getValue());
             }
         }
     }
 
-    public static void executeSql(List<Sql> sqlList, StringCache stringCache) {
+    public static void executeSql(List<Sql> sqlList, JsonPairCache jsonPairCache) {
         for (Sql sql : sqlList) {
             if (sql.getSqlStatement().contains("#{")) {
                 //处理sql语句中的#{}问题
@@ -186,7 +186,7 @@ public class ProcessorMethod {
                     //去掉#{}
                     String proStr = list.substring(2, list.length() - 1);
                     //从缓存中去取相应的值
-                    replacedStr[i++] = stringCache.getValue(proStr);
+                    replacedStr[i++] = jsonPairCache.getValue(proStr);
                 }
                 sql.setSqlStatement(StringUtil.handleSpecialChar(sql.getSqlStatement(), replacedStr));
             }
@@ -202,7 +202,7 @@ public class ProcessorMethod {
                 } else {
                     value = recordInfo.get(key).toString();
                 }
-                stringCache.put(sqlkey, value);                         //将sql.属性的值存入缓存
+                jsonPairCache.put(sqlkey, value);                         //将sql.属性的值存入缓存
             }
         }
 
@@ -217,7 +217,7 @@ public class ProcessorMethod {
      * @param testData the test data
      * @return the string
      */
-    public static String executeSql(List<Sql> sqlList, Param param, Setup setup, TestData testData, StringCache stringCache) {
+    public static String executeSql(List<Sql> sqlList, Param param, Setup setup, TestData testData, JsonPairCache jsonPairCache) {
         for (Sql sql : sqlList) {
             if (sql.getSqlStatement().contains("#{")) {
                 //处理sql语句中的#{}问题
@@ -229,7 +229,7 @@ public class ProcessorMethod {
                     //去掉#{}
                     String proStr = list.substring(2, list.length() - 1);
                     //从缓存中去取相应的值
-                    replacedStr[i++] = stringCache.getValue(proStr);
+                    replacedStr[i++] = jsonPairCache.getValue(proStr);
                 }
                 sql.setSqlStatement(StringUtil.handleSpecialChar(sql.getSqlStatement(), replacedStr));
             }
@@ -247,14 +247,14 @@ public class ProcessorMethod {
                 } else {
                     value = recordInfo.get(key).toString();
                 }
-                stringCache.put(sqlkey, value);                         //将sql.属性的值存入缓存
-                stringCache.put(paramSqlKey, value);
-                stringCache.put(testDatakey, value);
+                jsonPairCache.put(sqlkey, value);                         //将sql.属性的值存入缓存
+                jsonPairCache.put(paramSqlKey, value);
+                jsonPairCache.put(testDatakey, value);
                 if (setup != null) {
                     String setupParamSqlKey = setup.getName() + "." + paramSqlKey;
                     String testDataSetupParamSqlKey = testData.getName() + "." + setupParamSqlKey;
-                    stringCache.put(setupParamSqlKey, value);
-                    stringCache.put(testDataSetupParamSqlKey, value);
+                    jsonPairCache.put(setupParamSqlKey, value);
+                    jsonPairCache.put(testDataSetupParamSqlKey, value);
                 }
             }
         }
@@ -265,7 +265,7 @@ public class ProcessorMethod {
         }
         decodeValue = decodeValue.substring(2, decodeValue.length() - 1);
         //param的值可能有3种情况setup, sql.id, param.sql.id, 但是实际上只会是sql.id一种, 因为setup的情况不处理, 若是param.sql.id则sqlstatement必为空
-        return stringCache.getValue(decodeValue);
+        return jsonPairCache.getValue(decodeValue);
     }
 
 
@@ -275,24 +275,24 @@ public class ProcessorMethod {
      * @param param       the param
      * @param setup
      * @param testData
-     * @param stringCache
+     * @param jsonPairCache
      */
-    public static void processParamPair(Param param, Setup setup, TestData testData, StringCache stringCache) {
+    public static void processParamPair(Param param, Setup setup, TestData testData, JsonPairCache jsonPairCache) {
         if (param.getPairs() != null) {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("{");
             for (Pair pair : param.getPairs()) {
-                processPair(pair, stringCache);
+                processPair(pair, jsonPairCache);
                 stringBuilder.append("\"" + pair.getKey() + "\"" + pair.getValue() + ",");
             }
             stringBuilder.deleteCharAt(stringBuilder.length() - 1);
             stringBuilder.append("}");
             param.setValue(stringBuilder.toString());
-            stringCache.put(param.getName(), param.getValue());
-            stringCache.put(testData.getName() + "." + param.getName(), param.getValue());
+            jsonPairCache.put(param.getName(), param.getValue());
+            jsonPairCache.put(testData.getName() + "." + param.getName(), param.getValue());
             if (setup != null) {
-                stringCache.put(setup.getName() + "." + param.getName(), param.getValue());
-                stringCache.put(testData.getName() + "." + setup.getName() + "." + param.getName(), param.getValue());
+                jsonPairCache.put(setup.getName() + "." + param.getName(), param.getValue());
+                jsonPairCache.put(testData.getName() + "." + setup.getName() + "." + param.getName(), param.getValue());
             }
         }
     }
@@ -301,9 +301,9 @@ public class ProcessorMethod {
      * Process pair.
      *
      * @param pair        the pair
-     * @param stringCache
+     * @param jsonPairCache
      */
-    public static void processPair(Pair pair, StringCache stringCache) {
+    public static void processPair(Pair pair, JsonPairCache jsonPairCache) {
         if (pair.getValue().contains("#{")) {
             String OriginalString = pair.getValue();
             logger.info("original expect pair string:" + OriginalString);
@@ -315,7 +315,7 @@ public class ProcessorMethod {
                 if (list.contains("+") || list.contains("-") || list.contains("*") || list.contains("/")) {
                     String calculateStr = list.substring(2, list.length() - 1);
                     List<String> keyList = new ArrayList<String>();
-                    for (String key : stringCache.mapCache.keySet()) {
+                    for (String key : jsonPairCache.getMap().keySet()) {
                         keyList.add(key);
                     }
                     Collections.sort(keyList, new Comparator<String>() {
@@ -325,7 +325,7 @@ public class ProcessorMethod {
                     });
                     for (String key : keyList) {
                         if (calculateStr.contains(key)) {
-                            calculateStr = calculateStr.replace(key, stringCache.getValue(key));
+                            calculateStr = calculateStr.replace(key, jsonPairCache.getValue(key));
                         }
                     }
                     try {
@@ -338,13 +338,13 @@ public class ProcessorMethod {
                     String inner = list.substring(2, list.length() - 1);
                     OriginalString = OriginalString.replace(list, inner);
                     if (!pair.isSort()) {
-                        for (String key : stringCache.mapCache.keySet()) {
+                        for (String key : jsonPairCache.getMap().keySet()) {
                             if (inner.equals(key)) {
-                                OriginalString = OriginalString.replace(key, stringCache.getValue(key));
+                                OriginalString = OriginalString.replace(key, jsonPairCache.getValue(key));
                             }
                         }
                     } else {
-                        String value = stringCache.getValue(inner);
+                        String value = jsonPairCache.getValue(inner);
                         placeHolders[count] = inner;
                         placeHoldersValue[count] = value;
                         count++;
@@ -367,19 +367,19 @@ public class ProcessorMethod {
      *
      * @param testData    the test data
      * @param param       the param
-     * @param stringCache
+     * @param jsonPairCache
      */
-    public static void processParamFromSetup(TestData testData, Param param, StringCache stringCache) {
+    public static void processParamFromSetup(TestData testData, Param param, JsonPairCache jsonPairCache) {
         if (testData.getSetupList() != null && param.getSqls() == null && param.getFunction() == null && param.getDateStamp() == null && param.getPairs() == null) {
             if (param.getValue().contains("#{") && param.getValue().contains(".")) {
                 //remove #{}
                 String setupNameAndParam = param.getValue().substring(2, param.getValue().length() - 1);
-                param.setValue(stringCache.getValue(setupNameAndParam));
+                param.setValue(jsonPairCache.getValue(setupNameAndParam));
             }
         }
     }
 
-    public static void processSetupResultParam(TestData testData, StringCache stringCache) {
+    public static void processSetupResultParam(TestData testData, JsonPairCache jsonPairCache) {
         JsonHelper jsonHelper = new JsonHelper();
         if (testData.getSetupList() != null) {
             testData.setUseCookie(true);
@@ -392,15 +392,15 @@ public class ProcessorMethod {
                         Map.Entry entry = (Map.Entry) o;
                         String key = (String) entry.getKey();
                         String val = (String) entry.getValue();
-                        stringCache.put(key, val);
-                        stringCache.put(setup.getName() + "." + key, val);
+                        jsonPairCache.put(key, val);
+                        jsonPairCache.put(setup.getName() + "." + key, val);
                     }
                 }
             }
         }
     }
 
-    private static void processParamDate(Param param, Setup setup, TestData testData, StringCache stringCache) {
+    private static void processParamDate(Param param, Setup setup, TestData testData, JsonPairCache jsonPairCache) {
         if (param.getDateStamp() != null) {
             DateStamp dateStamp = param.getDateStamp();
             Calendar c = Calendar.getInstance();
@@ -473,16 +473,16 @@ public class ProcessorMethod {
             } else {
                 param.setValue(c.getTimeInMillis() / 1000 + "");
             }
-            stringCache.put(param.getName(), param.getValue());
-            stringCache.put(testData.getName() + "." + param.getName(), param.getValue());
+            jsonPairCache.put(param.getName(), param.getValue());
+            jsonPairCache.put(testData.getName() + "." + param.getName(), param.getValue());
             if (setup != null) {
-                stringCache.put(setup.getName() + "." + param.getName(), param.getValue());
-                stringCache.put(testData.getName() + "." + setup.getName() + "." + param.getName(), param.getValue());
+                jsonPairCache.put(setup.getName() + "." + param.getName(), param.getValue());
+                jsonPairCache.put(testData.getName() + "." + setup.getName() + "." + param.getName(), param.getValue());
             }
         }
     }
 
-    public static void processParamFromOtherTestData(Param param, StringCache stringCache) {
+    public static void processParamFromOtherTestData(Param param, JsonPairCache jsonPairCache) {
         if (param.getSqls() == null && param.getFunction() == null && param.getDateStamp() == null && param.getPairs() == null) {
             if (param.getValue() != null) {
                 if (param.getValue().contains("#{") && param.getValue().contains(".")) {
@@ -492,11 +492,11 @@ public class ProcessorMethod {
                         StringBuilder newParamValue = new StringBuilder();
                         String[] residues = testDataNameAndParam.split("\\}#\\{");
                         for (int i = 0; i < residues.length; i++) {
-                            newParamValue.append(stringCache.getValue(residues[i]));
+                            newParamValue.append(jsonPairCache.getValue(residues[i]));
                         }
                         param.setValue(newParamValue.toString());
                     } else {
-                        String value = stringCache.getValue(testDataNameAndParam);
+                        String value = jsonPairCache.getValue(testDataNameAndParam);
                         if (value == null) {
                             logger.info("无法找到关键字为" + testDataNameAndParam + "的值，请检查");
                         }
@@ -511,16 +511,16 @@ public class ProcessorMethod {
      * Process expect result.
      *
      * @param testData    the test data
-     * @param stringCache
+     * @param jsonPairCache
      */
-    public static void processExpectResult(TestData testData, StringCache stringCache) {
+    public static void processExpectResult(TestData testData, JsonPairCache jsonPairCache) {
         ExpectResult expectResult = testData.getExpectResult();
         for (IExpectResult result : expectResult.getExpectResultImp()) {
             if (result instanceof ContainExpectResult) {
                 ContainExpectResult containExpectResult = (ContainExpectResult) result;
                 if (containExpectResult.getSqls() != null) {
                     List<Sql> sqlList = containExpectResult.getSqls();
-                    executeSql(sqlList, stringCache);
+                    executeSql(sqlList, jsonPairCache);
                 }
                 if (containExpectResult.getTextStatement().contains("#{")) {
                     //处理语句中的#{}问题
@@ -532,7 +532,7 @@ public class ProcessorMethod {
                         //去掉#{}
                         String proStr = list.substring(2, list.length() - 1);
                         //从缓存中去取相应的值
-                        replacedStr[i++] = stringCache.getValue(proStr);
+                        replacedStr[i++] = jsonPairCache.getValue(proStr);
                     }
                     containExpectResult.setTextStatement(StringUtil.handleSpecialChar(containExpectResult.getTextStatement(), replacedStr));
                 }
@@ -549,7 +549,7 @@ public class ProcessorMethod {
                             //去掉#{}
                             String proStr = list.substring(2, list.length() - 1);
                             //从缓存中去取相应的值
-                            replacedStr[i++] = stringCache.getValue(proStr);
+                            replacedStr[i++] = jsonPairCache.getValue(proStr);
                         }
                         pair.setValue(StringUtil.handleSpecialChar(pair.getValue(), replacedStr));
                     }

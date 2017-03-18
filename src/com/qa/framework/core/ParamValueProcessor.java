@@ -2,7 +2,7 @@ package com.qa.framework.core;
 
 import com.qa.framework.bean.DataConfig;
 import com.qa.framework.bean.TestData;
-import com.qa.framework.cache.StringCache;
+import com.qa.framework.cache.JsonPairCache;
 import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ public class ParamValueProcessor {
     private static final Logger logger = Logger.getLogger(ParamValueProcessor.class);
     private DataConfig dataConfig;
     private List<TestData> testDataList = new ArrayList<TestData>();
-    private StringCache stringCache;
+    private JsonPairCache jsonPairCache;
 
     /**
      * Instantiates a new Param value processor.
@@ -27,7 +27,7 @@ public class ParamValueProcessor {
     public ParamValueProcessor(DataConfig dataConfig) {
         this.dataConfig = dataConfig;
         this.testDataList = dataConfig.getTestDataList();
-        stringCache = new StringCache();
+        jsonPairCache = new JsonPairCache();
     }
 
     /**
@@ -46,20 +46,20 @@ public class ParamValueProcessor {
         if (this.testDataList.size() == 0) {
             logger.info("没有找打相匹配的TestData Name 请检查！");
         }
-        stringCache = new StringCache();
+        jsonPairCache = new JsonPairCache();
     }
 
     public static void processTestData(TestData testData) {
-        StringCache stringCache1 = new StringCache();
+        JsonPairCache jsonPairCache1 = new JsonPairCache();
         ProcessorMethod.processBefore(testData);
-        ProcessorMethod.processSetupParam(testData, stringCache1);
-        ProcessorMethod.processSetupResultParam(testData, stringCache1);
-        ProcessorMethod.processTestDataParam(testData, stringCache1);
+        ProcessorMethod.processSetupParam(testData, jsonPairCache1);
+        ProcessorMethod.processSetupResultParam(testData, jsonPairCache1);
+        ProcessorMethod.processTestDataParam(testData, jsonPairCache1);
     }
 
     public void clearStringCache() {
-        stringCache.mapCache.clear();
-        logger.debug("清空StringCahe");
+        jsonPairCache.getMap().clear();
+        logger.debug("清空StringCache");
     }
 }
 
