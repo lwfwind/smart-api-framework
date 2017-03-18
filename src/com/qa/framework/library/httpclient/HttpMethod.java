@@ -5,6 +5,7 @@ import com.qa.framework.bean.Header;
 import com.qa.framework.bean.Headers;
 import com.qa.framework.bean.Param;
 import com.qa.framework.config.PropConfig;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -14,6 +15,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
+import org.testng.Assert;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -33,6 +35,45 @@ public class HttpMethod {
     private static Integer timeout = Integer.valueOf(PropConfig.getTimeout());
 
     /**
+     * Get content string. 获得模拟httpmethod的内容
+     *
+     * @param url         the url
+     * @param headers     the headers
+     * @param params      the params
+     * @param httpMethod  the http method
+     * @param storeCookie the store cookie
+     * @param useCookie   the use cookie
+     * @return the string
+     */
+    public static String request(String url, Headers headers, List<Param> params, String httpMethod, boolean storeCookie, boolean useCookie) {
+        String content = null;
+        if (params != null) {
+            for (Param param : params) {
+                logger.info("--------" + param.toString());
+            }
+        }
+        switch (httpMethod) {
+            case "get":
+                content = HttpMethod.useGetMethod(url, headers, params, storeCookie, useCookie);
+                break;
+            case "post":
+                content = HttpMethod.usePostMethod(url, headers, params, storeCookie, useCookie);
+                break;
+            case "put":
+                content = HttpMethod.usePutMethod(url, headers, params, storeCookie, useCookie);
+                break;
+            case "delete":
+                content = HttpMethod.useDeleteMethod(url, headers, params, storeCookie, useCookie);
+                break;
+        }
+
+        content = StringEscapeUtils.unescapeJava(content);
+        logger.info("返回的信息:" + StringEscapeUtils.unescapeJava(content));
+        Assert.assertNotNull(content, "response返回空");
+        return content;
+    }
+
+    /**
      * Gets url.
      *
      * @param url    the url
@@ -48,9 +89,7 @@ public class HttpMethod {
             webPath.append(url);
             if (params != null) {
                 for (Param param : params) {
-                    if (param.isShow()) {
-                        webPath.append(param.getName()).append("=").append(param.getValue(false)).append("&");
-                    }
+                    webPath.append(param.getName()).append("=").append(param.getValue(false)).append("&");
                 }
             }
             return webPath.toString();
@@ -62,9 +101,7 @@ public class HttpMethod {
             }
             if (params != null) {
                 for (Param param : params) {
-                    if (param.isShow()) {
-                        webPath.append(param.getName()).append("/").append(param.getValue(false)).append("/");
-                    }
+                    webPath.append(param.getName()).append("/").append(param.getValue(false)).append("/");
                 }
             }
             if (webPath.substring(webPath.length() - 1).equals("/")) {
@@ -95,6 +132,7 @@ public class HttpMethod {
      * Use get method string.
      *
      * @param url         the url
+     * @param headers     the headers
      * @param params      the params
      * @param storeCookie the store cookie
      * @param useCookie   the use cookie
@@ -130,6 +168,7 @@ public class HttpMethod {
      * Use post method string.
      *
      * @param url         the url
+     * @param headers     the headers
      * @param params      the params
      * @param storeCookie the store cookie
      * @param useCookie   the use cookie
@@ -177,6 +216,7 @@ public class HttpMethod {
      * Use put method string.
      *
      * @param url         the url
+     * @param headers     the headers
      * @param params      the params
      * @param storeCookie the store cookie
      * @param useCookie   the use cookie
@@ -220,6 +260,16 @@ public class HttpMethod {
         }
     }
 
+    /**
+     * Use delete method string.
+     *
+     * @param url         the url
+     * @param headers     the headers
+     * @param params      the params
+     * @param storeCookie the store cookie
+     * @param useCookie   the use cookie
+     * @return the string
+     */
     public static String useDeleteMethod(String url, Headers headers, List<Param> params, boolean storeCookie, boolean useCookie) {
         String uri = getUrl(url, params);
         logger.info("拼接后的web地址为:" + uri);

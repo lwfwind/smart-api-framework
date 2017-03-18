@@ -35,6 +35,12 @@ public class HttpConnectionImp {
         this.baseRequest = baseRequest;
     }
 
+    /**
+     * Instantiates a new Http connection imp.
+     *
+     * @param baseRequest the base request
+     * @param cookieList  the cookie list
+     */
     public HttpConnectionImp(HttpRequestBase baseRequest, List<Cookie> cookieList) {
         this.baseRequest = baseRequest;
         this.cookieList = cookieList;

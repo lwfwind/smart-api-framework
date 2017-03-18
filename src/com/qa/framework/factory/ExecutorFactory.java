@@ -11,9 +11,18 @@ import org.testng.annotations.Factory;
 
 import static com.qa.framework.classfinder.ClassHelper.findImplementClass;
 
+/**
+ * The type Executor factory.
+ */
 public class ExecutorFactory {
     private IMockServer mockServer = null;
 
+    /**
+     * Before class.
+     *
+     * @throws IllegalAccessException the illegal access exception
+     * @throws InstantiationException the instantiation exception
+     */
     @BeforeSuite(alwaysRun = true)
     public void beforeClass() throws IllegalAccessException, InstantiationException {
         Class<?> clazz = findImplementClass(IMockServer.class);
@@ -24,6 +33,9 @@ public class ExecutorFactory {
         }
     }
 
+    /**
+     * After class.
+     */
     @AfterSuite(alwaysRun = true)
     public void afterClass() {
         if (mockServer != null) {
@@ -31,6 +43,11 @@ public class ExecutorFactory {
         }
     }
 
+    /**
+     * Before method.
+     *
+     * @param context the context
+     */
     @BeforeMethod
     public void beforeMethod(ITestContext context) {
         System.out.println("beforeMethod");

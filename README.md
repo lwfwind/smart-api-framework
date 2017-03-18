@@ -67,8 +67,7 @@ DataConfig -- config test url and httpMethod
             </Param>
             <Param name="password" value="#{sql1.password}" />
         </Setup>
-        <Param name="cid" value="#{setup1.id}">
-        </Param>
+        <Param name="cid" value="#{setup1.id}" />
         <ExpectResult>
             <Pair>errorCode:200</Pair>
             <Pair>errorMsg:约课成功</Pair>
@@ -139,7 +138,7 @@ DataConfig -- config test url and httpMethod
             <Function clsName="test.java.LogicHandler" methodName="changeStudentsMobile"/>
             <Sql>update ebk_students set mobile=18078788787 where id=123456;</Sql>
         </Before>
-        <Param name="username" value="#{sql1=.mobile}">
+        <Param name="username" value="#{sql1.mobile}">
             <Sql name="sql">select trim(mobile) as mobile,password from ebk_students where id=123456;
             </Sql>
         </Param>
@@ -160,7 +159,7 @@ DataConfig -- config test url and httpMethod
 ```xml
 <DataConfig url="V1/Students/login" httpMethod="post" invocationCount="2000">
     <TestData name="data1" desc="更改手机号登录">
-        <Param name="username" value="#{sql1=.mobile}">
+        <Param name="username" value="#{sql1.mobile}">
             <Sql name="sql">select trim(mobile) as mobile,password from ebk_students where id=123456;
             </Sql>
         </Param>
@@ -181,7 +180,7 @@ DataConfig -- config test url and httpMethod
             <Header name="Content-Type" value="application/x-www-form-urlencoded;charset=UTF-8" />
             <Cookie name="PHPSESSIONID" value="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
         </Headers>
-        <Param name="key" value="value" /Param>
+        <Param name="key" value="value" />
         <ExpectResult>
             <Pair>errorCode:200</Pair>
             <Pair>errorMsg:成功</Pair>

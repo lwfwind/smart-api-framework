@@ -116,8 +116,8 @@ public class Setup {
      *
      * @param useCookie the use cookie
      */
-    public void setUseCookie(String useCookie) {
-        this.useCookie = StringHelper.changeString2boolean(useCookie);
+    public void setUseCookie(boolean useCookie) {
+        this.useCookie = useCookie;
     }
 
     /**
@@ -125,8 +125,8 @@ public class Setup {
      *
      * @param useCookie the use cookie
      */
-    public void setUseCookie(boolean useCookie) {
-        this.useCookie = useCookie;
+    public void setUseCookie(String useCookie) {
+        this.useCookie = StringHelper.changeString2boolean(useCookie);
     }
 
     /**
@@ -143,8 +143,8 @@ public class Setup {
      *
      * @param storeCookie the store cookie
      */
-    public void setStoreCookie(String storeCookie) {
-        this.storeCookie = StringHelper.changeString2boolean(storeCookie);
+    public void setStoreCookie(boolean storeCookie) {
+        this.storeCookie = storeCookie;
     }
 
     /**
@@ -152,8 +152,8 @@ public class Setup {
      *
      * @param storeCookie the store cookie
      */
-    public void setStoreCookie(boolean storeCookie) {
-        this.storeCookie = storeCookie;
+    public void setStoreCookie(String storeCookie) {
+        this.storeCookie = StringHelper.changeString2boolean(storeCookie);
     }
 
     /**
@@ -206,22 +206,47 @@ public class Setup {
     }
 
 
+    /**
+     * Is add param boolean.
+     *
+     * @return the boolean
+     */
     public boolean isAddParam() {
         return addParam;
     }
 
-    public void setAddParam(String addParam) {
-        this.addParam = StringHelper.changeString2boolean(addParam);
-    }
-
+    /**
+     * Sets add param.
+     *
+     * @param addParam the add param
+     */
     public void setAddParam(boolean addParam) {
         this.addParam = addParam;
     }
 
+    /**
+     * Sets add param.
+     *
+     * @param addParam the add param
+     */
+    public void setAddParam(String addParam) {
+        this.addParam = StringHelper.changeString2boolean(addParam);
+    }
+
+    /**
+     * Gets headers.
+     *
+     * @return the headers
+     */
     public Headers getHeaders() {
         return headers;
     }
 
+    /**
+     * Sets headers.
+     *
+     * @param headers the headers
+     */
     public void setHeaders(Headers headers) {
         this.headers = headers;
     }

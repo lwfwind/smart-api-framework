@@ -35,5 +35,10 @@ public interface ICustomTestListener {
      */
     void onTestSuccess(ITestResult tr);
 
+    /**
+     * On finish.
+     *
+     * @param testContext the test context
+     */
     void onFinish(ITestContext testContext);
 }

@@ -20,10 +20,7 @@ public class Param {
     private Map<String, Sql> sqlMap;    //建立sql名字和sql之间的映射
     private String multiple;        //执行sqls中的sql几次
     private DateStamp dateStamp;     //设置时间
-    private List<Pair> pairs;     //Map
     private Function function;
-    private boolean show = true;           //是否出现在链接中
-    private boolean isHaveValue = false;
 
     /**
      * Gets name.
@@ -91,7 +88,6 @@ public class Param {
      */
     public void setValue(String value) {
         this.value = StringHelper.urlEncode(value);
-        isHaveValue = true;
     }
 
     /**
@@ -175,36 +171,6 @@ public class Param {
     }
 
     /**
-     * Gets pairs.
-     *
-     * @return the pairs
-     */
-    public List<Pair> getPairs() {
-        return pairs;
-    }
-
-    /**
-     * Sets pair.
-     *
-     * @param pairs the pairs
-     */
-    public void setPair(List<Pair> pairs) {
-        this.pairs = pairs;
-    }
-
-    /**
-     * Add pair.
-     *
-     * @param pair the pair
-     */
-    public void addPair(Pair pair) {
-        if (pairs == null) {
-            pairs = new ArrayList<Pair>();
-        }
-        pairs.add(pair);
-    }
-
-    /**
      * Gets sql map.
      *
      * @return the sql map
@@ -234,39 +200,8 @@ public class Param {
         this.function = function;
     }
 
-    /**
-     * Is show boolean.
-     *
-     * @return the boolean
-     */
-    public boolean isShow() {
-        return show;
-    }
-
-    /**
-     * Sets show.
-     *
-     * @param show the show
-     */
-    public void setShow(String show) {
-        this.show = StringHelper.changeString2boolean(show);
-    }
-
-    /**
-     * Sets show.
-     *
-     * @param show the show
-     */
-    public void setShow(boolean show) {
-        this.show = show;
-    }
-
     @Override
     public String toString() {
         return name + "= " + value;
-    }
-
-    public boolean isHaveValue() {
-        return isHaveValue;
     }
 }

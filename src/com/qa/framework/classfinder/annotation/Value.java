@@ -11,5 +11,10 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Value {
+    /**
+     * Value string.
+     *
+     * @return the string
+     */
     String value() default "";
 }

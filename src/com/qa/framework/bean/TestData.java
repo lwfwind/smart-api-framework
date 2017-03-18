@@ -29,10 +29,20 @@ public class TestData {
     private Headers headers;
     private int invocationCount = 1;
 
+    /**
+     * Gets invocation count.
+     *
+     * @return the invocation count
+     */
     public int getInvocationCount() {
         return invocationCount;
     }
 
+    /**
+     * Sets invocation count.
+     *
+     * @param invocationCount the invocation count
+     */
     public void setInvocationCount(int invocationCount) {
         this.invocationCount = invocationCount;
     }
@@ -105,8 +115,8 @@ public class TestData {
      *
      * @param storeCookie the store cookie
      */
-    public void setStoreCookie(boolean storeCookie) {
-        this.storeCookie = storeCookie;
+    public void setStoreCookie(String storeCookie) {
+        setStoreCookie(StringHelper.changeString2boolean(storeCookie));
     }
 
     /**
@@ -114,8 +124,8 @@ public class TestData {
      *
      * @param storeCookie the store cookie
      */
-    public void setStoreCookie(String storeCookie) {
-        setStoreCookie(StringHelper.changeString2boolean(storeCookie));
+    public void setStoreCookie(boolean storeCookie) {
+        this.storeCookie = storeCookie;
     }
 
     /**
@@ -132,8 +142,8 @@ public class TestData {
      *
      * @param useCookie the use cookie
      */
-    public void setUseCookie(String useCookie) {
-        this.useCookie = StringHelper.changeString2boolean(useCookie);
+    public void setUseCookie(boolean useCookie) {
+        this.useCookie = useCookie;
     }
 
     /**
@@ -141,8 +151,8 @@ public class TestData {
      *
      * @param useCookie the use cookie
      */
-    public void setUseCookie(boolean useCookie) {
-        this.useCookie = useCookie;
+    public void setUseCookie(String useCookie) {
+        this.useCookie = StringHelper.changeString2boolean(useCookie);
     }
 
     /**
@@ -337,10 +347,20 @@ public class TestData {
         this.after = after;
     }
 
+    /**
+     * Gets headers.
+     *
+     * @return the headers
+     */
     public Headers getHeaders() {
         return headers;
     }
 
+    /**
+     * Sets headers.
+     *
+     * @param headers the headers
+     */
     public void setHeaders(Headers headers) {
         this.headers = headers;
     }

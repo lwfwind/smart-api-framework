@@ -25,22 +25,47 @@ public class Cookie {
         return date;
     }
 
+    /**
+     * Gets value.
+     *
+     * @return the value
+     */
     public String getValue() {
         return value;
     }
 
+    /**
+     * Sets value.
+     *
+     * @param value the value
+     */
     public void setValue(String value) {
         this.value = value;
     }
 
+    /**
+     * Gets name.
+     *
+     * @return the name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets name.
+     *
+     * @param name the name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Gets domain.
+     *
+     * @return the domain
+     */
     public String getDomain() {
         if (domain == null) {
             String webPath = PropConfig.getWebPath();
@@ -58,10 +83,20 @@ public class Cookie {
         return domain;
     }
 
+    /**
+     * Sets domain.
+     *
+     * @param domain the domain
+     */
     public void setDomain(String domain) {
         this.domain = domain;
     }
 
+    /**
+     * Gets path.
+     *
+     * @return the path
+     */
     public String getPath() {
         if (path == null) {
             path = "/";
@@ -69,10 +104,20 @@ public class Cookie {
         return path;
     }
 
+    /**
+     * Sets path.
+     *
+     * @param path the path
+     */
     public void setPath(String path) {
         this.path = path;
     }
 
+    /**
+     * Gets expiry.
+     *
+     * @return the expiry
+     */
     public Date getExpiry() {
         if (expiry == null) {
             expiry = getExpiryDate();
@@ -80,6 +125,11 @@ public class Cookie {
         return expiry;
     }
 
+    /**
+     * Sets expiry.
+     *
+     * @param expiry the expiry
+     */
     public void setExpiry(Date expiry) {
         this.expiry = expiry;
     }

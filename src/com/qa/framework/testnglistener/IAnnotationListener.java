@@ -10,6 +10,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
 
+/**
+ * The type Annotation listener.
+ */
 public class IAnnotationListener implements IAnnotationTransformer2 {
 
     public void transform(ITestAnnotation annotation, Class testClass,

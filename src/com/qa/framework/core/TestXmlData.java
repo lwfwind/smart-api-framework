@@ -20,6 +20,7 @@ public class TestXmlData {
      * Xml factory data iterator.
      *
      * @return the iterator
+     * @throws InterruptedException the interrupted exception
      */
     @DataProvider(name = "xmlFactoryData")
     public static Iterator<Object[]> xmlFactoryData() throws InterruptedException {

@@ -5,6 +5,9 @@ import com.qa.framework.classfinder.annotation.Impl;
 
 import java.util.List;
 
+/**
+ * The type Class helper.
+ */
 public class ClassHelper {
 
     static {

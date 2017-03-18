@@ -32,16 +32,31 @@ public class Pair {
     public Pair() {
     }
 
+    /**
+     * Gets pattern match.
+     *
+     * @return the pattern match
+     */
     public Boolean getPatternMatch() {
         return patternMatch;
     }
 
-    public void setPatternMatch(boolean patter) {
-        this.patternMatch = patter;
-    }
-
+    /**
+     * Sets pattern match.
+     *
+     * @param patter the patter
+     */
     public void setPatternMatch(String patter) {
         this.patternMatch = StringHelper.changeString2boolean(patter);
+    }
+
+    /**
+     * Sets pattern match.
+     *
+     * @param patter the patter
+     */
+    public void setPatternMatch(boolean patter) {
+        this.patternMatch = patter;
     }
 
     /**

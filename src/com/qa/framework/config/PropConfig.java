@@ -56,6 +56,11 @@ public class PropConfig {
         initConfigFields(this);
     }
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static PropConfig getInstance() {
         if (propConfig == null) {
             synchronized (PropConfig.class) {
@@ -65,10 +70,20 @@ public class PropConfig {
         return propConfig;
     }
 
+    /**
+     * Gets base package.
+     *
+     * @return the base package
+     */
     public static String getBasePackage() {
         return basePackage;
     }
 
+    /**
+     * Sets base package.
+     *
+     * @param val the val
+     */
     public static void setBasePackage(String val) {
         basePackage = val;
     }
@@ -235,34 +250,74 @@ public class PropConfig {
         sourceCodeDir = val;
     }
 
+    /**
+     * Gets is multithread.
+     *
+     * @return the is multithread
+     */
     public static boolean getIsMultithread() {
         return isMultithread;
     }
 
+    /**
+     * Sets is multithread.
+     *
+     * @param val the val
+     */
     public static void setIsMultithread(String val) {
         isMultithread = StringHelper.changeString2boolean(val);
     }
 
+    /**
+     * Is send msg boolean.
+     *
+     * @return the boolean
+     */
     public static boolean isSendMsg() {
         return sendMsg;
     }
 
+    /**
+     * Sets send msg.
+     *
+     * @param val the val
+     */
     public static void setSendMsg(String val) {
         sendMsg = StringHelper.changeString2boolean(val);
     }
 
+    /**
+     * Gets sn.
+     *
+     * @return the sn
+     */
     public static String getSN() {
         return SN;
     }
 
+    /**
+     * Sets sn.
+     *
+     * @param val the val
+     */
     public static void setSN(String val) {
         SN = val;
     }
 
+    /**
+     * Gets snpwd.
+     *
+     * @return the snpwd
+     */
     public static String getSNPWD() {
         return SNPWD;
     }
 
+    /**
+     * Sets snpwd.
+     *
+     * @param val the val
+     */
     public static void setSNPWD(String val) {
         SNPWD = val;
     }

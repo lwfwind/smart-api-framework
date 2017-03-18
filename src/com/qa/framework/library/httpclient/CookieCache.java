@@ -2,6 +2,9 @@ package com.qa.framework.library.httpclient;
 
 import org.apache.http.client.CookieStore;
 
+/**
+ * The type Cookie cache.
+ */
 public class CookieCache {
     private static ThreadLocal<CookieStore> cookieStoreThreadLocal = new ThreadLocal<CookieStore>();
 

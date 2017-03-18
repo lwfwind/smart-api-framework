@@ -3,6 +3,7 @@ package com.qa.framework.factory;
 import com.qa.framework.bean.TestData;
 import com.qa.framework.core.ParamValueProcessor;
 import com.qa.framework.core.TestBase;
+import com.qa.framework.library.httpclient.HttpMethod;
 import com.qa.framework.testnglistener.TestResultListener;
 import org.testng.ITestContext;
 import org.testng.ITestNGMethod;
@@ -54,6 +55,11 @@ public class Executor extends TestBase {
         };
     }
 
+    /**
+     * Before suite.
+     *
+     * @param context the context
+     */
     @BeforeSuite
     public void beforeSuite(ITestContext context) {
         for (ITestNGMethod testNGMethod : context.getAllTestMethods()) {
@@ -72,7 +78,7 @@ public class Executor extends TestBase {
     @Test(dataProvider = "data")
     public void testcase(TestData testData, String url, String httpMethod) {
         ParamValueProcessor.processTestData(testData);
-        String content = request(url, testData.getHeaders(), testData.getParams(), httpMethod, testData.isStoreCookie(), testData.isUseCookie());
+        String content = HttpMethod.request(url, testData.getHeaders(), testData.getParams(), httpMethod, testData.isStoreCookie(), testData.isUseCookie());
         verifyResult(testData, content);
     }
 }

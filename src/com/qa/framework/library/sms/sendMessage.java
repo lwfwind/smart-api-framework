@@ -8,7 +8,18 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Send message.
+ */
 public class sendMessage {
+    /**
+     * Send msg string.
+     *
+     * @param mobile  the mobile
+     * @param message the message
+     * @return the string
+     * @throws IOException the io exception
+     */
     public static String sendMsg(String mobile, String message) throws IOException {
         String url = "http://sdk2.entinfo.cn/webservice.asmx/SendSMS";
 
@@ -42,6 +53,14 @@ public class sendMessage {
         return params;
     }
 
+    /**
+     * Send msg string.
+     *
+     * @param mobiles the mobiles
+     * @param message the message
+     * @return the string
+     * @throws IOException the io exception
+     */
     public static String sendMsg(List<String> mobiles, String message) throws IOException {
         String afterSend = "短信结果：\n";
         for (String mobile : mobiles) {

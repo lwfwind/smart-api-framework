@@ -13,6 +13,11 @@ import java.util.Properties;
  * Created by Administrator on 2016/11/10.
  */
 public class ValueHelp {
+    /**
+     * Init config fields.
+     *
+     * @param obj the obj
+     */
     public static void initConfigFields(Object obj) {
         Properties props = new Properties();
         Class<?> clazz = obj.getClass();
@@ -73,6 +78,11 @@ public class ValueHelp {
     }
 
 
+    /**
+     * Gets properties.
+     *
+     * @return the properties
+     */
     public static Properties getProperties() {
         Properties props = new Properties();
         File file = new File(System.getProperty("user.dir") + File.separator + "config.properties");

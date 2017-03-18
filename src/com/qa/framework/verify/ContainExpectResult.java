@@ -115,15 +115,30 @@ public class ContainExpectResult implements IExpectResult {
         }
     }
 
+    /**
+     * Gets pattern match.
+     *
+     * @return the pattern match
+     */
     public Boolean getPatternMatch() {
         return patternMatch;
     }
 
-    public void setPatternMatch(Boolean patten) {
-        patternMatch = patten;
-    }
-
+    /**
+     * Sets pattern match.
+     *
+     * @param patten the patten
+     */
     public void setPatternMatch(String patten) {
         patternMatch = StringHelper.changeString2boolean(patten);
+    }
+
+    /**
+     * Sets pattern match.
+     *
+     * @param patten the patten
+     */
+    public void setPatternMatch(Boolean patten) {
+        patternMatch = patten;
     }
 }
