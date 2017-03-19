@@ -12,7 +12,7 @@ public class JsonPairCache {
     /**
      * The constant mapCache.
      */
-    private static ThreadLocal<Map<String, String>> threadLocal = new ThreadLocal<Map<String, String>>();
+    private ThreadLocal<Map<String, String>> threadLocal = new ThreadLocal<Map<String, String>>();
     /**
      * The Logger.
      */

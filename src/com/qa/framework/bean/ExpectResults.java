@@ -16,8 +16,20 @@ public class ExpectResults {
      */
     protected static final Logger logger = Logger.getLogger(ExpectResults.class);
     private List<IExpectResult> expectResults;
+    private List<Function> functionList;
     private List<Sql> sqls;
     private Map<String, Sql> stringSqlMap;
+
+    public List<Function> getFunctionList() {
+        return functionList;
+    }
+
+    public void addFunction(Function function) {
+        if (functionList == null) {
+            functionList = new ArrayList<Function>();
+        }
+        functionList.add(function);
+    }
 
     /**
      * Add expect result

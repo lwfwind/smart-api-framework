@@ -8,6 +8,7 @@ import com.qa.framework.bean.*;
 import com.qa.framework.cache.JsonPairCache;
 import com.qa.framework.library.database.DBHelper;
 import com.qa.framework.library.httpclient.HttpMethod;
+import com.qa.framework.verify.AssertTrueExpectResult;
 import com.qa.framework.verify.ContainExpectResult;
 import com.qa.framework.verify.IExpectResult;
 import com.qa.framework.verify.PairExpectResult;
@@ -139,7 +140,23 @@ public class ParamValueProcessor {
                     jsonPairCache.put(testData.getName() + "." + setup.getName() + "." + param.getName(), param.getValue());
                 }
             } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(),e);
+            }
+        }
+    }
+
+    public static void executeFunctionList(List<Function> functionList, JsonPairCache jsonPairCache){
+        if(functionList != null){
+            for(Function function : functionList){
+                try {
+                    Class cls = Class.forName(function.getClsName());
+                    Method method = cls.getDeclaredMethod(function.getMethodName());
+                    Object object = cls.newInstance();
+                    Object value = method.invoke(object);
+                    jsonPairCache.put(function.getName(), value.toString());
+                } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                    logger.error(e.getMessage(),e);
+                }
             }
         }
     }
@@ -170,18 +187,18 @@ public class ParamValueProcessor {
     }
 
     /**
-     * Execute sql.
+     * Execute sql list
      *
      * @param sqlList       the sql list
      * @param jsonPairCache the json pair cache
      */
-    public static void executeSql(List<Sql> sqlList, JsonPairCache jsonPairCache) {
+    public static void executeSqlList(List<Sql> sqlList, JsonPairCache jsonPairCache) {
         for (Sql sql : sqlList) {
             if (sql.getSqlStatement().contains("#{")) {
                 sql.setSqlStatement(handleReservedKeyChars(sql.getSqlStatement(), jsonPairCache));
             }
             logger.debug("最终的SQL为:" + sql.getSqlStatement());
-            Map<String, Object> recordInfo = DBHelper.queryOneRow(sql.getSqlStatement());//查询数据库, 将返回值按照returnValues的值放入HashMap
+            Map<String, Object> recordInfo = DBHelper.queryOneRow(sql.getSqlStatement());
             for (int i = 0; i < sql.getReturnValues().length; i++) {
                 String key = sql.getReturnValues()[i];
                 String sqlkey = sql.getName() + "." + sql.getReturnValues()[i];
@@ -192,7 +209,7 @@ public class ParamValueProcessor {
                 } else {
                     value = recordInfo.get(key).toString();
                 }
-                jsonPairCache.put(sqlkey, value);                         //将sql.属性的值存入缓存
+                jsonPairCache.put(sqlkey, value);
             }
         }
 
@@ -274,8 +291,8 @@ public class ParamValueProcessor {
             testData.setUseCookie(true);
             for (Setup setup : testData.getSetupList()) {
                 logger.info("Process Setup in xml-" + testData.getCurrentFileName() + " TestData-" + testData.getName() + " Setup-" + setup.getName());
-                String content = HttpMethod.request(setup.getUrl(), setup.getHeaders(), setup.getParams(), setup.getHttpMethod(), setup.isStoreCookie(), setup.isUseCookie());
-                Map<String, String> pairMaps = JsonHelper.parseJsonToPairs(content);
+                String response = HttpMethod.request(setup.getUrl(), setup.getHeaders(), setup.getParams(), setup.getHttpMethod(), setup.isStoreCookie(), setup.isUseCookie());
+                Map<String, String> pairMaps = JsonHelper.parseJsonToPairs(response);
                 if (pairMaps.size() > 0) {
                     for (Object o : pairMaps.entrySet()) {
                         Map.Entry entry = (Map.Entry) o;
@@ -392,7 +409,11 @@ public class ParamValueProcessor {
                     if (pair.getValue().contains("#{")) {
                         pair.setValue(handleReservedKeyChars(pair.getValue(), jsonPairCache));
                     }
-
+            } else if (result instanceof AssertTrueExpectResult) {
+                AssertTrueExpectResult assertTrueExpectResult = (AssertTrueExpectResult) result;
+                if (assertTrueExpectResult.getTextStatement().contains("#{")) {
+                    assertTrueExpectResult.setTextStatement(handleReservedKeyChars(assertTrueExpectResult.getTextStatement(), jsonPairCache));
+                }
             } else {
                 throw new IllegalArgumentException("没有匹配的期望结果集！");
             }
@@ -404,12 +425,24 @@ public class ParamValueProcessor {
      *
      * @param testData      the test data
      */
-    public static void processExpectResultAfterExecute(TestData testData) {
+    public static void processExpectResultAfterExecute(TestData testData, String response) {
         JsonPairCache jsonPairCache = new JsonPairCache();
+        Map<String, String> pairMaps = JsonHelper.parseJsonToPairs(response);
+        if (pairMaps.size() > 0) {
+            for (Object o : pairMaps.entrySet()) {
+                Map.Entry entry = (Map.Entry) o;
+                String key = (String) entry.getKey();
+                String val = (String) entry.getValue();
+                jsonPairCache.put(key, val);
+                jsonPairCache.put(testData.getName() + "." + key, val);
+            }
+        }
         ExpectResults expectResults = testData.getExpectResults();
         if (expectResults.getSqls() != null) {
-            List<Sql> sqlList = expectResults.getSqls();
-            executeSql(sqlList, jsonPairCache);
+            executeSqlList(expectResults.getSqls(), jsonPairCache);
+        }
+        if(expectResults.getFunctionList() != null){
+            executeFunctionList(expectResults.getFunctionList(),jsonPairCache);
         }
         for (IExpectResult result : expectResults.getExpectResults()) {
             if (result instanceof ContainExpectResult) {
@@ -422,6 +455,11 @@ public class ParamValueProcessor {
                 Pair pair = pairExpectResult.getPair();
                 if (pair.getValue().contains("#{")) {
                     pair.setValue(handleReservedKeyChars(pair.getValue(), jsonPairCache));
+                }
+            } else if (result instanceof AssertTrueExpectResult) {
+                AssertTrueExpectResult assertTrueExpectResult = (AssertTrueExpectResult) result;
+                if (assertTrueExpectResult.getTextStatement().contains("#{")) {
+                    assertTrueExpectResult.setTextStatement(handleReservedKeyChars(assertTrueExpectResult.getTextStatement(), jsonPairCache));
                 }
             } else {
                 throw new IllegalArgumentException("没有匹配的期望结果集！");

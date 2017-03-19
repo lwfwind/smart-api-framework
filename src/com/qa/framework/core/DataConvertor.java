@@ -91,6 +91,8 @@ public class DataConvertor {
             className = verifyPackage + "." + "ContainExpectResult";
         } else if ("Pair".equalsIgnoreCase(element.getName()) && element.getParent().getName().equals("ExpectResults")) {
             className = verifyPackage + "." + "PairExpectResult";
+        } else if ("AssertTrue".equalsIgnoreCase(element.getName())){
+            className = verifyPackage + "." + "AssertTrueExpectResult";
         } else {
             className = beanPackage + "." + element.getName();  //组成className的完整路径
         }

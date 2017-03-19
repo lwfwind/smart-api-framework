@@ -121,19 +121,6 @@ public class Pair {
         this.sort = sort;
     }
 
-    /**
-     * Find value string.
-     *
-     * @param msg the msg
-     * @return the string
-     */
-    public String findValue(String msg) {
-        if (msg.equalsIgnoreCase(key)) {
-            return getValue();
-        }
-        return null;
-    }
-
 
 
     /**

@@ -54,17 +54,15 @@ public class PairExpectResult implements IExpectResult {
     @SuppressWarnings("unchecked")
     public void compareReal(String content) {
         Map<String, String> maps = JsonHelper.parseJsonToPairs(content);
-
-        String expectCode = pair.findValue(pair.getKey());
-        String actualData = maps.get(pair.getKey());
+        String expectValue = pair.getValue();
+        String actualValue = maps.get(pair.getKey());
         if (pair.getPatternMatch()) {
-            logger.debug("需验证的正则表达式：" + pair.getValue());
-            Pattern pattern = Pattern.compile(pair.getValue());
-            Matcher matcher = pattern.matcher(actualData);
-            Assert.assertTrue(matcher.matches(), String.format("期望返回:%s, 实际返回:%s", expectCode, actualData));
-            logger.info(matcher.matches() + "====" + expectCode.equals(actualData));
+            logger.debug("需验证的正则表达式：" + expectValue);
+            Pattern pattern = Pattern.compile(expectValue);
+            Matcher matcher = pattern.matcher(actualValue);
+            Assert.assertTrue(matcher.matches(), String.format("期望返回:%s, 实际返回:%s", expectValue, actualValue));
         } else {
-            Assert.assertTrue(expectCode.trim().equals(actualData.trim()), String.format("期望返回:%s, 实际返回:%s", expectCode, actualData));
+            Assert.assertTrue(expectValue.trim().equals(actualValue.trim()), String.format("期望返回:%s, 实际返回:%s", expectValue, actualValue));
         }
 
     }

@@ -23,14 +23,39 @@ DataConfig -- config test url and httpMethod
             Header -- config Header parameters
             Cookie -- config Cookie parameters
         Param -- config test parameters
-        ExpectResult -- config expect result
+        ExpectResults -- config expect result
             Contain	-- assert actual result contain specify string
             Pair -- assert actual result contain specify key-value
+            AssertTrue -- assert expression is true
         After -- reset environment
 ```
 ## Example
+### &nbsp;&nbsp; Support function/sql action in before/after
+```xml
+<DataConfig url="V1/Students/login" httpMethod="post">
+    <TestData name="data1" desc="更改手机号登录">
+        <Before>
+            <Function clsName="test.java.LogicHandler" methodName="changeStudentsMobile"/>
+            <Sql>update ebk_students set mobile=18078788787 where id=123456;</Sql>
+        </Before>
+        <Param name="username" value="#{sql1.mobile}">
+            <Sql name="sql">select trim(mobile) as mobile,password from ebk_students where id=123456;
+            </Sql>
+        </Param>
+        <Param name="password" value="#{sql.password}" />
+        <ExpectResults>
+            <Pair>errorCode:200</Pair>
+            <Pair>errorMsg:登录成功</Pair>
+        </ExpectResults>
+        <After>
+            <Function clsName="test.java.LogicHandler" methodName="resertStudentMobile"/>
+            <Sql>update ebk_students set mobile=888888888 where id=123456;</Sql>
+        </After>
+    </TestData>
+<DataConfig>
+```
 
-### &nbsp;&nbsp; 1.support execute setup action before execution of test method
+### &nbsp;&nbsp; Support execute setup action before execution of test method
 ```xml
 <DataConfig url="V1/ClassRecords/bookClass/" httpMethod="put">
   <TestData name="data1" desc="约课成功">
@@ -47,15 +72,15 @@ DataConfig -- config test url and httpMethod
              and free_try=0 ;
             </Sql>
         </Param>
-        <ExpectResult>
+        <ExpectResults>
             <Pair>errorCode:200</Pair>
             <Pair>errorMsg:约课成功</Pair>
-        </ExpectResult>
+        </ExpectResults>
     </TestData>
 </DataConfig>
 ```
 
-### &nbsp;&nbsp; 2.support get param's value from setup action response
+### &nbsp;&nbsp; Support get param's value from setup action response
 ```xml
 <DataConfig url="V1/ClassRecords/bookClass/" httpMethod="put">
   <TestData name="data1" desc="约课成功">
@@ -68,15 +93,15 @@ DataConfig -- config test url and httpMethod
             <Param name="password" value="#{sql1.password}" />
         </Setup>
         <Param name="cid" value="#{setup1.id}" />
-        <ExpectResult>
+        <ExpectResults>
             <Pair>errorCode:200</Pair>
             <Pair>errorMsg:约课成功</Pair>
-        </ExpectResult>
+        </ExpectResults>
     </TestData>
 </DataConfig>
 ```
 
-### &nbsp;&nbsp; 3.support to get param's value from sql
+### &nbsp;&nbsp; Support to get param's value from sql/function
 ```xml
 <DataConfig url="V1/Students/login" httpMethod="post">
     <TestData name="data3" desc="登录成功">
@@ -86,31 +111,51 @@ DataConfig -- config test url and httpMethod
             </Sql>
         </Param>
         <Param name="password" value="e10adc3949ba59abbe56e057f20f883e" />
-        <ExpectResult>
+        <Param name="code">
+            <Function clsName="test.java.LogicHandler" methodName="codeGenerator" />
+        </Param>
+        <ExpectResults>
             <Pair>errorCode:200</Pair>
             <Pair>errorMsg:登录成功</Pair>
-        </ExpectResult>
+        </ExpectResults>
     </TestData>  
 <DataConfig>
 ```
-    
-### &nbsp;&nbsp; 4.support to get param's value from function
+
+### &nbsp;&nbsp; Support Pair/Contain/AssertTrue type for expect results
 ```xml
 <DataConfig url="V1/Students/login" httpMethod="post">
-     <TestData name="data1" desc="用户不存在">
-         <Param name="username">
-             <Function clsName="test.java.LogicHandler" methodName="mobileGenerator" />
-         </Param>
-         <Param name="password" value="e10adc3949ba59abbe56e057f20f883e" />
-         <ExpectResult>
-             <Pair>errorCode:404</Pair>
-             <Pair>errorMsg:用户不存在</Pair>
-         </ExpectResult>
-     </TestData>
-</DataConfig>
+    <TestData name="data3" desc="登录成功">
+        <ExpectResults>
+            <Pair>errorCode:#{code}</Pair>
+            <Contain>.*("id":"#{sql.mobile}").*</Contain>
+            <AssertTrue>"#{code}"=="#{sql.mobile}"</AssertTrue>
+            <Sql name="sql">select trim(mobile) as mobile from ebk_students where password =
+                            'e10adc3949ba59abbe56e057f20f883e'  and tx_sig_expiredtime> curdate()+86400;
+                        </Sql>
+            <Function name="code" clsName="test.java.LogicHandler" methodName="codeGenerator" />
+        </ExpectResults>
+    </TestData>  
+<DataConfig>
 ```
 
-### &nbsp;&nbsp; 5.support regular expression for expect result in contain/pair both 
+### &nbsp;&nbsp; Support sql/function for expect results
+```xml
+<DataConfig url="V1/Students/login" httpMethod="post">
+    <TestData name="data3" desc="登录成功">
+        <ExpectResults>
+            <Pair>errorCode:#{code}</Pair>
+            <Contain>.*("id":"#{sql.mobile}").*</Contain>
+            <Sql name="sql">select trim(mobile) as mobile from ebk_students where password =
+                            'e10adc3949ba59abbe56e057f20f883e'  and tx_sig_expiredtime> curdate()+86400;
+                        </Sql>
+            <Function name="code" clsName="test.java.LogicHandler" methodName="codeGenerator" />
+        </ExpectResults>
+    </TestData>  
+<DataConfig>
+```
+
+### &nbsp;&nbsp; Support regular expression for expect result in contain/pair both 
 ```xml
 <DataConfig url="V2/ClassRecords/classDetail/" httpMethod="get">
     <TestData name="GetClassDetailSuccess" desc="获取数据成功">
@@ -121,41 +166,16 @@ DataConfig -- config test url and httpMethod
         </Param>
         <Param name="password" value="#{sql.password}" />
         <Param name="cid" value="#{sql.cid}" />
-        <ExpectResult>
+        <ExpectResults>
             <Pair>errorCode:200</Pair>
             <Pair>errorMsg:老师已在(QQ|Skype)上等你，快去上课吧</Pair>
             <Contain>.*("id":"#{sql.cid}").*("begin_time":"#{sql.begin_time}").*</Contain>
-        </ExpectResult>
+        </ExpectResults>
     </TestData>
 </DataConfig>
 ```
 
-### &nbsp;&nbsp; 6.support function/sql action in before/after
-```xml
-<DataConfig url="V1/Students/login" httpMethod="post">
-    <TestData name="data1" desc="更改手机号登录">
-        <Before>
-            <Function clsName="test.java.LogicHandler" methodName="changeStudentsMobile"/>
-            <Sql>update ebk_students set mobile=18078788787 where id=123456;</Sql>
-        </Before>
-        <Param name="username" value="#{sql1.mobile}">
-            <Sql name="sql">select trim(mobile) as mobile,password from ebk_students where id=123456;
-            </Sql>
-        </Param>
-        <Param name="password" value="#{sql.password}" />
-        <ExpectResult>
-            <Pair>errorCode:200</Pair>
-            <Pair>errorMsg:登录成功</Pair>
-        </ExpectResult>
-        <After>
-            <Function clsName="test.java.LogicHandler" methodName="resertStudentMobile"/>
-            <Sql>update ebk_students set mobile=888888888 where id=123456;</Sql>
-        </After>
-    </TestData>
-<DataConfig>
-```
-
-### &nbsp;&nbsp; 7.support execute repeated times(invocationCount)
+### &nbsp;&nbsp; Support execute repeated times(invocationCount)
 ```xml
 <DataConfig url="V1/Students/login" httpMethod="post" invocationCount="2000">
     <TestData name="data1" desc="更改手机号登录">
@@ -164,15 +184,15 @@ DataConfig -- config test url and httpMethod
             </Sql>
         </Param>
         <Param name="password" value="#{sql.password}" />
-        <ExpectResult>
+        <ExpectResults>
             <Pair>errorCode:200</Pair>
             <Pair>errorMsg:登录成功</Pair>
-        </ExpectResult>
+        </ExpectResults>
     </TestData>
 <DataConfig>
 ```
 
-### &nbsp;&nbsp; 8.support request headers
+### &nbsp;&nbsp; Support request headers
 ```xml
 <DataConfig url="V1/Students/login" httpMethod="post">
     <TestData name="data1" desc="更改手机号登录">
@@ -181,10 +201,10 @@ DataConfig -- config test url and httpMethod
             <Cookie name="PHPSESSIONID" value="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
         </Headers>
         <Param name="key" value="value" />
-        <ExpectResult>
+        <ExpectResults>
             <Pair>errorCode:200</Pair>
             <Pair>errorMsg:成功</Pair>
-        </ExpectResult>
+        </ExpectResults>
     </TestData>
 <DataConfig>
 ```

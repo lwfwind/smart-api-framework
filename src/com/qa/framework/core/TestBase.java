@@ -2,6 +2,7 @@ package com.qa.framework.core;
 
 import com.qa.framework.bean.*;
 import com.qa.framework.library.database.DBHelper;
+import com.qa.framework.verify.AssertTrueExpectResult;
 import com.qa.framework.verify.ContainExpectResult;
 import com.qa.framework.verify.IExpectResult;
 import com.qa.framework.verify.PairExpectResult;
@@ -25,18 +26,21 @@ public abstract class TestBase {
      * Verify result. 验证结果
      *
      * @param testData the test data
-     * @param content  the content
+     * @param response  the response
      */
-    public void verifyResult(TestData testData, String content) {
-        ParamValueProcessor.processExpectResultAfterExecute(testData);
+    public void verifyResult(TestData testData, String response) {
+        ParamValueProcessor.processExpectResultAfterExecute(testData,response);
         ExpectResults expectResult = testData.getExpectResults();
         for (IExpectResult iExpectResult : expectResult.getExpectResults()) {
             if (iExpectResult instanceof ContainExpectResult) {
                 ContainExpectResult containKeyExpectResult = (ContainExpectResult) iExpectResult;
-                containKeyExpectResult.compareReal(content);
+                containKeyExpectResult.compareReal(response);
             } else if (iExpectResult instanceof PairExpectResult) {
                 PairExpectResult mapExpectResult = (PairExpectResult) iExpectResult;
-                mapExpectResult.compareReal(content);
+                mapExpectResult.compareReal(response);
+            } else if (iExpectResult instanceof AssertTrueExpectResult) {
+                AssertTrueExpectResult assertTrueExpectResult = (AssertTrueExpectResult) iExpectResult;
+                assertTrueExpectResult.compareReal(response);
             } else {
                 throw new IllegalArgumentException("没有匹配的期望结果集！");
             }

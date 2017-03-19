@@ -56,6 +56,10 @@
             <id>codelds</id>
             <url>https://code.lds.org/nexus/content/groups/main-repo</url>
         </repository>
+        <repository>
+            <id>oss</id>
+            <url>https://oss.sonatype.org/content/repositories/releases</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -81,7 +85,7 @@
         <dependency>
             <groupId>com.github.lwfwind.common</groupId>
             <artifactId>java-common-helper</artifactId>
-            <version>2.1</version>
+            <version>2.2</version>
         </dependency>
 
 

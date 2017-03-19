@@ -1,9 +1,15 @@
 package com.qa.framework.bean;
 
-/**
- * Created by apple on 15/11/23.
- */
 public class Function {
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    private String name;
     private String clsName;
     private String methodName;
 
