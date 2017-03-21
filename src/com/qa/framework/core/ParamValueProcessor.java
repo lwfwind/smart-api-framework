@@ -173,7 +173,7 @@ public class ParamValueProcessor {
         if (param.getSqls() != null) {
             List<Sql> sqlList = param.getSqls();
             executeSql(sqlList, param, setup, testData, jsonPairCache);
-            if (param.getValue().contains("#{")) {
+            if (param.getValue().contains("#[")) {
                 param.setValue(handleReservedKeyChars(param.getValue(), jsonPairCache));
             }
 
@@ -194,7 +194,7 @@ public class ParamValueProcessor {
      */
     public static void executeSqlList(List<Sql> sqlList, JsonPairCache jsonPairCache) {
         for (Sql sql : sqlList) {
-            if (sql.getSqlStatement().contains("#{")) {
+            if (sql.getSqlStatement().contains("#[")) {
                 sql.setSqlStatement(handleReservedKeyChars(sql.getSqlStatement(), jsonPairCache));
             }
             logger.debug("最终的SQL为:" + sql.getSqlStatement());
@@ -216,7 +216,7 @@ public class ParamValueProcessor {
     }
 
     /**
-     * Execute sql string. 处理sql中#{}, 以及执行相应的sql, 生成最后的结果
+     * Execute sql string. 处理sql中#[}, 以及执行相应的sql, 生成最后的结果
      *
      * @param sqlList       the sqlList  sql列表
      * @param param         the param      当前传入的参数
@@ -227,7 +227,7 @@ public class ParamValueProcessor {
      */
     public static String executeSql(List<Sql> sqlList, Param param, Setup setup, TestData testData, JsonPairCache jsonPairCache) {
         for (Sql sql : sqlList) {
-            if (sql.getSqlStatement().contains("#{")) {
+            if (sql.getSqlStatement().contains("#[")) {
                 sql.setSqlStatement(handleReservedKeyChars(sql.getSqlStatement(), jsonPairCache));
             }
             logger.debug("最终的SQL为:" + sql.getSqlStatement());
@@ -274,7 +274,7 @@ public class ParamValueProcessor {
      */
     public static void processParamFromSetup(TestData testData, Param param, JsonPairCache jsonPairCache) {
         if (testData.getSetupList() != null && param.getSqls() == null && param.getFunction() == null && param.getDateStamp() == null) {
-            if (param.getValue().contains("#{")) {
+            if (param.getValue().contains("#[")) {
                 param.setValue(handleReservedKeyChars(param.getValue(), jsonPairCache));
             }
         }
@@ -400,18 +400,18 @@ public class ParamValueProcessor {
         for (IExpectResult result : expectResult.getExpectResults()) {
             if (result instanceof ContainExpectResult) {
                 ContainExpectResult containExpectResult = (ContainExpectResult) result;
-                if (containExpectResult.getTextStatement().contains("#{")) {
+                if (containExpectResult.getTextStatement().contains("#[")) {
                     containExpectResult.setTextStatement(handleReservedKeyChars(containExpectResult.getTextStatement(), jsonPairCache));
                 }
             } else if (result instanceof PairExpectResult) {
                 PairExpectResult pairExpectResult = (PairExpectResult) result;
                     Pair pair = pairExpectResult.getPair();
-                    if (pair.getValue().contains("#{")) {
+                    if (pair.getValue().contains("#[")) {
                         pair.setValue(handleReservedKeyChars(pair.getValue(), jsonPairCache));
                     }
             } else if (result instanceof AssertTrueExpectResult) {
                 AssertTrueExpectResult assertTrueExpectResult = (AssertTrueExpectResult) result;
-                if (assertTrueExpectResult.getTextStatement().contains("#{")) {
+                if (assertTrueExpectResult.getTextStatement().contains("#[")) {
                     assertTrueExpectResult.setTextStatement(handleReservedKeyChars(assertTrueExpectResult.getTextStatement(), jsonPairCache));
                 }
             } else {
@@ -447,18 +447,18 @@ public class ParamValueProcessor {
         for (IExpectResult result : expectResults.getExpectResults()) {
             if (result instanceof ContainExpectResult) {
                 ContainExpectResult containExpectResult = (ContainExpectResult) result;
-                if (containExpectResult.getTextStatement().contains("#{")) {
+                if (containExpectResult.getTextStatement().contains("#[")) {
                     containExpectResult.setTextStatement(handleReservedKeyChars(containExpectResult.getTextStatement(), jsonPairCache));
                 }
             } else if (result instanceof PairExpectResult) {
                 PairExpectResult pairExpectResult = (PairExpectResult) result;
                 Pair pair = pairExpectResult.getPair();
-                if (pair.getValue().contains("#{")) {
+                if (pair.getValue().contains("#[")) {
                     pair.setValue(handleReservedKeyChars(pair.getValue(), jsonPairCache));
                 }
             } else if (result instanceof AssertTrueExpectResult) {
                 AssertTrueExpectResult assertTrueExpectResult = (AssertTrueExpectResult) result;
-                if (assertTrueExpectResult.getTextStatement().contains("#{")) {
+                if (assertTrueExpectResult.getTextStatement().contains("#[")) {
                     assertTrueExpectResult.setTextStatement(handleReservedKeyChars(assertTrueExpectResult.getTextStatement(), jsonPairCache));
                 }
             } else {
@@ -468,14 +468,14 @@ public class ParamValueProcessor {
     }
 
     /**
-     * 处理所有的保留关键字符#{}
+     * 处理所有的保留关键字符#[}
      *
      * @param oriContent    the ori content
      * @param jsonPairCache the json pair cache
      * @return the string
      */
     public static String handleReservedKeyChars(String oriContent, JsonPairCache jsonPairCache) {
-        String pattern = "#\\{.*?\\}";
+        String pattern = "#\\[.*?\\]";
         List<String> lists = StringHelper.find(oriContent, pattern);
         String[] replacedStr = new String[lists.size()];
         int k = 0;
