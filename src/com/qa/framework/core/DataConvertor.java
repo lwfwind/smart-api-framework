@@ -91,7 +91,7 @@ public class DataConvertor {
             className = verifyPackage + "." + "ContainExpectResult";
         } else if ("Pair".equalsIgnoreCase(element.getName()) && element.getParent().getName().equals("ExpectResults")) {
             className = verifyPackage + "." + "PairExpectResult";
-        } else if ("AssertTrue".equalsIgnoreCase(element.getName())){
+        } else if ("AssertTrue".equalsIgnoreCase(element.getName())) {
             className = verifyPackage + "." + "AssertTrueExpectResult";
         } else {
             className = beanPackage + "." + element.getName();  //组成className的完整路径
@@ -120,34 +120,12 @@ public class DataConvertor {
                 }
             }
             //处理sql与ExpectResult
-            String nodeText = element.getText().trim();
-            String[] texts = nodeText.split("\\n");            //getText()的形式可能为"\n  \n   \n",所以先根据"\\n"划分
-            String sql = "";
-            for (String text : texts) {
-                if (!"".equalsIgnoreCase(text.trim())) {
-                    Field[] fields = clazz.getDeclaredFields();
-                    Field statementField = null;
-                    boolean flag = false;                     //查看该类中有没有待statement字段的属性, 如果有, 则赋值
-                    for (Field f : fields) {
-                        if (f.getName().contains("Statement")) {
-                            statementField = f;
-                            if ((beanPackage + ".Sql").equals(className)) {
-                                if (texts[texts.length - 1].equals(text)) {
-                                    text = sql + " " + text;
-                                    flag = true;
-                                    break;
-                                } else {
-                                    sql = sql + " " + text;
-                                }
-                            } else {
-                                flag = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (flag) {
-                        ReflectHelper.setMethod(elementObj, statementField.getName(), text, String.class);
-                    }
+            String nodeText = element.getText().trim().replaceAll("\\n", " ");
+            Field[] fields = clazz.getDeclaredFields();
+            for (Field field : fields) {
+                //查看该类中有没有待statement字段的属性, 如果有, 则赋值
+                if (field.getName().contains("Statement")) {
+                    ReflectHelper.setMethod(elementObj, field.getName(), nodeText, String.class);
                 }
             }
             //递归

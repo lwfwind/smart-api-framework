@@ -140,14 +140,14 @@ public class ParamValueProcessor {
                     jsonPairCache.put(testData.getName() + "." + setup.getName() + "." + param.getName(), param.getValue());
                 }
             } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                logger.error(e.getMessage(),e);
+                logger.error(e.getMessage(), e);
             }
         }
     }
 
-    public static void executeFunctionList(List<Function> functionList, JsonPairCache jsonPairCache){
-        if(functionList != null){
-            for(Function function : functionList){
+    public static void executeFunctionList(List<Function> functionList, JsonPairCache jsonPairCache) {
+        if (functionList != null) {
+            for (Function function : functionList) {
                 try {
                     Class cls = Class.forName(function.getClsName());
                     Method method = cls.getDeclaredMethod(function.getMethodName());
@@ -155,7 +155,7 @@ public class ParamValueProcessor {
                     Object value = method.invoke(object);
                     jsonPairCache.put(function.getName(), value.toString());
                 } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                    logger.error(e.getMessage(),e);
+                    logger.error(e.getMessage(), e);
                 }
             }
         }
@@ -405,10 +405,10 @@ public class ParamValueProcessor {
                 }
             } else if (result instanceof PairExpectResult) {
                 PairExpectResult pairExpectResult = (PairExpectResult) result;
-                    Pair pair = pairExpectResult.getPair();
-                    if (pair.getValue().contains("#[")) {
-                        pair.setValue(handleReservedKeyChars(pair.getValue(), jsonPairCache));
-                    }
+                Pair pair = pairExpectResult.getPair();
+                if (pair.getValue().contains("#[")) {
+                    pair.setValue(handleReservedKeyChars(pair.getValue(), jsonPairCache));
+                }
             } else if (result instanceof AssertTrueExpectResult) {
                 AssertTrueExpectResult assertTrueExpectResult = (AssertTrueExpectResult) result;
                 if (assertTrueExpectResult.getTextStatement().contains("#[")) {
@@ -423,7 +423,7 @@ public class ParamValueProcessor {
     /**
      * Process expect result.
      *
-     * @param testData      the test data
+     * @param testData the test data
      */
     public static void processExpectResultAfterExecute(TestData testData, String response) {
         JsonPairCache jsonPairCache = new JsonPairCache();
@@ -441,8 +441,8 @@ public class ParamValueProcessor {
         if (expectResults.getSqls() != null) {
             executeSqlList(expectResults.getSqls(), jsonPairCache);
         }
-        if(expectResults.getFunctionList() != null){
-            executeFunctionList(expectResults.getFunctionList(),jsonPairCache);
+        if (expectResults.getFunctionList() != null) {
+            executeFunctionList(expectResults.getFunctionList(), jsonPairCache);
         }
         for (IExpectResult result : expectResults.getExpectResults()) {
             if (result instanceof ContainExpectResult) {
@@ -476,59 +476,60 @@ public class ParamValueProcessor {
      */
     public static String handleReservedKeyChars(String oriContent, JsonPairCache jsonPairCache) {
         String pattern = "#\\[.*?\\]";
-        List<String> lists = StringHelper.find(oriContent, pattern);
-        String[] replacedStr = new String[lists.size()];
+        List<String> reservedKeyList = StringHelper.find(oriContent, pattern);
+        List<String> unReservedKeyList = Arrays.asList(oriContent.split(pattern));
+        List<String> newList = new ArrayList<>();
         int k = 0;
-        for (String list : lists) {
-            String reservedChars = list.substring(2, list.length() - 1);
-            if (reservedChars.contains("+") || reservedChars.contains("-") || reservedChars.contains("*") || reservedChars.contains("/")) {
-                List<String> keyList = new ArrayList<String>();
-                for (String key : jsonPairCache.getMap().keySet()) {
-                    keyList.add(key);
-                }
-                Collections.sort(keyList, new Comparator<String>() {
-                    public int compare(String key1, String key2) {
-                        return key2.length() - key1.length();
-                    }
-                });
-                for (String key : keyList) {
-                    if (reservedChars.contains(key)) {
-                        reservedChars = reservedChars.replace(key, jsonPairCache.getValue(key));
-                    }
-                }
-                try {
-                    replacedStr[k++] = DynamicCompileHelper.eval(reservedChars).toString();
-                } catch (Exception e) {
-                    logger.error(e.getMessage(),e);
-                }
-            }
-            else {
-                replacedStr[k++] = jsonPairCache.getValue(reservedChars);
-            }
+        List<String> cacheList = new ArrayList<String>();
+        for (String key : jsonPairCache.getMap().keySet()) {
+            cacheList.add(key);
         }
-        StringBuilder newContent = new StringBuilder();
-        String[] unReservedKeyContentList = oriContent.split(pattern);
-        if (replacedStr.length > 0 && replacedStr[0] != null) {
-            if (unReservedKeyContentList.length == 0) {
-                newContent.append(replacedStr[0]);
+        Collections.sort(cacheList, new Comparator<String>() {
+            public int compare(String key1, String key2) {
+                return key2.length() - key1.length();
+            }
+        });
+        int i = 0;
+        if (reservedKeyList.size() > 0) {
+            if (unReservedKeyList.size() > 0) {
+                for (String key : unReservedKeyList) {
+                    newList.add(key);
+                    if (i < reservedKeyList.size()) {
+                        newList.add(reservedKeyList.get(i));
+                        i++;
+                    }
+                }
             } else {
-                if (unReservedKeyContentList.length > replacedStr.length) {
-                    newContent.append(unReservedKeyContentList[0]);
-                    for (int i = 1; i < unReservedKeyContentList.length; i++) {
-                        newContent.append(replacedStr[i - 1]);
-                        newContent.append(unReservedKeyContentList[i]);
+                newList = reservedKeyList;
+            }
+            List<String> finalList = new ArrayList<>();
+            for (String str : newList) {
+                if (str.startsWith("#[")) {
+                    String reservedChars = str.substring(2, str.length() - 1);
+                    boolean isFound = false;
+                    for (String cache : cacheList) {
+                        if (!StringHelper.isInteger(cache) && reservedChars.contains(cache)) {
+                            reservedChars = reservedChars.replace(cache, jsonPairCache.getValue(cache));
+                            isFound = true;
+                        }
+                    }
+                    if (isFound) {
+                        try {
+                            String result = DynamicCompileHelper.eval(reservedChars).toString();
+                            finalList.add(result);
+                        } catch (Exception e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    } else {
+                        finalList.add(str);
                     }
                 } else {
-                    for (int i = 0; i < unReservedKeyContentList.length; i++) {
-                        newContent.append(unReservedKeyContentList[i]);
-                        newContent.append(replacedStr[i]);
-                    }
+                    finalList.add(str);
                 }
             }
-            return newContent.toString();
-        } else {
-            return oriContent;
+            return StringHelper.join(finalList, "");
         }
+        return oriContent;
     }
 }
 

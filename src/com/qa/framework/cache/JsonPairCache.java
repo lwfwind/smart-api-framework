@@ -10,14 +10,13 @@ import java.util.Map;
  */
 public class JsonPairCache {
     /**
-     * The constant mapCache.
-     */
-    private ThreadLocal<Map<String, String>> threadLocal = new ThreadLocal<Map<String, String>>();
-    /**
      * The Logger.
      */
     protected Logger logger = Logger.getLogger(JsonPairCache.class);
-
+    /**
+     * The constant mapCache.
+     */
+    private Map<String, String> pairMaps = new HashMap<String, String>();
 
     /**
      * Gets map.
@@ -25,7 +24,7 @@ public class JsonPairCache {
      * @return the map
      */
     public Map<String, String> getMap() {
-        return threadLocal.get();
+        return pairMaps;
     }
 
     /**
@@ -35,12 +34,10 @@ public class JsonPairCache {
      * @param value the value
      */
     public void put(String key, String value) {
-        Map<String, String> mapCache = threadLocal.get();
-        if (mapCache == null) {
-            mapCache = new HashMap<String, String>();
+        if (pairMaps == null) {
+            pairMaps = new HashMap<String, String>();
         }
-        mapCache.put(key, value);
-        threadLocal.set(mapCache);
+        pairMaps.put(key, value);
     }
 
     /**
@@ -50,8 +47,8 @@ public class JsonPairCache {
      * @return the value
      */
     public String getValue(String key) {
-        logger.info("取出的Key为" + key + " value为" + threadLocal.get().get(key));
-        return threadLocal.get().get(key);
+        logger.info("取出的Key为" + key + " value为" + pairMaps.get(key));
+        return pairMaps.get(key);
     }
 
 }

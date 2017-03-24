@@ -1,11 +1,8 @@
 package com.qa.framework.verify;
 
 import com.library.common.DynamicCompileHelper;
-import com.library.common.StringHelper;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
-
-import java.util.regex.Pattern;
 
 public class AssertTrueExpectResult implements IExpectResult {
     /**
@@ -41,7 +38,7 @@ public class AssertTrueExpectResult implements IExpectResult {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        logger.info("eval:"+this.textStatement+" return "+ret);
-        Assert.assertEquals(ret,"true");
+        logger.info("eval:" + this.textStatement + " return " + ret);
+        Assert.assertEquals(ret, "true");
     }
 }

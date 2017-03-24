@@ -26,10 +26,10 @@ public abstract class TestBase {
      * Verify result. 验证结果
      *
      * @param testData the test data
-     * @param response  the response
+     * @param response the response
      */
     public void verifyResult(TestData testData, String response) {
-        ParamValueProcessor.processExpectResultAfterExecute(testData,response);
+        ParamValueProcessor.processExpectResultAfterExecute(testData, response);
         ExpectResults expectResult = testData.getExpectResults();
         for (IExpectResult iExpectResult : expectResult.getExpectResults()) {
             if (iExpectResult instanceof ContainExpectResult) {

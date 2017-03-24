@@ -1,6 +1,10 @@
 package com.qa.framework.bean;
 
 public class Function {
+    private String name;
+    private String clsName;
+    private String methodName;
+
     public String getName() {
         return name;
     }
@@ -8,10 +12,6 @@ public class Function {
     public void setName(String name) {
         this.name = name;
     }
-
-    private String name;
-    private String clsName;
-    private String methodName;
 
     /**
      * Gets cls name.

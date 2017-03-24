@@ -1,14 +1,9 @@
 package com.qa.framework.verify;
 
 import com.library.common.StringHelper;
-import com.qa.framework.bean.Sql;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -64,8 +59,8 @@ public class ContainExpectResult implements IExpectResult {
      *
      * @param patten the patten
      */
-    public void setPatternMatch(String patten) {
-        patternMatch = StringHelper.changeString2boolean(patten);
+    public void setPatternMatch(Boolean patten) {
+        patternMatch = patten;
     }
 
     /**
@@ -73,7 +68,7 @@ public class ContainExpectResult implements IExpectResult {
      *
      * @param patten the patten
      */
-    public void setPatternMatch(Boolean patten) {
-        patternMatch = patten;
+    public void setPatternMatch(String patten) {
+        patternMatch = StringHelper.changeString2boolean(patten);
     }
 }
