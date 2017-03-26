@@ -65,18 +65,6 @@
     <dependencies>
 
         <dependency>
-            <groupId>net.sourceforge.jexcelapi</groupId>
-            <artifactId>jxl</artifactId>
-            <version>2.6.12</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jclouds</groupId>
-            <artifactId>jclouds-antcontrib</artifactId>
-            <version>1.5.4</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>6.8.5</version>
@@ -86,13 +74,6 @@
             <groupId>com.github.lwfwind.common</groupId>
             <artifactId>java-common-helper</artifactId>
             <version>2.3</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>com.thoughtworks.qdox</groupId>
-            <artifactId>qdox</artifactId>
-            <version>1.12.1</version>
         </dependency>
 
         <dependency>
@@ -167,16 +148,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.codehaus.jtstand</groupId>
-            <artifactId>jtstand-desktop</artifactId>
-            <version>1.2</version>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.json-lib</groupId>
-            <artifactId>json-lib</artifactId>
-            <version>2.4</version>
-            <classifier>jdk15</classifier>
+            <groupId>com.thoughtworks.qdox</groupId>
+            <artifactId>qdox</artifactId>
+            <version>1.12.1</version>
         </dependency>
 
     </dependencies>

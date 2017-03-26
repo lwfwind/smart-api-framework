@@ -9,28 +9,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: net.sourceforge.jexcelapi:jxl:2.6.12" level="project" />
-    <orderEntry type="library" name="Maven: org.jclouds:jclouds-antcontrib:1.5.4" level="project" />
-    <orderEntry type="library" name="Maven: org.jclouds:jclouds-scriptbuilder:1.5.4" level="project" />
-    <orderEntry type="library" name="Maven: org.jclouds:jclouds-core:1.5.4" level="project" />
-    <orderEntry type="library" name="Maven: org.bouncycastle:bcprov-jdk16:1.46" level="project" />
-    <orderEntry type="library" name="Maven: aopalliance:aopalliance:1.0" level="project" />
-    <orderEntry type="library" name="Maven: com.sun.jersey:jersey-core:1.12" level="project" />
-    <orderEntry type="library" name="Maven: com.google.inject.extensions:guice-assistedinject:3.0" level="project" />
-    <orderEntry type="library" name="Maven: com.google.inject:guice:3.0" level="project" />
-    <orderEntry type="library" name="Maven: org.99soft.guice:rocoto:6.1" level="project" />
-    <orderEntry type="library" name="Maven: javax.inject:javax.inject:1" level="project" />
-    <orderEntry type="library" name="Maven: javax.annotation:jsr250-api:1.0" level="project" />
-    <orderEntry type="library" name="Maven: com.google.code.gson:gson:2.2" level="project" />
-    <orderEntry type="library" name="Maven: com.google.guava:guava:13.0" level="project" />
-    <orderEntry type="library" name="Maven: org.jclouds:jclouds-compute:1.5.4" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.ant:ant-jsch:1.7.1" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.ant:ant:1.7.1" level="project" />
-    <orderEntry type="library" name="Maven: org.apache.ant:ant-launcher:1.7.1" level="project" />
-    <orderEntry type="library" name="Maven: org.jclouds.driver:jclouds-jsch:1.5.4" level="project" />
-    <orderEntry type="library" name="Maven: org.jclouds.driver:jclouds-slf4j:1.5.4" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.6.4" level="project" />
-    <orderEntry type="library" name="Maven: com.jcraft:jsch:0.1.48" level="project" />
     <orderEntry type="library" name="Maven: org.testng:testng:6.8.5" level="project" />
     <orderEntry type="library" name="Maven: junit:junit:4.10" level="project" />
     <orderEntry type="library" name="Maven: org.hamcrest:hamcrest-core:1.1" level="project" />
@@ -48,7 +26,6 @@
     <orderEntry type="library" name="Maven: org.codehaus.woodstox:stax2-api:3.1.4" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.woodstox:woodstox-core:5.0.3" level="project" />
     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.10" level="project" />
-    <orderEntry type="library" name="Maven: com.thoughtworks.qdox:qdox:1.12.1" level="project" />
     <orderEntry type="library" name="Maven: dom4j:dom4j:1.6.1" level="project" />
     <orderEntry type="library" name="Maven: mysql:mysql-connector-java:5.1.37" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient:4.5" level="project" />
@@ -64,11 +41,6 @@
     <orderEntry type="library" name="Maven: commons-pool:commons-pool:1.5.4" level="project" />
     <orderEntry type="library" name="Maven: net.sf.jacob-project:jacob:1.14.3" level="project" />
     <orderEntry type="library" name="Maven: commons-net:commons-net:3.0.1" level="project" />
-    <orderEntry type="library" name="Maven: org.codehaus.jtstand:jtstand-desktop:1.2" level="project" />
-    <orderEntry type="library" name="Maven: net.sf.json-lib:json-lib:jdk15:2.4" level="project" />
-    <orderEntry type="library" name="Maven: commons-beanutils:commons-beanutils:1.8.0" level="project" />
-    <orderEntry type="library" name="Maven: commons-collections:commons-collections:3.2.1" level="project" />
-    <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.5" level="project" />
-    <orderEntry type="library" name="Maven: net.sf.ezmorph:ezmorph:1.0.6" level="project" />
+    <orderEntry type="library" name="Maven: com.thoughtworks.qdox:qdox:1.12.1" level="project" />
   </component>
 </module>

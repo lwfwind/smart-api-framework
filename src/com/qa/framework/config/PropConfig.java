@@ -1,14 +1,15 @@
 package com.qa.framework.config;
 
 
+import com.library.common.ReflectHelper;
 import com.library.common.StringHelper;
-import com.qa.framework.classfinder.annotation.Value;
 
-import static com.qa.framework.classfinder.ValueHelp.initConfigFields;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.Properties;
 
-/**
- * Created by apple on 15/11/18.
- */
 public class PropConfig {
     //代理配置
     @Value("useProxy")
@@ -35,8 +36,6 @@ public class PropConfig {
     //base package name
     @Value("basePackage")
     private static String basePackage;
-    @Value("isMultithread")
-    private static boolean isMultithread = false;
     @Value("sendMsg")
     private static boolean sendMsg = false;
     //SMS配置
@@ -45,29 +44,39 @@ public class PropConfig {
     @Value("SNPWD")
     private static String SNPWD;
 
-    //    单例模式
-    private static PropConfig propConfig;
-
     static {
-        PropConfig prop = new PropConfig();
-    }
-
-    private PropConfig() {
-        initConfigFields(this);
-    }
-
-    /**
-     * Gets instance.
-     *
-     * @return the instance
-     */
-    public static PropConfig getInstance() {
-        if (propConfig == null) {
-            synchronized (PropConfig.class) {
-                propConfig = new PropConfig();
+        Properties props = getProperties();
+        Field[] fields = PropConfig.class.getDeclaredFields();
+        for (Field field : fields) {
+            if (field.isAnnotationPresent(Value.class)) {
+                Value annotation = field.getAnnotation(Value.class);
+                String propValue = props.getProperty(annotation.value());
+                if(propValue != null) {
+                    ReflectHelper.setMethod(PropConfig.class, field.getName(), propValue, field.getType());
+                }
             }
         }
-        return propConfig;
+    }
+
+    private static Properties getProperties() {
+        Properties props = new Properties();
+        File file = new File(System.getProperty("user.dir") + File.separator + "config.properties");
+        FileReader fileReader = null;
+        try {
+            fileReader = new FileReader(file);
+            props.load(fileReader);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (fileReader != null) {
+                    fileReader.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return props;
     }
 
     /**
@@ -138,8 +147,8 @@ public class PropConfig {
      *
      * @param val the val
      */
-    public static void setUseProxy(String val) {
-        useProxy = StringHelper.changeString2boolean(val);
+    public static void setUseProxy(boolean val) {
+        useProxy = val;
     }
 
     /**
@@ -251,24 +260,6 @@ public class PropConfig {
     }
 
     /**
-     * Gets is multithread.
-     *
-     * @return the is multithread
-     */
-    public static boolean getIsMultithread() {
-        return isMultithread;
-    }
-
-    /**
-     * Sets is multithread.
-     *
-     * @param val the val
-     */
-    public static void setIsMultithread(String val) {
-        isMultithread = StringHelper.changeString2boolean(val);
-    }
-
-    /**
      * Is send msg boolean.
      *
      * @return the boolean
@@ -282,8 +273,8 @@ public class PropConfig {
      *
      * @param val the val
      */
-    public static void setSendMsg(String val) {
-        sendMsg = StringHelper.changeString2boolean(val);
+    public static void setSendMsg(boolean val) {
+        sendMsg = val;
     }
 
     /**
