@@ -12,10 +12,7 @@ import org.apache.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * The type Db DBHelper.
@@ -24,7 +21,7 @@ public class DBHelper {
 
     private final static Logger logger = Logger.getLogger(DBHelper.class);
 
-    private static final ThreadLocal<Connection> connContainer = new ThreadLocal<Connection>();
+    private static final Map<String,Connection> connContainer = new HashMap<>();
     private static final QueryRunner queryRunner = new QueryRunner();
     private static String poolName;
 
@@ -47,19 +44,19 @@ public class DBHelper {
     /**
      * 获取数据库连接
      *
-     * @param poolname the poolname
+     * @param poolName the poolname
      * @return the connection
      */
-    public static Connection getConnection(String poolname) {
-        Connection conn = connContainer.get();
+    public static Connection getConnection(String poolName) {
+        Connection conn = connContainer.get(poolName);
         if (conn == null) {
             try {
-                conn = DBPoolFactory.getDbConnection(poolname);
+                conn = DBPoolFactory.getDbConnection(poolName);
             } catch (SQLException e) {
                 logger.error("get connection failure", e);
                 throw new RuntimeException(e);
             } finally {
-                connContainer.set(conn);
+                connContainer.put(poolName,conn);
             }
         }
         return conn;
@@ -77,8 +74,8 @@ public class DBHelper {
     /**
      * 开启事务
      */
-    public static void beginTransaction() {
-        Connection conn = getConnection();
+    public static void beginTransaction(String poolName) {
+        Connection conn = getConnection(poolName);
         if (conn != null) {
             try {
                 conn.setAutoCommit(false);
@@ -86,16 +83,20 @@ public class DBHelper {
                 logger.error("开启事务出错！", e);
                 throw new RuntimeException(e);
             } finally {
-                connContainer.set(conn);
+                connContainer.put(poolName,conn);
             }
         }
+    }
+
+    public static void beginTransaction() {
+        beginTransaction(poolName);
     }
 
     /**
      * 提交事务
      */
-    public static void commitTransaction() {
-        Connection conn = getConnection();
+    public static void commitTransaction(String poolName) {
+        Connection conn = getConnection(poolName);
         if (conn != null) {
             try {
                 conn.commit();
@@ -103,17 +104,19 @@ public class DBHelper {
             } catch (SQLException e) {
                 logger.error("提交事务出错！", e);
                 throw new RuntimeException(e);
-            } finally {
-                connContainer.remove();
             }
         }
+    }
+
+    public static void commitTransaction() {
+        commitTransaction(poolName);
     }
 
     /**
      * 回滚事务
      */
-    public static void rollbackTransaction() {
-        Connection conn = getConnection();
+    public static void rollbackTransaction(String poolName) {
+        Connection conn = getConnection(poolName);
         if (conn != null) {
             try {
                 conn.rollback();
@@ -122,9 +125,14 @@ public class DBHelper {
                 logger.error("回滚事务出错！", e);
                 throw new RuntimeException(e);
             } finally {
-                connContainer.remove();
+                connContainer.remove(poolName);
             }
         }
+    }
+
+
+    public static void rollbackTransaction() {
+        rollbackTransaction(poolName);
     }
 
     /**
@@ -138,6 +146,18 @@ public class DBHelper {
         List<Map<String, Object>> result;
         try {
             Connection conn = getConnection();
+            result = queryRunner.query(conn, sql, new MapListHandler(), params);
+        } catch (Exception e) {
+            logger.error("execute query failure", e);
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+
+    public static List<Map<String, Object>> queryRows(String poolName, String sql, Object... params) {
+        List<Map<String, Object>> result;
+        try {
+            Connection conn = getConnection(poolName);
             result = queryRunner.query(conn, sql, new MapListHandler(), params);
         } catch (Exception e) {
             logger.error("execute query failure", e);
@@ -162,6 +182,15 @@ public class DBHelper {
         return records.get(random.nextInt(records.size()));
     }
 
+    public static Map<String, Object> queryOneRow(String poolName, String sql, Object... params) {
+        List<Map<String, Object>> records = queryRows(poolName, sql, params);
+        if (records == null || records.size() == 0) {
+            return null;
+        }
+        Random random = new Random();
+        return records.get(random.nextInt(records.size()));
+    }
+
     /**
      * Query field string.
      *
@@ -178,6 +207,14 @@ public class DBHelper {
         return null;
     }
 
+    public static String queryField(String poolName, String sql, String columnName, Object... params) {
+        Map<String, Object> recordInfo = queryOneRow(poolName, sql, params);
+        if (recordInfo != null) {
+            return recordInfo.get(columnName).toString();
+        }
+        return null;
+    }
+
     /**
      * Has record boolean.
      *
@@ -187,6 +224,11 @@ public class DBHelper {
      */
     public static boolean hasRecord(String sql, Object... params) {
         List<Map<String, Object>> records = queryRows(sql, params);
+        return records.size() > 0;
+    }
+
+    public static boolean hasRecord(String poolName, String sql, Object... params) {
+        List<Map<String, Object>> records = queryRows(poolName, sql, params);
         return records.size() > 0;
     }
 
@@ -209,6 +251,18 @@ public class DBHelper {
         return rows;
     }
 
+    public static int executeUpdate(String poolName, String sql, Object... params) {
+        int rows = 0;
+        try {
+            Connection conn = getConnection(poolName);
+            rows = queryRunner.update(conn, sql, params);
+        } catch (SQLException e) {
+            logger.error("execute update failure", e);
+            throw new RuntimeException(e);
+        }
+        return rows;
+    }
+
     /**
      * 查询实体列表
      *
@@ -222,6 +276,18 @@ public class DBHelper {
         List<T> entityList;
         try {
             Connection conn = getConnection();
+            entityList = queryRunner.query(conn, sql, new BeanListHandler<T>(entityClass), params);
+        } catch (SQLException e) {
+            logger.error("query entity list failure", e);
+            throw new RuntimeException(e);
+        }
+        return entityList;
+    }
+
+    public static <T> List<T> queryEntityList(String poolName, Class<T> entityClass, String sql, Object... params) {
+        List<T> entityList;
+        try {
+            Connection conn = getConnection(poolName);
             entityList = queryRunner.query(conn, sql, new BeanListHandler<T>(entityClass), params);
         } catch (SQLException e) {
             logger.error("query entity list failure", e);

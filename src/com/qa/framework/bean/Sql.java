@@ -9,6 +9,17 @@ import java.util.Map;
  */
 public class Sql {
     private String name;                  //sql的名字
+    private String db;
+
+    public String getDelay() {
+        return delay;
+    }
+
+    public void setDelay(String delay) {
+        this.delay = delay;
+    }
+
+    private String delay;
     private String[] returnValues;        //sql语句返回的多个值
     private String sqlStatement;          //sql语句
     private Map<String, String> returnValueMap;    //储存returnValues及对应的值
@@ -29,6 +40,15 @@ public class Sql {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+
+    public String getDb() {
+        return db;
+    }
+
+    public void setDb(String db) {
+        this.db = db;
     }
 
     /**
