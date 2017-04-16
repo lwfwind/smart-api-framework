@@ -2,3 +2,4 @@ config.properties
 target
 test-xml
 .idea
+smart-api-framework.iml
