@@ -1,12 +1,12 @@
 # Smart-api-framework - a light, common http api automation framework
 
-Smart-api-framework is a light, common http api automation framework based on [TestNG#(http://testng.org/doc/index.html) and [HttpClient#(http://hc.apache.org/httpcomponents-client-ga/).
+Smart-api-framework is a light, common http api automation framework based on [TestNG](http://testng.org/doc/index.html) and [HttpClient](http://hc.apache.org/httpcomponents-client-ga/).
 
 * Tags: TestNG, HttpClient, XML, API, Automation, Test, Keyword-driver
 
 ## Features
 
-* Support keyword-driver, No Coding and easy to config
+* Support keyword-driver, no coding and easy to config
 * Support restful web server such as get, post, put and delete http method
 * Support concurrent
 * Re-run failed test cases
@@ -209,9 +209,9 @@ DataConfig -- config test url and httpMethod
 <DataConfig>
 ```
 
-Demo project please refer to  [smart-api-automation-example#(https://github.com/lwfwind/smart-api-automation-example)
+Demo project please refer to  [smart-api-automation-example](https://github.com/lwfwind/smart-api-automation-example)
 
 ## Contributors
-   Charlie [https://github.com/zhuyecao321#(https://github.com/zhuyecao321)<br/>
-   Niki    [https://github.com/ZhangyuBaolu#(https://github.com/ZhangyuBaolu)<br/>
-   Wind    [https://github.com/lwfwind#(https://github.com/lwfwind)<br/>
+   Charlie [https://github.com/zhuyecao321](https://github.com/zhuyecao321)<br/>
+   Niki    [https://github.com/ZhangyuBaolu](https://github.com/ZhangyuBaolu)<br/>
+   Wind    [https://github.com/lwfwind](https://github.com/lwfwind)<br/>
