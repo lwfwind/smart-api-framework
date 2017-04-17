@@ -5,6 +5,16 @@ public class Function {
     private String clsName;
     private String methodName;
 
+    public String getArguments() {
+        return arguments;
+    }
+
+    public void setArguments(String arguments) {
+        this.arguments = arguments;
+    }
+
+    private String arguments;
+
     public String getName() {
         return name;
     }

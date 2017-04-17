@@ -1,6 +1,9 @@
 package com.qa.framework.core;
 
-import com.library.common.*;
+import com.library.common.DynamicCompileHelper;
+import com.library.common.JsonHelper;
+import com.library.common.ReflectHelper;
+import com.library.common.StringHelper;
 import com.qa.framework.bean.*;
 import com.qa.framework.cache.JsonPairCache;
 import com.qa.framework.library.database.DBHelper;
@@ -9,12 +12,12 @@ import com.qa.framework.verify.AssertTrueExpectResult;
 import com.qa.framework.verify.ContainExpectResult;
 import com.qa.framework.verify.IExpectResult;
 import com.qa.framework.verify.PairExpectResult;
+import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -33,11 +36,11 @@ public class ParamValueProcessor {
      * @param testData the test data
      */
     public static void processTestData(TestData testData) {
-        JsonPairCache jsonPairCache1 = new JsonPairCache();
-        processBefore(testData);
-        processSetupParam(testData, jsonPairCache1);
-        processSetupResultParam(testData, jsonPairCache1);
-        processTestDataParam(testData, jsonPairCache1);
+        JsonPairCache jsonPairCache = new JsonPairCache();
+        processBefore(testData,jsonPairCache);
+        processSetupParam(testData, jsonPairCache);
+        processSetupResultParam(testData, jsonPairCache);
+        processTestDataParam(testData, jsonPairCache);
     }
 
     /**
@@ -45,29 +48,21 @@ public class ParamValueProcessor {
      *
      * @param testData the test data
      */
-    public static void processBefore(TestData testData) {
-        if (testData.getBefore() != null)
-            try {
-                logger.info("Process Before in xml-" + testData.getCurrentFileName() + " TestData-" + testData.getName());
-                Before before = testData.getBefore();
-                if (before.getSqls() != null) {
-                    List<Sql> sqls = before.getSqls();
-                    for (Sql sql : sqls) {
-                        logger.info("需更新语句：" + sql.getSqlStatement());
-                        DBHelper.executeUpdate(sql.getSqlStatement());
-                    }
-                } else if (before.getFunctions() != null) {
-                    List<Function> functions = before.getFunctions();
-                    for (Function function : functions) {
-                        Class cls = Class.forName(function.getClsName());
-                        Method method = cls.getDeclaredMethod(function.getMethodName());
-                        Object object = cls.newInstance();
-                        method.invoke(object);
-                    }
+    public static void processBefore(TestData testData,JsonPairCache jsonPairCache) {
+        if (testData.getBefore() != null) {
+            logger.info("Process Before in xml-" + testData.getCurrentFileName() + " TestData-" + testData.getName());
+            Before before = testData.getBefore();
+            if (before.getSqls() != null) {
+                List<Sql> sqls = before.getSqls();
+                for (Sql sql : sqls) {
+                    logger.info("需更新语句：" + sql.getSqlStatement());
+                    DBHelper.executeUpdate(sql.getSqlStatement());
                 }
-            } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
+            } else if (before.getFunctions() != null) {
+                List<Function> functions = before.getFunctions();
+                executeFunctionList(functions, jsonPairCache);
             }
+        }
     }
 
 
@@ -87,7 +82,7 @@ public class ParamValueProcessor {
                         executeFunction(param, setup, testData, jsonPairCache);
                         executeSql(param, setup, testData, jsonPairCache);
                         processParamDate(param, setup, testData, jsonPairCache);
-                        processParamFromSetup(testData, param, jsonPairCache);
+                        processParamFromBefore(testData, param, jsonPairCache);
                     }
                 }
             }
@@ -107,7 +102,7 @@ public class ParamValueProcessor {
                 executeFunction(param, null, testData, jsonPairCache);
                 executeSql(param, null, testData, jsonPairCache);
                 processParamDate(param, null, testData, jsonPairCache);
-                processParamFromSetup(testData, param, jsonPairCache);
+                processParamFromSetupOrBefore(testData, param, jsonPairCache);
             }
         }
         processExpectResultBeforeExecute(testData, jsonPairCache);
@@ -123,21 +118,56 @@ public class ParamValueProcessor {
      * @param jsonPairCache the json pair cache
      */
     public static void executeFunction(Param param, Setup setup, TestData testData, JsonPairCache jsonPairCache) {
-        if (param.getFunction() != null) {
-            try {
-                Class cls = Class.forName(param.getFunction().getClsName());
-                Method method = cls.getDeclaredMethod(param.getFunction().getMethodName());
-                Object object = cls.newInstance();
-                Object value = method.invoke(object);
-                param.setValue(value.toString());
-                jsonPairCache.put(param.getName(), param.getValue());
-                jsonPairCache.put(testData.getName() + "." + param.getName(), param.getValue());
-                if (setup != null) {
-                    jsonPairCache.put(setup.getName() + "." + param.getName(), param.getValue());
-                    jsonPairCache.put(testData.getName() + "." + setup.getName() + "." + param.getName(), param.getValue());
+        List<Function> functionList = param.getFunctions();
+        if (functionList != null) {
+            for (Function function : functionList) {
+                try {
+                    Object value = null;
+                    String arguments = function.getArguments();
+                    if(!arguments.trim().equalsIgnoreCase("")) {
+                        String[] argumentsArray = arguments.split(",");
+                        Object[] argumentsObjectArray = new Object[argumentsArray.length];
+                        for(int i = 0; i < argumentsArray.length; i++){
+                            if(argumentsArray[i].contains("(") && argumentsArray[i].contains(")")){
+                                String type = StringHelper.getBetweenString(argumentsArray[i],"(",")");
+                                String argumentsValue = argumentsArray[i].substring(0,argumentsArray[i].indexOf("("));
+                                if(type.equalsIgnoreCase("int")){
+                                    argumentsObjectArray[i] = Integer.parseInt(argumentsValue);
+                                } else if(type.equalsIgnoreCase("long")){
+                                    argumentsObjectArray[i] = Long.parseLong(argumentsValue);
+                                } else if(type.equalsIgnoreCase("double")){
+                                    argumentsObjectArray[i] = Double.parseDouble(argumentsValue);
+                                } else if(type.equalsIgnoreCase("float")){
+                                    argumentsObjectArray[i] = Float.parseFloat(argumentsValue);
+                                } else if(type.equalsIgnoreCase("short")){
+                                    argumentsObjectArray[i] = Short.parseShort(argumentsValue);
+                                } else if(type.equalsIgnoreCase("boolean")){
+                                    argumentsObjectArray[i] = Boolean.parseBoolean(argumentsValue);
+                                } else {
+                                    argumentsObjectArray[i] = argumentsArray[i];
+                                }
+                            }
+                            else{
+                                argumentsObjectArray[i] = argumentsArray[i];
+                            }
+                            i++;
+                        }
+                        value = MethodUtils.invokeStaticMethod(Class.forName(function.getClsName()), function.getMethodName(),argumentsObjectArray);
+                    }
+                    else{
+                        value = MethodUtils.invokeStaticMethod(Class.forName(function.getClsName()), function.getMethodName());
+                    }
+
+                    param.setValue(value.toString());
+                    jsonPairCache.put(param.getName(), param.getValue());
+                    jsonPairCache.put(testData.getName() + "." + param.getName(), param.getValue());
+                    if (setup != null) {
+                        jsonPairCache.put(setup.getName() + "." + param.getName(), param.getValue());
+                        jsonPairCache.put(testData.getName() + "." + setup.getName() + "." + param.getName(), param.getValue());
+                    }
+                } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                    logger.error(e.getMessage(), e);
                 }
-            } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                logger.error(e.getMessage(), e);
             }
         }
     }
@@ -146,12 +176,44 @@ public class ParamValueProcessor {
         if (functionList != null) {
             for (Function function : functionList) {
                 try {
-                    Class cls = Class.forName(function.getClsName());
-                    Method method = cls.getDeclaredMethod(function.getMethodName());
-                    Object object = cls.newInstance();
-                    Object value = method.invoke(object);
-                    jsonPairCache.put(function.getName(), value.toString());
-                } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                    Object value = null;
+                    String arguments = function.getArguments();
+                    if(arguments != null && !arguments.trim().equalsIgnoreCase("")) {
+                        String[] argumentsArray = arguments.split(",");
+                        Object[] argumentsObjectArray = new Object[argumentsArray.length];
+                        for(int i = 0; i < argumentsArray.length; i++){
+                            if(argumentsArray[i].contains("(") && argumentsArray[i].contains(")")){
+                                String type = StringHelper.getBetweenString(argumentsArray[i],"(",")");
+                                String argumentsValue = argumentsArray[i].substring(0,argumentsArray[i].indexOf("("));
+                                if(type.equalsIgnoreCase("int")){
+                                    argumentsObjectArray[i] = Integer.parseInt(argumentsValue);
+                                } else if(type.equalsIgnoreCase("long")){
+                                    argumentsObjectArray[i] = Long.parseLong(argumentsValue);
+                                } else if(type.equalsIgnoreCase("double")){
+                                    argumentsObjectArray[i] = Double.parseDouble(argumentsValue);
+                                } else if(type.equalsIgnoreCase("float")){
+                                    argumentsObjectArray[i] = Float.parseFloat(argumentsValue);
+                                } else if(type.equalsIgnoreCase("short")){
+                                    argumentsObjectArray[i] = Short.parseShort(argumentsValue);
+                                } else if(type.equalsIgnoreCase("boolean")){
+                                    argumentsObjectArray[i] = Boolean.parseBoolean(argumentsValue);
+                                } else {
+                                    argumentsObjectArray[i] = argumentsArray[i];
+                                }
+                            }
+                            else{
+                                argumentsObjectArray[i] = argumentsArray[i];
+                            }
+                        }
+                        value = MethodUtils.invokeStaticMethod(Class.forName(function.getClsName()), function.getMethodName(),argumentsObjectArray);
+                    }
+                    else{
+                        value = MethodUtils.invokeStaticMethod(Class.forName(function.getClsName()), function.getMethodName());
+                    }
+                    if(function.getName() != null) {
+                        jsonPairCache.put(function.getName(), value.toString());
+                    }
+                } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                     logger.error(e.getMessage(), e);
                 }
             }
@@ -191,24 +253,7 @@ public class ParamValueProcessor {
      */
     public static void executeSqlList(List<Sql> sqlList, JsonPairCache jsonPairCache) {
         for (Sql sql : sqlList) {
-            if (sql.getSqlStatement().contains("#") || sql.getSqlStatement().contains("@")) {
-                sql.setSqlStatement(handleReservedKeyChars(sql.getSqlStatement(), jsonPairCache));
-            }
-            logger.debug("最终的SQL为:" + sql.getSqlStatement());
-            if(sql.getDelay() != null) {
-                try {
-                    Thread.sleep(Long.parseLong(sql.getDelay()));
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            Map<String, Object> recordInfo;
-            if(sql.getDb() == null) {
-                recordInfo = DBHelper.queryOneRow(sql.getSqlStatement());
-            }
-            else {
-                recordInfo = DBHelper.queryOneRow(sql.getDb(),sql.getSqlStatement());
-            }
+            Map<String, Object> recordInfo = handleSql(sql,jsonPairCache);
             for (int i = 0; i < sql.getReturnValues().length; i++) {
                 String key = sql.getReturnValues()[i];
                 String sqlKey = sql.getName() + "." + sql.getReturnValues()[i];
@@ -237,24 +282,7 @@ public class ParamValueProcessor {
      */
     public static String executeSql(List<Sql> sqlList, Param param, Setup setup, TestData testData, JsonPairCache jsonPairCache) {
         for (Sql sql : sqlList) {
-            if (sql.getSqlStatement().contains("#") || sql.getSqlStatement().contains("@")) {
-                sql.setSqlStatement(handleReservedKeyChars(sql.getSqlStatement(), jsonPairCache));
-            }
-            logger.debug("最终的SQL为:" + sql.getSqlStatement());
-            if(sql.getDelay() != null) {
-                try {
-                    Thread.sleep(Long.parseLong(sql.getDelay()));
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            Map<String, Object> recordInfo;
-            if(sql.getDb() == null) {
-                recordInfo = DBHelper.queryOneRow(sql.getSqlStatement());
-            }
-            else {
-                recordInfo = DBHelper.queryOneRow(sql.getDb(),sql.getSqlStatement());
-            }
+            Map<String, Object> recordInfo = handleSql(sql,jsonPairCache);
             for (int i = 0; i < sql.getReturnValues().length; i++) {
                 String key = sql.getReturnValues()[i];
                 String sqlKey = sql.getName() + "." + sql.getReturnValues()[i];
@@ -288,6 +316,27 @@ public class ParamValueProcessor {
         return jsonPairCache.getValue(decodeValue);
     }
 
+    private static Map<String, Object> handleSql(Sql sql,JsonPairCache jsonPairCache){
+        if (sql.getSqlStatement().contains("#") || sql.getSqlStatement().contains("@")) {
+            sql.setSqlStatement(handleReservedKeyChars(sql.getSqlStatement(), jsonPairCache));
+        }
+        logger.debug("最终的SQL为:" + sql.getSqlStatement());
+        if (sql.getDelay() != null) {
+            try {
+                Thread.sleep(Long.parseLong(sql.getDelay()));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        Map<String, Object> recordInfo;
+        if (sql.getDb() == null) {
+            recordInfo = DBHelper.queryOneRow(sql.getSqlStatement());
+        } else {
+            recordInfo = DBHelper.queryOneRow(sql.getDb(), sql.getSqlStatement());
+        }
+        return recordInfo;
+    }
+
     /**
      * 处理param中需要接受setup中param值的问题
      *
@@ -295,8 +344,16 @@ public class ParamValueProcessor {
      * @param param         the param
      * @param jsonPairCache the json pair cache
      */
-    public static void processParamFromSetup(TestData testData, Param param, JsonPairCache jsonPairCache) {
-        if (testData.getSetupList() != null && param.getSqls() == null && param.getFunction() == null && param.getDateStamp() == null) {
+    public static void processParamFromSetupOrBefore(TestData testData, Param param, JsonPairCache jsonPairCache) {
+        if (testData.getSetupList() != null  || testData.getBefore() != null ) {
+            if (param.getValue().contains("#") || param.getValue().contains("@")) {
+                param.setValue(handleReservedKeyChars(param.getValue(), jsonPairCache));
+            }
+        }
+    }
+
+    public static void processParamFromBefore(TestData testData, Param param, JsonPairCache jsonPairCache) {
+        if (testData.getBefore() != null ) {
             if (param.getValue().contains("#") || param.getValue().contains("@")) {
                 param.setValue(handleReservedKeyChars(param.getValue(), jsonPairCache));
             }
@@ -499,10 +556,9 @@ public class ParamValueProcessor {
      */
     public static String handleReservedKeyChars(String oriContent, JsonPairCache jsonPairCache) {
         String pattern;
-        if (oriContent.contains("#")){
+        if (oriContent.contains("#")) {
             pattern = "#.*?#";
-        }
-        else {
+        } else {
             pattern = "@.*?@";
         }
         List<String> reservedKeyList = StringHelper.find(oriContent, pattern);

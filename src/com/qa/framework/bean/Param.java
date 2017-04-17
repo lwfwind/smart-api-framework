@@ -20,7 +20,15 @@ public class Param {
     private Map<String, Sql> sqlMap;    //建立sql名字和sql之间的映射
     private String multiple;        //执行sqls中的sql几次
     private DateStamp dateStamp;     //设置时间
-    private Function function;
+    private List<Function> functions;
+
+    public Param() {
+    }
+
+    public Param(String name, String value) {
+        this.name = name;
+        this.value = value;
+    }
 
     /**
      * Gets name.
@@ -187,8 +195,8 @@ public class Param {
      *
      * @return the function
      */
-    public Function getFunction() {
-        return function;
+    public List<Function> getFunctions() {
+        return functions;
     }
 
     /**
@@ -196,8 +204,8 @@ public class Param {
      *
      * @param function the function
      */
-    public void setFunction(Function function) {
-        this.function = function;
+    public void addFunction(Function function) {
+        this.functions.add(function);
     }
 
     @Override
