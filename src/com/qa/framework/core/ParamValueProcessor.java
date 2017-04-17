@@ -124,7 +124,7 @@ public class ParamValueProcessor {
                 try {
                     Object value = null;
                     String arguments = function.getArguments();
-                    if(!arguments.trim().equalsIgnoreCase("")) {
+                    if(arguments != null && !arguments.trim().equalsIgnoreCase("")) {
                         String[] argumentsArray = arguments.split(",");
                         Object[] argumentsObjectArray = new Object[argumentsArray.length];
                         for(int i = 0; i < argumentsArray.length; i++){
