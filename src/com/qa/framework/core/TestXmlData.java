@@ -6,6 +6,7 @@ import com.qa.framework.bean.TestData;
 import org.apache.log4j.Logger;
 import org.testng.annotations.DataProvider;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -50,7 +51,7 @@ public class TestXmlData {
      */
     public static List<String> getTestCaseFiles() {
         String useDir = System.getProperty("user.dir");
-        List<String> files = IOHelper.listFilesInDirectoryRecursive(useDir, "*.xml");
+        List<String> files = IOHelper.listFilesInDirectoryRecursive(useDir+ File.separator+"src", "*.xml");
         List<String> testCaseXml = new ArrayList<String>();
         for (String filePath : files) {
             String contents = IOHelper.readFileToString(filePath);
