@@ -44,6 +44,13 @@ public class TestResultListener extends TestListenerAdapter {
         if (obj instanceof Executor) {
             Executor executor = (Executor) obj;
             executor.processAfter(executor.getTestData());
+
+            //动态修改测试报告
+            Object[] parameters = tr.getParameters();
+            if(parameters != null && parameters[0] != null){
+                parameters[0]=executor.getTestData().toString();
+            }
+
             String testName = IOHelper.getBaseName(executor.getTestData().getCurrentFileName()) + "_" + executor.getTestData().getName();
             logger.error(testName + " Failure");
         }
@@ -67,6 +74,13 @@ public class TestResultListener extends TestListenerAdapter {
         if (obj instanceof Executor) {
             Executor executor = (Executor) obj;
             executor.processAfter(executor.getTestData());
+
+            //动态修改测试报告
+            Object[] parameters = tr.getParameters();
+            if(parameters != null && parameters[0] != null){
+                parameters[0]=executor.getTestData().toString();
+            }
+
             String testName = IOHelper.getBaseName(executor.getTestData().getCurrentFileName()) + "_" + executor.getTestData().getName();
             logger.info(testName + " Skipped");
         }
@@ -88,8 +102,16 @@ public class TestResultListener extends TestListenerAdapter {
         }
         Object obj = tr.getInstance();
         if (obj instanceof Executor) {
+
             Executor executor = (Executor) obj;
             executor.processAfter(executor.getTestData());
+
+            //动态修改测试报告
+            Object[] parameters = tr.getParameters();
+            if(parameters != null && parameters[0] != null){
+                parameters[0]=executor.getTestData().toString();
+            }
+
             String testName = IOHelper.getBaseName(executor.getTestData().getCurrentFileName()) + "_" + executor.getTestData().getName();
             logger.info(testName + " Success");
         }
@@ -113,19 +135,22 @@ public class TestResultListener extends TestListenerAdapter {
             Executor executor = (Executor) obj;
             String testName = IOHelper.getBaseName(executor.getTestData().getCurrentFileName()) + "_" + executor.getTestData().getName();
             try {
+                //动态修改执行的方法名
                 BaseTestMethod bm = (BaseTestMethod) tr.getMethod();
                 Field methodNameField = bm.getClass().getSuperclass().getDeclaredField("m_methodName");
                 methodNameField.setAccessible(true);
                 methodNameField.set(bm, testName);
 
+                //动态修改测试报告
                 TestResult trImp = (TestResult) tr;
                 Field nameField = trImp.getClass().getDeclaredField("m_name");
                 nameField.setAccessible(true);
                 nameField.set(trImp, testName);
+
             } catch (Exception ex) {
                 logger.error(ex.getMessage());
             }
-            logger.info(testName + " Start");
+            logger.info(testName + " Start ");
         }
     }
 

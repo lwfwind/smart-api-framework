@@ -166,7 +166,7 @@ public class ParamValueProcessor {
                         jsonPairCache.put(testData.getName() + "." + setup.getName() + "." + param.getName(), param.getValue());
                     }
                 } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                    logger.error(e.getMessage(), e);
+                    throw new RuntimeException(e.getMessage(),e);
                 }
             }
         }
@@ -214,7 +214,7 @@ public class ParamValueProcessor {
                         jsonPairCache.put(function.getName(), value.toString());
                     }
                 } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                    logger.error(e.getMessage(), e);
+                    throw new RuntimeException(e.getMessage(),e);
                 }
             }
         }

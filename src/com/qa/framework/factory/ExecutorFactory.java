@@ -43,16 +43,6 @@ public class ExecutorFactory {
         }
     }
 
-    /**
-     * Before method.
-     *
-     * @param context the context
-     */
-    @BeforeMethod
-    public void beforeMethod(ITestContext context) {
-        System.out.println("beforeMethod");
-    }
-
 
     /**
      * Execute object [ ].
