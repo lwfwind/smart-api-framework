@@ -7,6 +7,7 @@ Smart-api-framework is a light, common http api automation framework based on [T
 ## Features
 
 * Support keyword-driver, no coding and easy to config
+* Support to execute run/debug test from xml directly due to the intellij idea plugin [Aping](https://github.com/lwfwind/aping)
 * Support restful web server such as get, post, put and delete http method
 * Support concurrent
 * Re-run failed test cases
