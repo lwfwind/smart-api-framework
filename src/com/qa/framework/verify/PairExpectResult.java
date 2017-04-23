@@ -56,7 +56,7 @@ public class PairExpectResult implements IExpectResult {
         Map<String, String> maps = JsonHelper.parseJsonToPairs(content);
         String expectValue = pair.getValue();
         String actualValue = maps.get(pair.getKey());
-        Assert.assertNotNull(actualValue,String.format("the key \"%s\" in pair is not existed in pair json map %s", pair.getKey(), maps.toString()));
+        Assert.assertNotNull(actualValue, String.format("the key \"%s\" in pair is not existed in pair json map %s", pair.getKey(), maps.toString()));
         if (pair.getPatternMatch()) {
             logger.debug("需验证的正则表达式：" + expectValue);
             Pattern pattern = Pattern.compile(expectValue);

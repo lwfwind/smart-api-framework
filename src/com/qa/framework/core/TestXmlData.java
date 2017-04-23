@@ -51,7 +51,7 @@ public class TestXmlData {
      */
     public static List<String> getTestCaseFiles() {
         String useDir = System.getProperty("user.dir");
-        List<String> files = IOHelper.listFilesInDirectoryRecursive(useDir+ File.separator+"src", "*.xml");
+        List<String> files = IOHelper.listFilesInDirectoryRecursive(useDir + File.separator + "src", "*.xml");
         List<String> testCaseXml = new ArrayList<String>();
         for (String filePath : files) {
             String contents = IOHelper.readFileToString(filePath);

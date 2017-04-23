@@ -3,9 +3,7 @@ package com.qa.framework.factory;
 import com.qa.framework.bean.TestData;
 import com.qa.framework.core.TestXmlData;
 import com.qa.framework.mock.IMockServer;
-import org.testng.ITestContext;
 import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Factory;
 

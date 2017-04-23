@@ -43,12 +43,11 @@ public class TestResultListener extends TestListenerAdapter {
         Object obj = tr.getInstance();
         if (obj instanceof Executor) {
             Executor executor = (Executor) obj;
-            executor.processAfter(executor.getTestData());
 
             //动态修改测试报告
             Object[] parameters = tr.getParameters();
-            if(parameters != null && parameters[0] != null){
-                parameters[0]=executor.getTestData().toString();
+            if (parameters != null && parameters[0] != null) {
+                parameters[0] = executor.getTestData().toString();
             }
 
             String testName = IOHelper.getBaseName(executor.getTestData().getCurrentFileName()) + "_" + executor.getTestData().getName();
@@ -73,12 +72,11 @@ public class TestResultListener extends TestListenerAdapter {
         Object obj = tr.getInstance();
         if (obj instanceof Executor) {
             Executor executor = (Executor) obj;
-            executor.processAfter(executor.getTestData());
 
             //动态修改测试报告
             Object[] parameters = tr.getParameters();
-            if(parameters != null && parameters[0] != null){
-                parameters[0]=executor.getTestData().toString();
+            if (parameters != null && parameters[0] != null) {
+                parameters[0] = executor.getTestData().toString();
             }
 
             String testName = IOHelper.getBaseName(executor.getTestData().getCurrentFileName()) + "_" + executor.getTestData().getName();
@@ -104,12 +102,11 @@ public class TestResultListener extends TestListenerAdapter {
         if (obj instanceof Executor) {
 
             Executor executor = (Executor) obj;
-            executor.processAfter(executor.getTestData());
 
             //动态修改测试报告
             Object[] parameters = tr.getParameters();
-            if(parameters != null && parameters[0] != null){
-                parameters[0]=executor.getTestData().toString();
+            if (parameters != null && parameters[0] != null) {
+                parameters[0] = executor.getTestData().toString();
             }
 
             String testName = IOHelper.getBaseName(executor.getTestData().getCurrentFileName()) + "_" + executor.getTestData().getName();

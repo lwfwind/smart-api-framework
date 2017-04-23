@@ -21,7 +21,7 @@ public class DBHelper {
 
     private final static Logger logger = Logger.getLogger(DBHelper.class);
 
-    private static final Map<String,Connection> connContainer = new HashMap<>();
+    private static final Map<String, Connection> connContainer = new HashMap<>();
     private static final QueryRunner queryRunner = new QueryRunner();
     private static String poolName;
 
@@ -56,7 +56,7 @@ public class DBHelper {
                 logger.error("get connection failure", e);
                 throw new RuntimeException(e);
             } finally {
-                connContainer.put(poolName,conn);
+                connContainer.put(poolName, conn);
             }
         }
         return conn;
@@ -83,7 +83,7 @@ public class DBHelper {
                 logger.error("开启事务出错！", e);
                 throw new RuntimeException(e);
             } finally {
-                connContainer.put(poolName,conn);
+                connContainer.put(poolName, conn);
             }
         }
     }

@@ -2,7 +2,6 @@ package com.qa.framework.config;
 
 
 import com.library.common.ReflectHelper;
-import com.library.common.StringHelper;
 
 import java.io.File;
 import java.io.FileReader;
@@ -51,7 +50,7 @@ public class PropConfig {
             if (field.isAnnotationPresent(Value.class)) {
                 Value annotation = field.getAnnotation(Value.class);
                 String propValue = props.getProperty(annotation.value());
-                if(propValue != null) {
+                if (propValue != null) {
                     ReflectHelper.setMethod(PropConfig.class, field.getName(), propValue, field.getType());
                 }
             }

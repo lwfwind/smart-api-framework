@@ -5,6 +5,7 @@ import com.qa.framework.core.ParamValueProcessor;
 import com.qa.framework.core.TestBase;
 import com.qa.framework.library.httpclient.HttpMethod;
 import com.qa.framework.testnglistener.TestResultListener;
+import com.qa.framework.verify.Verify;
 import org.testng.ITestContext;
 import org.testng.ITestNGMethod;
 import org.testng.annotations.BeforeSuite;
@@ -79,6 +80,7 @@ public class Executor extends TestBase {
     public void testcase(TestData testData, String url, String httpMethod) {
         ParamValueProcessor.processTestData(testData);
         String content = HttpMethod.request(url, testData.getHeaders(), testData.getParams(), httpMethod, testData.isStoreCookie(), testData.isUseCookie());
-        verifyResult(testData, content);
+        Verify.verifyResult(testData, content);
+        ParamValueProcessor.processAfter(testData);
     }
 }
