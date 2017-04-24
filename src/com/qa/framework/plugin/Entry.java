@@ -59,7 +59,7 @@ public class Entry {
             String xmlPath = IOHelper.listFilesInDirectoryRecursive(System.getProperty("user.dir"), xmlName + ".xml").get(0);
             DataConvertor dataConvertor = new DataConvertor(xmlPath);
             DataConfig dataConfig = dataConvertor.getDataConfig();
-            if(xmlDataName.equals("")) {
+            if(xmlDataName.equals("null")) {
                 for (TestData testData : dataConfig.getTestDataList()) {
                     ParamValueProcessor.processTestData(testData);
                     String content = HttpMethod.request(dataConfig.getUrl(), testData.getHeaders(), testData.getParams(), dataConfig.getHttpMethod(), testData.isStoreCookie(), testData.isUseCookie());
