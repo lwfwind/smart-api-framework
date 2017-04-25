@@ -83,7 +83,7 @@ public class Entry {
         } finally {
             after();
         }
-        logger.info(String.format("end execute testSuiteName: %s testCaseName: %s",xmlName,xmlDataName));
+        logger.info(String.format("finish execute testSuiteName: %s testCaseName: %s",xmlName,xmlDataName));
     }
 
 }

@@ -11,8 +11,6 @@ import java.util.Properties;
 
 public class PropConfig {
     //代理配置
-    @Value("useProxy")
-    private static boolean useProxy = false;
     @Value("localhost")
     private static String localhost = "127.0.0.1";
     @Value("localport")
@@ -130,24 +128,6 @@ public class PropConfig {
      */
     public static void setDbPoolName(String dbPoolName) {
         PropConfig.dbPoolName = dbPoolName;
-    }
-
-    /**
-     * Is use proxy boolean.
-     *
-     * @return the boolean
-     */
-    public static boolean isUseProxy() {
-        return useProxy;
-    }
-
-    /**
-     * Sets use proxy.
-     *
-     * @param val the val
-     */
-    public static void setUseProxy(boolean val) {
-        useProxy = val;
     }
 
     /**
