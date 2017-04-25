@@ -47,10 +47,10 @@ public class TestResultListener extends TestListenerAdapter {
             //动态修改测试报告
             Object[] parameters = tr.getParameters();
             if (parameters != null && parameters[0] != null) {
-                parameters[0] = executor.getTestData().toString();
+                parameters[0] = executor.getTestCase().toString();
             }
 
-            String testName = IOHelper.getBaseName(executor.getTestData().getCurrentFileName()) + "_" + executor.getTestData().getName();
+            String testName = IOHelper.getBaseName(executor.getTestCase().getCurrentFileName()) + "_" + executor.getTestCase().getName();
             logger.error(testName + " Failure");
         }
         printStackTrace(tr);
@@ -76,10 +76,10 @@ public class TestResultListener extends TestListenerAdapter {
             //动态修改测试报告
             Object[] parameters = tr.getParameters();
             if (parameters != null && parameters[0] != null) {
-                parameters[0] = executor.getTestData().toString();
+                parameters[0] = executor.getTestCase().toString();
             }
 
-            String testName = IOHelper.getBaseName(executor.getTestData().getCurrentFileName()) + "_" + executor.getTestData().getName();
+            String testName = IOHelper.getBaseName(executor.getTestCase().getCurrentFileName()) + "_" + executor.getTestCase().getName();
             logger.info(testName + " Skipped");
         }
         printStackTrace(tr);
@@ -106,10 +106,10 @@ public class TestResultListener extends TestListenerAdapter {
             //动态修改测试报告
             Object[] parameters = tr.getParameters();
             if (parameters != null && parameters[0] != null) {
-                parameters[0] = executor.getTestData().toString();
+                parameters[0] = executor.getTestCase().toString();
             }
 
-            String testName = IOHelper.getBaseName(executor.getTestData().getCurrentFileName()) + "_" + executor.getTestData().getName();
+            String testName = IOHelper.getBaseName(executor.getTestCase().getCurrentFileName()) + "_" + executor.getTestCase().getName();
             logger.info(testName + " Success");
         }
     }
@@ -130,7 +130,7 @@ public class TestResultListener extends TestListenerAdapter {
         Object obj = tr.getInstance();
         if (obj instanceof Executor) {
             Executor executor = (Executor) obj;
-            String testName = IOHelper.getBaseName(executor.getTestData().getCurrentFileName()) + "_" + executor.getTestData().getName();
+            String testName = IOHelper.getBaseName(executor.getTestCase().getCurrentFileName()) + "_" + executor.getTestCase().getName();
             try {
                 //动态修改执行的方法名
                 BaseTestMethod bm = (BaseTestMethod) tr.getMethod();

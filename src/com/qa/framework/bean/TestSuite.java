@@ -4,29 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by apple on 15/11/18.
- */
-public class DataConfig {
-    private List<TestData> testDataList;
+public class TestSuite {
+    private List<TestCase> testCaseList;
 
-    private Map<String, TestData> testDataMap;
+    private Map<String, TestCase> testDataMap;
     private String url;
     private String httpMethod = "get";
 
     /**
      * Instantiates a new Data config.
      *
-     * @param testDataList the test data list
+     * @param testCaseList the test data list
      */
-    public DataConfig(List<TestData> testDataList) {
-        this.testDataList = testDataList;
+    public TestSuite(List<TestCase> testCaseList) {
+        this.testCaseList = testCaseList;
     }
 
     /**
      * Instantiates a new Data config.
      */
-    public DataConfig() {
+    public TestSuite() {
     }
 
     /**
@@ -70,20 +67,20 @@ public class DataConfig {
      *
      * @return the test data list
      */
-    public List<TestData> getTestDataList() {
-        return testDataList;
+    public List<TestCase> getTestCaseList() {
+        return testCaseList;
     }
 
     /**
      * Add test data.
      *
-     * @param testData the test data
+     * @param testCase the test data
      */
-    public void addTestData(TestData testData) {
-        if (testDataList == null) {
-            testDataList = new ArrayList<TestData>();
+    public void addTestCase(TestCase testCase) {
+        if (testCaseList == null) {
+            testCaseList = new ArrayList<TestCase>();
         }
-        testDataList.add(testData);
+        testCaseList.add(testCase);
     }
 
 }

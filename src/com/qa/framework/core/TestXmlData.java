@@ -1,8 +1,8 @@
 package com.qa.framework.core;
 
 import com.library.common.IOHelper;
-import com.qa.framework.bean.DataConfig;
-import com.qa.framework.bean.TestData;
+import com.qa.framework.bean.TestCase;
+import com.qa.framework.bean.TestSuite;
 import org.apache.log4j.Logger;
 import org.testng.annotations.DataProvider;
 
@@ -33,10 +33,10 @@ public class TestXmlData {
         List<String> files = getTestCaseFiles();
         for (String filePath : files) {
             DataConvertor dataConvertor = new DataConvertor(filePath);
-            DataConfig dataConfig = dataConvertor.getDataConfig();
-            List<TestData> testDataList = dataConfig.getTestDataList();
-            for (TestData data : testDataList) {
-                Object[] d = {data, dataConfig.getUrl(), dataConfig.getHttpMethod()};
+            TestSuite testSuite = dataConvertor.getTestSuite();
+            List<TestCase> testCaseList = testSuite.getTestCaseList();
+            for (TestCase data : testCaseList) {
+                Object[] d = {data, testSuite.getUrl(), testSuite.getHttpMethod()};
                 xmldata.add(d);
             }
         }
@@ -55,7 +55,7 @@ public class TestXmlData {
         List<String> testCaseXml = new ArrayList<String>();
         for (String filePath : files) {
             String contents = IOHelper.readFileToString(filePath);
-            if (contents != null && contents.lastIndexOf("<DataConfig") > 0) {
+            if (contents != null && contents.lastIndexOf("<TestSuite") > 0) {
                 testCaseXml.add(filePath);
             }
         }

@@ -1,7 +1,7 @@
 package com.qa.framework.core;
 
-import com.qa.framework.bean.DataConfig;
-import com.qa.framework.bean.TestData;
+import com.qa.framework.bean.TestCase;
+import com.qa.framework.bean.TestSuite;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -16,7 +16,7 @@ public class XmlDataProvider implements Iterator {
     private DataConvertor dataConvertor;
     private Iterator iterator;
     private ParamValueProcessor paramValueProcessor;
-    private DataConfig dataConfig;
+    private TestSuite testSuite;
 
     /**
      * Instantiates a new Xml data provider.
@@ -25,8 +25,8 @@ public class XmlDataProvider implements Iterator {
      */
     public XmlDataProvider(String xmlPath) {
         dataConvertor = new DataConvertor(xmlPath);
-        dataConfig = dataConvertor.getDataConfig();
-        iterator = dataConfig.getTestDataList().iterator();
+        testSuite = dataConvertor.getTestSuite();
+        iterator = testSuite.getTestCaseList().iterator();
     }
 
     /**
@@ -37,14 +37,14 @@ public class XmlDataProvider implements Iterator {
      */
     public XmlDataProvider(String xmlPath, String testDataName) {
         dataConvertor = new DataConvertor(xmlPath);
-        dataConfig = dataConvertor.getDataConfig();
-        List<TestData> testDataList = new ArrayList<TestData>();
-        for (TestData testData : dataConfig.getTestDataList()) {
-            if (testData.getName().equals(testDataName)) {
-                testDataList.add(testData);
+        testSuite = dataConvertor.getTestSuite();
+        List<TestCase> testCaseList = new ArrayList<TestCase>();
+        for (TestCase testCase : testSuite.getTestCaseList()) {
+            if (testCase.getName().equals(testDataName)) {
+                testCaseList.add(testCase);
             }
         }
-        iterator = testDataList.iterator();
+        iterator = testCaseList.iterator();
 
     }
 
@@ -54,7 +54,7 @@ public class XmlDataProvider implements Iterator {
 
     public Object next() {
         return new Object[]{
-                iterator.next(), dataConfig.getUrl(), dataConfig.getHttpMethod()
+                iterator.next(), testSuite.getUrl(), testSuite.getHttpMethod()
         };
     }
 

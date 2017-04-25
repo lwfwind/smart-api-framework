@@ -33,25 +33,25 @@ public class ParamValueProcessor {
     /**
      * Process test data.
      *
-     * @param testData the test data
+     * @param testCase the test data
      */
-    public static void processTestData(TestData testData) {
+    public static void processTestData(TestCase testCase) {
         JsonPairCache jsonPairCache = new JsonPairCache();
-        processBefore(testData, jsonPairCache);
-        processSetupParam(testData, jsonPairCache);
-        processSetupResultParam(testData, jsonPairCache);
-        processTestDataParam(testData, jsonPairCache);
+        processBefore(testCase, jsonPairCache);
+        processSetupParam(testCase, jsonPairCache);
+        processSetupResultParam(testCase, jsonPairCache);
+        processTestDataParam(testCase, jsonPairCache);
     }
 
     /**
      * Process before.
      *
-     * @param testData the test data
+     * @param testCase the test data
      */
-    public static void processBefore(TestData testData, JsonPairCache jsonPairCache) {
-        if (testData.getBefore() != null) {
-            logger.info("Process Before in xml-" + testData.getCurrentFileName() + " TestData-" + testData.getName());
-            Before before = testData.getBefore();
+    public static void processBefore(TestCase testCase, JsonPairCache jsonPairCache) {
+        if (testCase.getBefore() != null) {
+            logger.info("Process Before in xml-" + testCase.getCurrentFileName() + " TestCase-" + testCase.getName());
+            Before before = testCase.getBefore();
             if (before.getSqls() != null) {
                 List<Sql> sqls = before.getSqls();
                 for (Sql sql : sqls) {
@@ -69,20 +69,20 @@ public class ParamValueProcessor {
     /**
      * Process setup param.
      *
-     * @param testData      the test data
+     * @param testCase      the test data
      * @param jsonPairCache the json pair cache
      */
-    public static void processSetupParam(TestData testData, JsonPairCache jsonPairCache) {
-        List<Setup> setupList = testData.getSetupList();
+    public static void processSetupParam(TestCase testCase, JsonPairCache jsonPairCache) {
+        List<Setup> setupList = testCase.getSetupList();
         if (setupList != null) {
             for (Setup setup : setupList) {
                 List<Param> setupParamList = setup.getParams();
                 if (setupParamList != null) {
                     for (Param param : setupParamList) {
-                        executeFunction(param, setup, testData, jsonPairCache);
-                        executeSql(param, setup, testData, jsonPairCache);
-                        processParamDate(param, setup, testData, jsonPairCache);
-                        processParamFromBefore(testData, param, jsonPairCache);
+                        executeFunction(param, setup, testCase, jsonPairCache);
+                        executeSql(param, setup, testCase, jsonPairCache);
+                        processParamDate(param, setup, testCase, jsonPairCache);
+                        processParamFromBefore(testCase, param, jsonPairCache);
                     }
                 }
             }
@@ -92,20 +92,20 @@ public class ParamValueProcessor {
     /**
      * Process test data param.
      *
-     * @param testData      the test data
+     * @param testCase      the test data
      * @param jsonPairCache the json pair cache
      */
-    public static void processTestDataParam(TestData testData, JsonPairCache jsonPairCache) {
-        List<Param> paramList = testData.getParams();
+    public static void processTestDataParam(TestCase testCase, JsonPairCache jsonPairCache) {
+        List<Param> paramList = testCase.getParams();
         if (paramList != null) {
             for (Param param : paramList) {
-                executeFunction(param, null, testData, jsonPairCache);
-                executeSql(param, null, testData, jsonPairCache);
-                processParamDate(param, null, testData, jsonPairCache);
-                processParamFromSetupOrBefore(testData, param, jsonPairCache);
+                executeFunction(param, null, testCase, jsonPairCache);
+                executeSql(param, null, testCase, jsonPairCache);
+                processParamDate(param, null, testCase, jsonPairCache);
+                processParamFromSetupOrBefore(testCase, param, jsonPairCache);
             }
         }
-        processExpectResultBeforeExecute(testData, jsonPairCache);
+        processExpectResultBeforeExecute(testCase, jsonPairCache);
 
     }
 
@@ -114,10 +114,10 @@ public class ParamValueProcessor {
      *
      * @param param         the param
      * @param setup         the setup
-     * @param testData      the test data
+     * @param testCase      the test data
      * @param jsonPairCache the json pair cache
      */
-    public static void executeFunction(Param param, Setup setup, TestData testData, JsonPairCache jsonPairCache) {
+    public static void executeFunction(Param param, Setup setup, TestCase testCase, JsonPairCache jsonPairCache) {
         List<Function> functionList = param.getFunctions();
         if (functionList != null) {
             for (Function function : functionList) {
@@ -158,10 +158,10 @@ public class ParamValueProcessor {
 
                     param.setValue(value.toString());
                     jsonPairCache.put(param.getName(), param.getValue());
-                    jsonPairCache.put(testData.getName() + "." + param.getName(), param.getValue());
+                    jsonPairCache.put(testCase.getName() + "." + param.getName(), param.getValue());
                     if (setup != null) {
                         jsonPairCache.put(setup.getName() + "." + param.getName(), param.getValue());
-                        jsonPairCache.put(testData.getName() + "." + setup.getName() + "." + param.getName(), param.getValue());
+                        jsonPairCache.put(testCase.getName() + "." + setup.getName() + "." + param.getName(), param.getValue());
                     }
                 } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                     throw new RuntimeException(e.getMessage(), e);
@@ -221,22 +221,22 @@ public class ParamValueProcessor {
      *
      * @param param         the param
      * @param setup         the setup
-     * @param testData      the test data
+     * @param testCase      the test data
      * @param jsonPairCache the json pair cache
      */
-    public static void executeSql(Param param, Setup setup, TestData testData, JsonPairCache jsonPairCache) {
+    public static void executeSql(Param param, Setup setup, TestCase testCase, JsonPairCache jsonPairCache) {
         if (param.getSqls() != null) {
             List<Sql> sqlList = param.getSqls();
-            executeSql(sqlList, param, setup, testData, jsonPairCache);
+            executeSql(sqlList, param, setup, testCase, jsonPairCache);
             if (param.getValue().contains("#") || param.getValue().contains("@")) {
                 param.setValue(handleReservedKeyChars(param.getValue(), jsonPairCache));
             }
 
             jsonPairCache.put(param.getName(), param.getValue());
-            jsonPairCache.put(testData.getName() + "." + param.getName(), param.getValue());
+            jsonPairCache.put(testCase.getName() + "." + param.getName(), param.getValue());
             if (setup != null) {
                 jsonPairCache.put(setup.getName() + "." + param.getName(), param.getValue());
-                jsonPairCache.put(testData.getName() + "." + setup.getName() + "." + param.getName(), param.getValue());
+                jsonPairCache.put(testCase.getName() + "." + setup.getName() + "." + param.getName(), param.getValue());
             }
         }
     }
@@ -272,18 +272,18 @@ public class ParamValueProcessor {
      * @param sqlList       the sqlList  sql列表
      * @param param         the param      当前传入的参数
      * @param setup         the setup    param所属的setup
-     * @param testData      the test data
+     * @param testCase      the test data
      * @param jsonPairCache the json pair cache
      * @return the string
      */
-    public static String executeSql(List<Sql> sqlList, Param param, Setup setup, TestData testData, JsonPairCache jsonPairCache) {
+    public static String executeSql(List<Sql> sqlList, Param param, Setup setup, TestCase testCase, JsonPairCache jsonPairCache) {
         for (Sql sql : sqlList) {
             Map<String, Object> recordInfo = handleSql(sql, jsonPairCache);
             for (int i = 0; i < sql.getReturnValues().length; i++) {
                 String key = sql.getReturnValues()[i];
                 String sqlKey = sql.getName() + "." + sql.getReturnValues()[i];
                 String paramSqlKey = param.getName() + "." + sqlKey;
-                String testDataKey = testData.getName() + "." + paramSqlKey;
+                String testDataKey = testCase.getName() + "." + paramSqlKey;
                 Assert.assertNotNull(recordInfo, "sql为" + sql.getSqlStatement());
                 String value = null;
                 if (recordInfo.get(key) == null) {
@@ -296,7 +296,7 @@ public class ParamValueProcessor {
                 jsonPairCache.put(testDataKey, value);
                 if (setup != null) {
                     String setupParamSqlKey = setup.getName() + "." + paramSqlKey;
-                    String testDataSetupParamSqlKey = testData.getName() + "." + setupParamSqlKey;
+                    String testDataSetupParamSqlKey = testCase.getName() + "." + setupParamSqlKey;
                     jsonPairCache.put(setupParamSqlKey, value);
                     jsonPairCache.put(testDataSetupParamSqlKey, value);
                 }
@@ -336,20 +336,20 @@ public class ParamValueProcessor {
     /**
      * 处理param中需要接受setup中param值的问题
      *
-     * @param testData      the test data
+     * @param testCase      the test data
      * @param param         the param
      * @param jsonPairCache the json pair cache
      */
-    public static void processParamFromSetupOrBefore(TestData testData, Param param, JsonPairCache jsonPairCache) {
-        if (testData.getSetupList() != null || testData.getBefore() != null) {
+    public static void processParamFromSetupOrBefore(TestCase testCase, Param param, JsonPairCache jsonPairCache) {
+        if (testCase.getSetupList() != null || testCase.getBefore() != null) {
             if (param.getValue().contains("#") || param.getValue().contains("@")) {
                 param.setValue(handleReservedKeyChars(param.getValue(), jsonPairCache));
             }
         }
     }
 
-    public static void processParamFromBefore(TestData testData, Param param, JsonPairCache jsonPairCache) {
-        if (testData.getBefore() != null) {
+    public static void processParamFromBefore(TestCase testCase, Param param, JsonPairCache jsonPairCache) {
+        if (testCase.getBefore() != null) {
             if (param.getValue().contains("#") || param.getValue().contains("@")) {
                 param.setValue(handleReservedKeyChars(param.getValue(), jsonPairCache));
             }
@@ -359,14 +359,14 @@ public class ParamValueProcessor {
     /**
      * Process setup result param.
      *
-     * @param testData      the test data
+     * @param testCase      the test data
      * @param jsonPairCache the json pair cache
      */
-    public static void processSetupResultParam(TestData testData, JsonPairCache jsonPairCache) {
-        if (testData.getSetupList() != null) {
-            testData.setUseCookie(true);
-            for (Setup setup : testData.getSetupList()) {
-                logger.info("Process Setup in xml-" + testData.getCurrentFileName() + " TestData-" + testData.getName() + " Setup-" + setup.getName());
+    public static void processSetupResultParam(TestCase testCase, JsonPairCache jsonPairCache) {
+        if (testCase.getSetupList() != null) {
+            testCase.setUseCookie(true);
+            for (Setup setup : testCase.getSetupList()) {
+                logger.info("Process Setup in xml-" + testCase.getCurrentFileName() + " TestCase-" + testCase.getName() + " Setup-" + setup.getName());
                 String response = HttpMethod.request(setup.getUrl(), setup.getHeaders(), setup.getParams(), setup.getHttpMethod(), setup.isStoreCookie(), setup.isUseCookie());
                 Map<String, String> pairMaps = JsonHelper.parseJsonToPairs(response);
                 if (pairMaps.size() > 0) {
@@ -382,7 +382,7 @@ public class ParamValueProcessor {
         }
     }
 
-    private static void processParamDate(Param param, Setup setup, TestData testData, JsonPairCache jsonPairCache) {
+    private static void processParamDate(Param param, Setup setup, TestCase testCase, JsonPairCache jsonPairCache) {
         if (param.getDateStamp() != null) {
             DateStamp dateStamp = param.getDateStamp();
             Calendar c = Calendar.getInstance();
@@ -456,10 +456,10 @@ public class ParamValueProcessor {
                 param.setValue(c.getTimeInMillis() / 1000 + "");
             }
             jsonPairCache.put(param.getName(), param.getValue());
-            jsonPairCache.put(testData.getName() + "." + param.getName(), param.getValue());
+            jsonPairCache.put(testCase.getName() + "." + param.getName(), param.getValue());
             if (setup != null) {
                 jsonPairCache.put(setup.getName() + "." + param.getName(), param.getValue());
-                jsonPairCache.put(testData.getName() + "." + setup.getName() + "." + param.getName(), param.getValue());
+                jsonPairCache.put(testCase.getName() + "." + setup.getName() + "." + param.getName(), param.getValue());
             }
         }
     }
@@ -468,11 +468,11 @@ public class ParamValueProcessor {
     /**
      * Process expect result.
      *
-     * @param testData      the test data
+     * @param testCase      the test data
      * @param jsonPairCache the json pair cache
      */
-    public static void processExpectResultBeforeExecute(TestData testData, JsonPairCache jsonPairCache) {
-        ExpectResults expectResults = testData.getExpectResults();
+    public static void processExpectResultBeforeExecute(TestCase testCase, JsonPairCache jsonPairCache) {
+        ExpectResults expectResults = testCase.getExpectResults();
         for (IExpectResult result : expectResults.getExpectResults()) {
             if (result instanceof ContainExpectResult) {
                 ContainExpectResult containExpectResult = (ContainExpectResult) result;
@@ -499,9 +499,9 @@ public class ParamValueProcessor {
     /**
      * Process expect result.
      *
-     * @param testData the test data
+     * @param testCase the test data
      */
-    public static void processExpectResultAfterExecute(TestData testData, String response) {
+    public static void processExpectResultAfterExecute(TestCase testCase, String response) {
         JsonPairCache jsonPairCache = new JsonPairCache();
         Map<String, String> pairMaps = JsonHelper.parseJsonToPairs(response);
         if (pairMaps.size() > 0) {
@@ -510,10 +510,10 @@ public class ParamValueProcessor {
                 String key = (String) entry.getKey();
                 String val = (String) entry.getValue();
                 jsonPairCache.put(key, val);
-                jsonPairCache.put(testData.getName() + "." + key, val);
+                jsonPairCache.put(testCase.getName() + "." + key, val);
             }
         }
-        ExpectResults expectResults = testData.getExpectResults();
+        ExpectResults expectResults = testCase.getExpectResults();
         if (expectResults.getSqls() != null) {
             executeSqlList(expectResults.getSqls(), jsonPairCache);
         }
@@ -546,13 +546,13 @@ public class ParamValueProcessor {
     /**
      * Process after.
      *
-     * @param testData the test data
+     * @param testCase the test data
      */
     @SuppressWarnings("unchecked")
-    public static void processAfter(TestData testData) {
-        if (testData.getAfter() != null) {
-            logger.info("Process After in xml-" + testData.getCurrentFileName() + " TestData-" + testData.getName());
-            After after = testData.getAfter();
+    public static void processAfter(TestCase testCase) {
+        if (testCase.getAfter() != null) {
+            logger.info("Process After in xml-" + testCase.getCurrentFileName() + " TestCase-" + testCase.getName());
+            After after = testCase.getAfter();
             if (after.getSqls() != null) {
                 List<Sql> sqls = after.getSqls();
                 for (Sql sql : sqls) {

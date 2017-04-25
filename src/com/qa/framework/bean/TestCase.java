@@ -12,7 +12,7 @@ import java.util.Map;
  * 封装一个测试用例的一组数据
  * Created by apple on 15/11/18.
  */
-public class TestData {
+public class TestCase {
     private String name;
     private String desc;
     private List<Setup> setupList;

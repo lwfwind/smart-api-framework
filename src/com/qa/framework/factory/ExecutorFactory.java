@@ -1,6 +1,6 @@
 package com.qa.framework.factory;
 
-import com.qa.framework.bean.TestData;
+import com.qa.framework.bean.TestCase;
 import com.qa.framework.core.TestXmlData;
 import com.qa.framework.mock.IMockServer;
 import org.testng.annotations.AfterSuite;
@@ -45,15 +45,15 @@ public class ExecutorFactory {
     /**
      * Execute object [ ].
      *
-     * @param testData   the test data
+     * @param testCase   the test data
      * @param url        the url
      * @param httpMethod the http method
      * @return the object [ ]
      */
     @Factory(dataProviderClass = TestXmlData.class, dataProvider = "xmlFactoryData")
-    public Object[] execute(TestData testData, String url, String httpMethod) {
+    public Object[] execute(TestCase testCase, String url, String httpMethod) {
         Object[] tests = new Object[1];
-        tests[0] = new Executor(testData, url, httpMethod);
+        tests[0] = new Executor(testCase, url, httpMethod);
         return tests;
     }
 

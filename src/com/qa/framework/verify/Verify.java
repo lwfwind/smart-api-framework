@@ -2,13 +2,13 @@ package com.qa.framework.verify;
 
 
 import com.qa.framework.bean.ExpectResults;
-import com.qa.framework.bean.TestData;
+import com.qa.framework.bean.TestCase;
 import com.qa.framework.core.ParamValueProcessor;
 
 public class Verify {
-    public static void verifyResult(TestData testData, String response) {
-        ParamValueProcessor.processExpectResultAfterExecute(testData, response);
-        ExpectResults expectResult = testData.getExpectResults();
+    public static void verifyResult(TestCase testCase, String response) {
+        ParamValueProcessor.processExpectResultAfterExecute(testCase, response);
+        ExpectResults expectResult = testCase.getExpectResults();
         for (IExpectResult iExpectResult : expectResult.getExpectResults()) {
             if (iExpectResult instanceof ContainExpectResult) {
                 ContainExpectResult containKeyExpectResult = (ContainExpectResult) iExpectResult;

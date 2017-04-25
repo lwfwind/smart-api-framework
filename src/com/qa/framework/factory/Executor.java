@@ -1,6 +1,6 @@
 package com.qa.framework.factory;
 
-import com.qa.framework.bean.TestData;
+import com.qa.framework.bean.TestCase;
 import com.qa.framework.core.ParamValueProcessor;
 import com.qa.framework.core.TestBase;
 import com.qa.framework.library.httpclient.HttpMethod;
@@ -18,19 +18,19 @@ import org.testng.annotations.Test;
  */
 @Listeners({TestResultListener.class})
 public class Executor extends TestBase {
-    private TestData testData;
+    private TestCase testCase;
     private String url;
     private String httpMethod;
 
     /**
      * Instantiates a new Executor.
      *
-     * @param testData   the test data
+     * @param testCase   the test data
      * @param url        the url
      * @param httpMethod the http method
      */
-    public Executor(TestData testData, String url, String httpMethod) {
-        this.testData = testData;
+    public Executor(TestCase testCase, String url, String httpMethod) {
+        this.testCase = testCase;
         this.url = url;
         this.httpMethod = httpMethod;
     }
@@ -40,8 +40,8 @@ public class Executor extends TestBase {
      *
      * @return the test data
      */
-    public TestData getTestData() {
-        return testData;
+    public TestCase getTestCase() {
+        return testCase;
     }
 
     /**
@@ -52,7 +52,7 @@ public class Executor extends TestBase {
     @DataProvider
     public Object[][] data() {
         return new Object[][]{
-                {testData, url, httpMethod},
+                {testCase, url, httpMethod},
         };
     }
 
@@ -65,22 +65,22 @@ public class Executor extends TestBase {
     public void beforeSuite(ITestContext context) {
         for (ITestNGMethod testNGMethod : context.getAllTestMethods()) {
             Executor executor = (Executor) testNGMethod.getInstance();
-            testNGMethod.setInvocationCount(executor.getTestData().getInvocationCount());
+            testNGMethod.setInvocationCount(executor.getTestCase().getInvocationCount());
         }
     }
 
     /**
      * Testcase.
      *
-     * @param testData   the test data
+     * @param testCase   the test data
      * @param url        the url
      * @param httpMethod the http method
      */
     @Test(dataProvider = "data")
-    public void testcase(TestData testData, String url, String httpMethod) {
-        ParamValueProcessor.processTestData(testData);
-        String content = HttpMethod.request(url, testData.getHeaders(), testData.getParams(), httpMethod, testData.isStoreCookie(), testData.isUseCookie());
-        Verify.verifyResult(testData, content);
-        ParamValueProcessor.processAfter(testData);
+    public void testcase(TestCase testCase, String url, String httpMethod) {
+        ParamValueProcessor.processTestData(testCase);
+        String content = HttpMethod.request(url, testCase.getHeaders(), testCase.getParams(), httpMethod, testCase.isStoreCookie(), testCase.isUseCookie());
+        Verify.verifyResult(testCase, content);
+        ParamValueProcessor.processAfter(testCase);
     }
 }

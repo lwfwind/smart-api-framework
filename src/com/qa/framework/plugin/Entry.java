@@ -2,19 +2,15 @@ package com.qa.framework.plugin;
 
 
 import com.library.common.IOHelper;
-import com.qa.framework.bean.DataConfig;
-import com.qa.framework.bean.TestData;
+import com.qa.framework.bean.TestCase;
+import com.qa.framework.bean.TestSuite;
 import com.qa.framework.core.DataConvertor;
 import com.qa.framework.core.ParamValueProcessor;
 import com.qa.framework.library.httpclient.HttpMethod;
 import com.qa.framework.mock.IMockServer;
-import com.qa.framework.testnglistener.TestResultListener;
 import com.qa.framework.verify.Verify;
 import org.apache.commons.cli.*;
 import org.apache.log4j.Logger;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.qa.framework.classfinder.ClassHelper.findImplementClass;
 
@@ -58,22 +54,22 @@ public class Entry {
             logger.info(String.format("start execute testSuiteName: %s testCaseName: %s",xmlName,xmlDataName));
             String xmlPath = IOHelper.listFilesInDirectoryRecursive(System.getProperty("user.dir"), xmlName + ".xml").get(0);
             DataConvertor dataConvertor = new DataConvertor(xmlPath);
-            DataConfig dataConfig = dataConvertor.getDataConfig();
+            TestSuite testSuite = dataConvertor.getTestSuite();
             if(xmlDataName.equals("null")) {
-                for (TestData testData : dataConfig.getTestDataList()) {
-                    ParamValueProcessor.processTestData(testData);
-                    String content = HttpMethod.request(dataConfig.getUrl(), testData.getHeaders(), testData.getParams(), dataConfig.getHttpMethod(), testData.isStoreCookie(), testData.isUseCookie());
-                    Verify.verifyResult(testData, content);
-                    ParamValueProcessor.processAfter(testData);
+                for (TestCase testCase : testSuite.getTestCaseList()) {
+                    ParamValueProcessor.processTestData(testCase);
+                    String content = HttpMethod.request(testSuite.getUrl(), testCase.getHeaders(), testCase.getParams(), testSuite.getHttpMethod(), testCase.isStoreCookie(), testCase.isUseCookie());
+                    Verify.verifyResult(testCase, content);
+                    ParamValueProcessor.processAfter(testCase);
                 }
             }
             else {
-                for (TestData testData : dataConfig.getTestDataList()) {
-                    if (testData.getName().equals(xmlDataName)) {
-                        ParamValueProcessor.processTestData(testData);
-                        String content = HttpMethod.request(dataConfig.getUrl(), testData.getHeaders(), testData.getParams(), dataConfig.getHttpMethod(), testData.isStoreCookie(), testData.isUseCookie());
-                        Verify.verifyResult(testData, content);
-                        ParamValueProcessor.processAfter(testData);
+                for (TestCase testCase : testSuite.getTestCaseList()) {
+                    if (testCase.getName().equals(xmlDataName)) {
+                        ParamValueProcessor.processTestData(testCase);
+                        String content = HttpMethod.request(testSuite.getUrl(), testCase.getHeaders(), testCase.getParams(), testSuite.getHttpMethod(), testCase.isStoreCookie(), testCase.isUseCookie());
+                        Verify.verifyResult(testCase, content);
+                        ParamValueProcessor.processAfter(testCase);
                         break;
                     }
                 }

@@ -3,8 +3,8 @@ package com.qa.framework.core;
 import com.library.common.IOHelper;
 import com.library.common.ReflectHelper;
 import com.library.common.XmlHelper;
-import com.qa.framework.bean.DataConfig;
-import com.qa.framework.bean.TestData;
+import com.qa.framework.bean.TestCase;
+import com.qa.framework.bean.TestSuite;
 import com.qa.framework.exception.TestDataDescDuplicatedException;
 import com.qa.framework.exception.TestDataNameDuplicatedException;
 import com.qa.framework.verify.IExpectResult;
@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class DataConvertor {
     private static final Logger logger = Logger.getLogger(DataConvertor.class);
-    private DataConfig dataConfig;
+    private TestSuite testSuite;
     private String fileName;
 
     /**
@@ -35,34 +35,34 @@ public class DataConvertor {
         logger.info("convert data from xml-" + this.fileName);
         XmlHelper xmlHelper = new XmlHelper();
         Document document = xmlHelper.readXMLFile(filePath);
-        dataConfig = new DataConfig();
+        testSuite = new TestSuite();
         List attributes = document.getRootElement().attributes();
         if (attributes.size() != 0) {
             for (Object attribute : attributes) {
                 Attribute attr = (Attribute) attribute;
                 String attributeName = attr.getName();      //element对应对象的属性值
                 String attributeValue = attr.getStringValue();
-                ReflectHelper.setMethod(dataConfig, attributeName, attributeValue, String.class);
+                ReflectHelper.setMethod(testSuite, attributeName, attributeValue, String.class);
             }
         }
         List elements = document.getRootElement().elements();
         for (Object element : elements) {
-            convert(dataConfig, (Element) element);
+            convert(testSuite, (Element) element);
         }
         List<String> testDataNameList = new ArrayList<String>();
         List<String> testDataDescList = new ArrayList<String>();
-        for (TestData testData : dataConfig.getTestDataList()) {
-            if (!testDataNameList.contains(testData.getName())) {
-                testDataNameList.add(testData.getName());
+        for (TestCase testCase : testSuite.getTestCaseList()) {
+            if (!testDataNameList.contains(testCase.getName())) {
+                testDataNameList.add(testCase.getName());
             } else {
-                logger.info("TestDate 的名字重复" + this.fileName + ":" + testData.getName());
-                throw new TestDataNameDuplicatedException(this.fileName, testData.getName());
+                logger.info("TestDate 的名字重复" + this.fileName + ":" + testCase.getName());
+                throw new TestDataNameDuplicatedException(this.fileName, testCase.getName());
             }
-            if (!testDataDescList.contains(testData.getDesc())) {
-                testDataDescList.add(testData.getDesc());
+            if (!testDataDescList.contains(testCase.getDesc())) {
+                testDataDescList.add(testCase.getDesc());
             } else {
                 logger.info("TestDate 的描述重复" + this.fileName);
-                throw new TestDataDescDuplicatedException(this.fileName, testData.getDesc());
+                throw new TestDataDescDuplicatedException(this.fileName, testCase.getDesc());
             }
         }
     }
@@ -73,8 +73,8 @@ public class DataConvertor {
      *
      * @return the data config
      */
-    public DataConfig getDataConfig() {
-        return dataConfig;
+    public TestSuite getTestSuite() {
+        return testSuite;
     }
 
     /**
@@ -107,7 +107,7 @@ public class DataConvertor {
                 ReflectHelper.addMethod(parentObj, elementObj, element.getName(), elementObj.getClass());
             }
             //设置xml的文件名到TestData类里
-            if (element.getName().equalsIgnoreCase("TestData")) {
+            if (element.getName().equalsIgnoreCase("TestCase")) {
                 ReflectHelper.setMethod(elementObj, "currentFileName", this.fileName);
             }
             //设置属性
