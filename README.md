@@ -13,6 +13,9 @@ Smart-api-framework is a light, common http api automation framework based on [T
 * Re-run failed test cases
 * Easy integration with CI system
 
+## Architecture
+![Architecture](https://github.com/lwfwind/smart-api-framework/blob/dev/pics/Architecture.png)
+
 ## XML Structure
 ```xml
 TestSuite -- config test url and httpMethod
