@@ -23,7 +23,7 @@ TestSuite -- config test url and httpMethod
         Before -- preset environment such as database
         Setup -- config setup url and httpMethod, such as login action
             Param -- config setup parameters
-        Header -- config request headers 
+        Headers -- config request headers 
             Header -- config Header parameters
             Cookie -- config Cookie parameters
         Param -- config test parameters
