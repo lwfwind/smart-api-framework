@@ -6,6 +6,7 @@ import java.util.Map;
 
 public class TestSuite {
     private List<TestCase> testCaseList;
+    private List<Function> functionList;
 
     private Map<String, TestCase> testDataMap;
     private String url;
@@ -71,6 +72,10 @@ public class TestSuite {
         return testCaseList;
     }
 
+    public List<Function> getFunctionList() {
+        return functionList;
+    }
+
     /**
      * Add test data.
      *
@@ -81,6 +86,18 @@ public class TestSuite {
             testCaseList = new ArrayList<TestCase>();
         }
         testCaseList.add(testCase);
+    }
+
+    public void addFunction(Function function) {
+        if (functionList == null) {
+            functionList = new ArrayList<Function>();
+        }
+        functionList.add(function);
+    }
+
+    @Override
+    public String toString() {
+        return "url=" + getUrl() + ", httpMethod=" + getHttpMethod();
     }
 
 }

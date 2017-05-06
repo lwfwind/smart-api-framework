@@ -5,8 +5,8 @@ import com.library.common.ReflectHelper;
 import com.library.common.XmlHelper;
 import com.qa.framework.bean.TestCase;
 import com.qa.framework.bean.TestSuite;
-import com.qa.framework.exception.TestDataDescDuplicatedException;
-import com.qa.framework.exception.TestDataNameDuplicatedException;
+import com.qa.framework.exception.TestCaseDescDuplicatedException;
+import com.qa.framework.exception.TestCaseNameDuplicatedException;
 import com.qa.framework.verify.IExpectResult;
 import org.apache.log4j.Logger;
 import org.dom4j.Attribute;
@@ -56,13 +56,13 @@ public class DataConvertor {
                 testDataNameList.add(testCase.getName());
             } else {
                 logger.info("TestDate 的名字重复" + this.fileName + ":" + testCase.getName());
-                throw new TestDataNameDuplicatedException(this.fileName, testCase.getName());
+                throw new TestCaseNameDuplicatedException(this.fileName, testCase.getName());
             }
             if (!testDataDescList.contains(testCase.getDesc())) {
                 testDataDescList.add(testCase.getDesc());
             } else {
                 logger.info("TestDate 的描述重复" + this.fileName);
-                throw new TestDataDescDuplicatedException(this.fileName, testCase.getDesc());
+                throw new TestCaseDescDuplicatedException(this.fileName, testCase.getDesc());
             }
         }
     }

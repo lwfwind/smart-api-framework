@@ -1,8 +1,5 @@
 package com.qa.framework.exception;
 
-/**
- * Created by apple on 15/11/23.
- */
 public class NoSuchSqlException extends RuntimeException {
     /**
      * Instantiates a new No such sql exception.

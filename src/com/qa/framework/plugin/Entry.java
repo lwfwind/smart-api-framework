@@ -57,7 +57,7 @@ public class Entry {
             TestSuite testSuite = dataConvertor.getTestSuite();
             if(xmlDataName.equals("null")) {
                 for (TestCase testCase : testSuite.getTestCaseList()) {
-                    ParamValueProcessor.processTestData(testCase);
+                    ParamValueProcessor.processTestCase(testCase,testSuite);
                     String content = HttpMethod.request(testSuite.getUrl(), testCase.getHeaders(), testCase.getParams(), testSuite.getHttpMethod(), testCase.isStoreCookie(), testCase.isUseCookie());
                     Verify.verifyResult(testCase, content);
                     ParamValueProcessor.processAfter(testCase);
@@ -66,7 +66,7 @@ public class Entry {
             else {
                 for (TestCase testCase : testSuite.getTestCaseList()) {
                     if (testCase.getName().equals(xmlDataName)) {
-                        ParamValueProcessor.processTestData(testCase);
+                        ParamValueProcessor.processTestCase(testCase,testSuite);
                         String content = HttpMethod.request(testSuite.getUrl(), testCase.getHeaders(), testCase.getParams(), testSuite.getHttpMethod(), testCase.isStoreCookie(), testCase.isUseCookie());
                         Verify.verifyResult(testCase, content);
                         ParamValueProcessor.processAfter(testCase);

@@ -1,6 +1,7 @@
 package com.qa.framework.factory;
 
 import com.qa.framework.bean.TestCase;
+import com.qa.framework.bean.TestSuite;
 import com.qa.framework.core.ParamValueProcessor;
 import com.qa.framework.core.TestBase;
 import com.qa.framework.library.httpclient.HttpMethod;
@@ -19,20 +20,11 @@ import org.testng.annotations.Test;
 @Listeners({TestResultListener.class})
 public class Executor extends TestBase {
     private TestCase testCase;
-    private String url;
-    private String httpMethod;
+    private TestSuite testSuite;
 
-    /**
-     * Instantiates a new Executor.
-     *
-     * @param testCase   the test data
-     * @param url        the url
-     * @param httpMethod the http method
-     */
-    public Executor(TestCase testCase, String url, String httpMethod) {
+    public Executor(TestCase testCase, TestSuite testSuite) {
         this.testCase = testCase;
-        this.url = url;
-        this.httpMethod = httpMethod;
+        this.testSuite = testSuite;
     }
 
     /**
@@ -52,7 +44,7 @@ public class Executor extends TestBase {
     @DataProvider
     public Object[][] data() {
         return new Object[][]{
-                {testCase, url, httpMethod},
+                {testCase, testSuite},
         };
     }
 
@@ -73,13 +65,11 @@ public class Executor extends TestBase {
      * Testcase.
      *
      * @param testCase   the test data
-     * @param url        the url
-     * @param httpMethod the http method
      */
     @Test(dataProvider = "data")
-    public void testcase(TestCase testCase, String url, String httpMethod) {
-        ParamValueProcessor.processTestData(testCase);
-        String content = HttpMethod.request(url, testCase.getHeaders(), testCase.getParams(), httpMethod, testCase.isStoreCookie(), testCase.isUseCookie());
+    public void testcase(TestCase testCase, TestSuite testSuite) {
+        ParamValueProcessor.processTestCase(testCase,testSuite);
+        String content = HttpMethod.request(testSuite.getUrl(), testCase.getHeaders(), testCase.getParams(), testSuite.getHttpMethod(), testCase.isStoreCookie(), testCase.isUseCookie());
         Verify.verifyResult(testCase, content);
         ParamValueProcessor.processAfter(testCase);
     }

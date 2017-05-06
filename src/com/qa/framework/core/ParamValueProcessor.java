@@ -6,6 +6,7 @@ import com.library.common.ReflectHelper;
 import com.library.common.StringHelper;
 import com.qa.framework.bean.*;
 import com.qa.framework.cache.JsonPairCache;
+import com.qa.framework.exception.TestCaseParamException;
 import com.qa.framework.library.database.DBHelper;
 import com.qa.framework.library.httpclient.HttpMethod;
 import com.qa.framework.verify.AssertTrueExpectResult;
@@ -35,12 +36,13 @@ public class ParamValueProcessor {
      *
      * @param testCase the test data
      */
-    public static void processTestData(TestCase testCase) {
+    public static void processTestCase(TestCase testCase, TestSuite testSuite) {
         JsonPairCache jsonPairCache = new JsonPairCache();
         processBefore(testCase, jsonPairCache);
         processSetupParam(testCase, jsonPairCache);
         processSetupResultParam(testCase, jsonPairCache);
-        processTestDataParam(testCase, jsonPairCache);
+        processTestCaseParam(testCase, testSuite, jsonPairCache);
+        processExpectResultBeforeExecute(testCase, jsonPairCache);
     }
 
     /**
@@ -95,18 +97,16 @@ public class ParamValueProcessor {
      * @param testCase      the test data
      * @param jsonPairCache the json pair cache
      */
-    public static void processTestDataParam(TestCase testCase, JsonPairCache jsonPairCache) {
+    public static void processTestCaseParam(TestCase testCase,TestSuite testSuite, JsonPairCache jsonPairCache) {
         List<Param> paramList = testCase.getParams();
         if (paramList != null) {
             for (Param param : paramList) {
                 executeFunction(param, null, testCase, jsonPairCache);
                 executeSql(param, null, testCase, jsonPairCache);
                 processParamDate(param, null, testCase, jsonPairCache);
-                processParamFromSetupOrBefore(testCase, param, jsonPairCache);
+                processParamFromSetupOrBefore(testCase, testSuite, param, jsonPairCache);
             }
         }
-        processExpectResultBeforeExecute(testCase, jsonPairCache);
-
     }
 
     /**
@@ -121,50 +121,13 @@ public class ParamValueProcessor {
         List<Function> functionList = param.getFunctions();
         if (functionList != null) {
             for (Function function : functionList) {
-                try {
-                    Object value = null;
-                    String arguments = function.getArguments();
-                    if (arguments != null && !arguments.trim().equalsIgnoreCase("")) {
-                        String[] argumentsArray = arguments.split(",");
-                        Object[] argumentsObjectArray = new Object[argumentsArray.length];
-                        for (int i = 0; i < argumentsArray.length; i++) {
-                            if (argumentsArray[i].contains("(") && argumentsArray[i].contains(")")) {
-                                String type = StringHelper.getBetweenString(argumentsArray[i], "(", ")");
-                                String argumentsValue = argumentsArray[i].substring(0, argumentsArray[i].indexOf("("));
-                                if (type.equalsIgnoreCase("int")) {
-                                    argumentsObjectArray[i] = Integer.parseInt(argumentsValue);
-                                } else if (type.equalsIgnoreCase("long")) {
-                                    argumentsObjectArray[i] = Long.parseLong(argumentsValue);
-                                } else if (type.equalsIgnoreCase("double")) {
-                                    argumentsObjectArray[i] = Double.parseDouble(argumentsValue);
-                                } else if (type.equalsIgnoreCase("float")) {
-                                    argumentsObjectArray[i] = Float.parseFloat(argumentsValue);
-                                } else if (type.equalsIgnoreCase("short")) {
-                                    argumentsObjectArray[i] = Short.parseShort(argumentsValue);
-                                } else if (type.equalsIgnoreCase("boolean")) {
-                                    argumentsObjectArray[i] = Boolean.parseBoolean(argumentsValue);
-                                } else {
-                                    argumentsObjectArray[i] = argumentsArray[i];
-                                }
-                            } else {
-                                argumentsObjectArray[i] = argumentsArray[i];
-                            }
-                            i++;
-                        }
-                        value = MethodUtils.invokeStaticMethod(Class.forName(function.getClsName()), function.getMethodName(), argumentsObjectArray);
-                    } else {
-                        value = MethodUtils.invokeStaticMethod(Class.forName(function.getClsName()), function.getMethodName());
-                    }
-
-                    param.setValue(value.toString());
-                    jsonPairCache.put(param.getName(), param.getValue());
-                    jsonPairCache.put(testCase.getName() + "." + param.getName(), param.getValue());
-                    if (setup != null) {
-                        jsonPairCache.put(setup.getName() + "." + param.getName(), param.getValue());
-                        jsonPairCache.put(testCase.getName() + "." + setup.getName() + "." + param.getName(), param.getValue());
-                    }
-                } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                    throw new RuntimeException(e.getMessage(), e);
+                String value = executeFunction(function);
+                param.setValue(value);
+                jsonPairCache.put(param.getName(), param.getValue());
+                jsonPairCache.put(testCase.getName() + "." + param.getName(), param.getValue());
+                if (setup != null) {
+                    jsonPairCache.put(setup.getName() + "." + param.getName(), param.getValue());
+                    jsonPairCache.put(testCase.getName() + "." + setup.getName() + "." + param.getName(), param.getValue());
                 }
             }
         }
@@ -173,47 +136,56 @@ public class ParamValueProcessor {
     public static void executeFunctionList(List<Function> functionList, JsonPairCache jsonPairCache) {
         if (functionList != null) {
             for (Function function : functionList) {
-                try {
-                    Object value = null;
-                    String arguments = function.getArguments();
-                    if (arguments != null && !arguments.trim().equalsIgnoreCase("")) {
-                        String[] argumentsArray = arguments.split(",");
-                        Object[] argumentsObjectArray = new Object[argumentsArray.length];
-                        for (int i = 0; i < argumentsArray.length; i++) {
-                            if (argumentsArray[i].contains("(") && argumentsArray[i].contains(")")) {
-                                String type = StringHelper.getBetweenString(argumentsArray[i], "(", ")");
-                                String argumentsValue = argumentsArray[i].substring(0, argumentsArray[i].indexOf("("));
-                                if (type.equalsIgnoreCase("int")) {
-                                    argumentsObjectArray[i] = Integer.parseInt(argumentsValue);
-                                } else if (type.equalsIgnoreCase("long")) {
-                                    argumentsObjectArray[i] = Long.parseLong(argumentsValue);
-                                } else if (type.equalsIgnoreCase("double")) {
-                                    argumentsObjectArray[i] = Double.parseDouble(argumentsValue);
-                                } else if (type.equalsIgnoreCase("float")) {
-                                    argumentsObjectArray[i] = Float.parseFloat(argumentsValue);
-                                } else if (type.equalsIgnoreCase("short")) {
-                                    argumentsObjectArray[i] = Short.parseShort(argumentsValue);
-                                } else if (type.equalsIgnoreCase("boolean")) {
-                                    argumentsObjectArray[i] = Boolean.parseBoolean(argumentsValue);
-                                } else {
-                                    argumentsObjectArray[i] = argumentsArray[i];
-                                }
-                            } else {
-                                argumentsObjectArray[i] = argumentsArray[i];
-                            }
-                        }
-                        value = MethodUtils.invokeStaticMethod(Class.forName(function.getClsName()), function.getMethodName(), argumentsObjectArray);
-                    } else {
-                        value = MethodUtils.invokeStaticMethod(Class.forName(function.getClsName()), function.getMethodName());
-                    }
-                    if (function.getName() != null && jsonPairCache != null) {
-                        jsonPairCache.put(function.getName(), value.toString());
-                    }
-                } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                    throw new RuntimeException(e.getMessage(), e);
+                String value = executeFunction(function);
+                if (value != null && function.getName() != null && jsonPairCache != null) {
+                    jsonPairCache.put(function.getName(), value);
                 }
             }
         }
+    }
+
+    private static String executeFunction(Function function){
+        try {
+            Object value = null;
+            String arguments = function.getArguments();
+            if (arguments != null && !arguments.trim().equalsIgnoreCase("")) {
+                String[] argumentsArray = arguments.split(",");
+                Object[] argumentsObjectArray = new Object[argumentsArray.length];
+                for (int i = 0; i < argumentsArray.length; i++) {
+                    if (argumentsArray[i].contains("(") && argumentsArray[i].contains(")")) {
+                        String type = StringHelper.getBetweenString(argumentsArray[i], "(", ")");
+                        String argumentsValue = argumentsArray[i].substring(0, argumentsArray[i].indexOf("("));
+                        if (type.equalsIgnoreCase("int")) {
+                            argumentsObjectArray[i] = Integer.parseInt(argumentsValue);
+                        } else if (type.equalsIgnoreCase("long")) {
+                            argumentsObjectArray[i] = Long.parseLong(argumentsValue);
+                        } else if (type.equalsIgnoreCase("double")) {
+                            argumentsObjectArray[i] = Double.parseDouble(argumentsValue);
+                        } else if (type.equalsIgnoreCase("float")) {
+                            argumentsObjectArray[i] = Float.parseFloat(argumentsValue);
+                        } else if (type.equalsIgnoreCase("short")) {
+                            argumentsObjectArray[i] = Short.parseShort(argumentsValue);
+                        } else if (type.equalsIgnoreCase("boolean")) {
+                            argumentsObjectArray[i] = Boolean.parseBoolean(argumentsValue);
+                        } else {
+                            argumentsObjectArray[i] = argumentsArray[i];
+                        }
+                    } else {
+                        argumentsObjectArray[i] = argumentsArray[i];
+                    }
+                }
+                value = MethodUtils.invokeStaticMethod(Class.forName(function.getClsName()), function.getMethodName(), argumentsObjectArray);
+            } else {
+                value = MethodUtils.invokeStaticMethod(Class.forName(function.getClsName()), function.getMethodName());
+            }
+            if(value != null) {
+                function.setValue(value.toString());
+                return value.toString();
+            }
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+        return null;
     }
 
     /**
@@ -333,17 +305,32 @@ public class ParamValueProcessor {
         return recordInfo;
     }
 
-    /**
-     * 处理param中需要接受setup中param值的问题
-     *
-     * @param testCase      the test data
-     * @param param         the param
-     * @param jsonPairCache the json pair cache
-     */
-    public static void processParamFromSetupOrBefore(TestCase testCase, Param param, JsonPairCache jsonPairCache) {
+    public static void processParamFromSetupOrBefore(TestCase testCase,TestSuite testSuite, Param param, JsonPairCache jsonPairCache) {
         if (testCase.getSetupList() != null || testCase.getBefore() != null) {
             if (param.getValue().contains("#") || param.getValue().contains("@")) {
                 param.setValue(handleReservedKeyChars(param.getValue(), jsonPairCache));
+                //寻找suite级别的function
+                if(param.getValue().contains("#") || param.getValue().contains("@")) {
+                    if (testSuite.getFunctionList().size() > 0) {
+                        for (Function function : testSuite.getFunctionList()) {
+                            if (function.getName() != null && param.getValue().contains(function.getName())) {
+                                if(function.getValue() != null) {
+                                    param.setValue(handleReservedKeyChars(param.getValue(), function.getName(), function.getValue()));
+                                }
+                                else{
+                                    executeFunction(function);
+                                    param.setValue(handleReservedKeyChars(param.getValue(), function.getName(), function.getValue()));
+                                }
+                            }
+                        }
+                        if(param.getValue().contains("#") || param.getValue().contains("@")){
+                            throw new TestCaseParamException(testCase.getName(),param.getName(),param.getValue());
+                        }
+                    }
+                    else{
+                        throw new TestCaseParamException(testCase.getName(),param.getName(),param.getValue());
+                    }
+                }
             }
         }
     }
@@ -567,7 +554,7 @@ public class ParamValueProcessor {
     }
 
     /**
-     * 处理所有的保留关键字符#[}
+     * 处理所有的保留关键字符##
      *
      * @param oriContent    the ori content
      * @param jsonPairCache the json pair cache
@@ -625,6 +612,54 @@ public class ParamValueProcessor {
                             logger.error(e.getMessage(), e);
                         }
                     } else {
+                        finalList.add(str);
+                    }
+                } else {
+                    finalList.add(str);
+                }
+            }
+            return StringHelper.join(finalList, "");
+        }
+        return oriContent;
+    }
+
+    public static String handleReservedKeyChars(String oriContent, String functionName,String functionValue) {
+        String pattern;
+        if (oriContent.contains("#")) {
+            pattern = "#.*?#";
+        } else {
+            pattern = "@.*?@";
+        }
+        List<String> reservedKeyList = StringHelper.find(oriContent, pattern);
+        List<String> unReservedKeyList = Arrays.asList(oriContent.split(pattern));
+        List<String> newList = new ArrayList<>();
+        int k = 0;
+        int i = 0;
+        if (reservedKeyList.size() > 0) {
+            if (unReservedKeyList.size() > 0) {
+                for (String key : unReservedKeyList) {
+                    newList.add(key);
+                    if (i < reservedKeyList.size()) {
+                        newList.add(reservedKeyList.get(i));
+                        i++;
+                    }
+                }
+            } else {
+                newList = reservedKeyList;
+            }
+            List<String> finalList = new ArrayList<>();
+            for (String str : newList) {
+                if (str.startsWith("#") || str.startsWith("@")) {
+                    String reservedChars = str.substring(1, str.length() - 1);
+                    if (reservedChars.contains(functionName)){
+                        reservedChars = reservedChars.replace(functionName, functionValue);
+                        try {
+                            String result = DynamicCompileHelper.eval(reservedChars).toString();
+                            finalList.add(result);
+                        } catch (Exception e) {
+                            logger.error(e.getMessage(), e);
+                        }
+                    }else {
                         finalList.add(str);
                     }
                 } else {

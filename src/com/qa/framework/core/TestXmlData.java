@@ -11,9 +11,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * Created by Administrator on 2016/6/23.
- */
 public class TestXmlData {
     private static final Logger logger = Logger.getLogger(TestXmlData.class);
 
@@ -36,7 +33,7 @@ public class TestXmlData {
             TestSuite testSuite = dataConvertor.getTestSuite();
             List<TestCase> testCaseList = testSuite.getTestCaseList();
             for (TestCase data : testCaseList) {
-                Object[] d = {data, testSuite.getUrl(), testSuite.getHttpMethod()};
+                Object[] d = {data, testSuite};
                 xmldata.add(d);
             }
         }

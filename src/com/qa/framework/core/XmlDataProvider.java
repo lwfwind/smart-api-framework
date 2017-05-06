@@ -54,7 +54,7 @@ public class XmlDataProvider implements Iterator {
 
     public Object next() {
         return new Object[]{
-                iterator.next(), testSuite.getUrl(), testSuite.getHttpMethod()
+                iterator.next(), testSuite
         };
     }
 
