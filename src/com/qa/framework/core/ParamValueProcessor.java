@@ -306,7 +306,7 @@ public class ParamValueProcessor {
     }
 
     public static void processParamFromSetupOrBefore(TestCase testCase,TestSuite testSuite, Param param, JsonPairCache jsonPairCache) {
-        if (testCase.getSetupList() != null || testCase.getBefore() != null) {
+        if (testCase.getSetupList() != null || testCase.getBefore() != null || testSuite.getFunctionList() != null) {
             if (param.getValue().contains("#") || param.getValue().contains("@")) {
                 param.setValue(handleReservedKeyChars(param.getValue(), jsonPairCache));
                 //寻找suite级别的function
