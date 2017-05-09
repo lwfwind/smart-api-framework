@@ -25,6 +25,16 @@ public class TestResultListener extends TestListenerAdapter {
     public void onStart(ITestContext testContext) {
         super.onStart(testContext);
         logger.info("testContext Start");
+        Class<?> clazz = findImplementClass(ICustomTestListener.class);
+        if (clazz != null) {
+            ICustomTestListener testListenerImp = null;
+            try {
+                testListenerImp = (ICustomTestListener) clazz.newInstance();
+                testListenerImp.onStart(testContext);
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
