@@ -10,6 +10,10 @@ import java.util.Map;
 public class Sql {
     private String name;                  //sql的名字
     private String db;
+    private String delay;
+    private String[] returnValues;        //sql语句返回的多个值
+    private String sqlStatement;          //sql语句
+    private Map<String, String> returnValueMap;    //储存returnValues及对应的值
 
     public String getDelay() {
         return delay;
@@ -18,11 +22,6 @@ public class Sql {
     public void setDelay(String delay) {
         this.delay = delay;
     }
-
-    private String delay;
-    private String[] returnValues;        //sql语句返回的多个值
-    private String sqlStatement;          //sql语句
-    private Map<String, String> returnValueMap;    //储存returnValues及对应的值
 
     /**
      * Gets name.

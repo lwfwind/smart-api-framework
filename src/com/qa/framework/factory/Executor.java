@@ -64,11 +64,11 @@ public class Executor extends TestBase {
     /**
      * Testcase.
      *
-     * @param testCase   the test data
+     * @param testCase the test data
      */
     @Test(dataProvider = "data")
     public void testcase(TestCase testCase, TestSuite testSuite) {
-        ParamValueProcessor.processTestCase(testCase,testSuite);
+        ParamValueProcessor.processTestCase(testCase, testSuite);
         String content = HttpMethod.request(testSuite.getUrl(), testCase.getHeaders(), testCase.getParams(), testSuite.getHttpMethod(), testCase.isStoreCookie(), testCase.isUseCookie());
         Verify.verifyResult(testCase, content);
         ParamValueProcessor.processAfter(testCase);

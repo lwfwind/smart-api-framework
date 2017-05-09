@@ -142,7 +142,7 @@ public class HttpMethod {
         String uri = getUrl(url, params);
         logger.info("拼接后的web地址为:" + uri);
         HttpGet get = new HttpGet(uri);
-        if (SocketHelper.serverListening(localhost,localport)) {
+        if (SocketHelper.serverListening(localhost, localport)) {
             HttpHost proxy = new HttpHost(localhost, localport, "http");
             RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout).setProxy(proxy).build();
             get.setConfig(requestConfig);
@@ -179,7 +179,7 @@ public class HttpMethod {
         logger.info("拼接后的web地址为:" + uri);
         HttpPost httpPost = new HttpPost(uri);
         RequestConfig requestConfig = null;
-        if (SocketHelper.serverListening(localhost,localport)) {
+        if (SocketHelper.serverListening(localhost, localport)) {
             HttpHost proxy = new HttpHost(localhost, localport, "http");
             requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout).setProxy(proxy).build();
         } else {
@@ -227,7 +227,7 @@ public class HttpMethod {
         logger.info("拼接后的web地址为:" + uri);
         HttpPut httpPut = new HttpPut(uri);
         RequestConfig requestConfig = null;
-        if (SocketHelper.serverListening(localhost,localport)) {
+        if (SocketHelper.serverListening(localhost, localport)) {
             HttpHost proxy = new HttpHost(localhost, localport, "http");
             requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout).setProxy(proxy).build();
         } else {
@@ -274,7 +274,7 @@ public class HttpMethod {
         String uri = getUrl(url, params);
         logger.info("拼接后的web地址为:" + uri);
         HttpDelete httpDelete = new HttpDelete(uri);
-        if (SocketHelper.serverListening(localhost,localport)) {
+        if (SocketHelper.serverListening(localhost, localport)) {
             HttpHost proxy = new HttpHost(localhost, localport, "http");
             RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(timeout).setConnectTimeout(timeout).setProxy(proxy).build();
             httpDelete.setConfig(requestConfig);

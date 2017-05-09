@@ -4,8 +4,8 @@ package com.qa.framework.plugin;
 import com.library.common.IOHelper;
 import com.qa.framework.bean.TestCase;
 import com.qa.framework.bean.TestSuite;
-import com.qa.framework.core.DataConvertor;
 import com.qa.framework.core.ParamValueProcessor;
+import com.qa.framework.core.TestSuiteConvertor;
 import com.qa.framework.library.httpclient.HttpMethod;
 import com.qa.framework.mock.IMockServer;
 import com.qa.framework.verify.Verify;
@@ -51,22 +51,21 @@ public class Entry {
             if (cmd.hasOption("testCaseName")) {
                 xmlDataName = cmd.getOptionValue("testCaseName");
             }
-            logger.info(String.format("start execute testSuiteName: %s testCaseName: %s",xmlName,xmlDataName));
+            logger.info(String.format("start execute testSuiteName: %s testCaseName: %s", xmlName, xmlDataName));
             String xmlPath = IOHelper.listFilesInDirectoryRecursive(System.getProperty("user.dir"), xmlName + ".xml").get(0);
-            DataConvertor dataConvertor = new DataConvertor(xmlPath);
-            TestSuite testSuite = dataConvertor.getTestSuite();
-            if(xmlDataName.equals("null")) {
+            TestSuiteConvertor testSuiteConvertor = new TestSuiteConvertor(xmlPath);
+            TestSuite testSuite = testSuiteConvertor.getTestSuite();
+            if (xmlDataName.equals("null")) {
                 for (TestCase testCase : testSuite.getTestCaseList()) {
-                    ParamValueProcessor.processTestCase(testCase,testSuite);
+                    ParamValueProcessor.processTestCase(testCase, testSuite);
                     String content = HttpMethod.request(testSuite.getUrl(), testCase.getHeaders(), testCase.getParams(), testSuite.getHttpMethod(), testCase.isStoreCookie(), testCase.isUseCookie());
                     Verify.verifyResult(testCase, content);
                     ParamValueProcessor.processAfter(testCase);
                 }
-            }
-            else {
+            } else {
                 for (TestCase testCase : testSuite.getTestCaseList()) {
                     if (testCase.getName().equals(xmlDataName)) {
-                        ParamValueProcessor.processTestCase(testCase,testSuite);
+                        ParamValueProcessor.processTestCase(testCase, testSuite);
                         String content = HttpMethod.request(testSuite.getUrl(), testCase.getHeaders(), testCase.getParams(), testSuite.getHttpMethod(), testCase.isStoreCookie(), testCase.isUseCookie());
                         Verify.verifyResult(testCase, content);
                         ParamValueProcessor.processAfter(testCase);
@@ -75,11 +74,11 @@ public class Entry {
                 }
             }
         } catch (IllegalAccessException | InstantiationException | ParseException e) {
-            logger.error(e.getMessage(),e);
+            logger.error(e.getMessage(), e);
         } finally {
             after();
         }
-        logger.info(String.format("finish execute testSuiteName: %s testCaseName: %s",xmlName,xmlDataName));
+        logger.info(String.format("finish execute testSuiteName: %s testCaseName: %s", xmlName, xmlDataName));
     }
 
 }

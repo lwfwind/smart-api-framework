@@ -7,7 +7,8 @@ import org.testng.ITestResult;
  * Created by Administrator on 2016/8/30.
  */
 public interface ICustomTestListener {
-     void onStart(ITestContext testContext);
+    void onStart(ITestContext testContext);
+
     /**
      * On test failure.
      *

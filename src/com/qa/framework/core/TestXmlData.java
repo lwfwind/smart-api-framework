@@ -27,10 +27,11 @@ public class TestXmlData {
 
     private static Iterator<Object[]> getXmlTestData() {
         List<Object[]> xmldata = new ArrayList<Object[]>();
+        new GlobalConvertor();
         List<String> files = getTestCaseFiles();
         for (String filePath : files) {
-            DataConvertor dataConvertor = new DataConvertor(filePath);
-            TestSuite testSuite = dataConvertor.getTestSuite();
+            TestSuiteConvertor testSuiteConvertor = new TestSuiteConvertor(filePath);
+            TestSuite testSuite = testSuiteConvertor.getTestSuite();
             List<TestCase> testCaseList = testSuite.getTestCaseList();
             for (TestCase data : testCaseList) {
                 Object[] d = {data, testSuite};
@@ -48,7 +49,7 @@ public class TestXmlData {
      */
     public static List<String> getTestCaseFiles() {
         String xmlPath = System.getProperty("xmlPath");
-        if(xmlPath == null){
+        if (xmlPath == null) {
             xmlPath = System.getProperty("user.dir") + File.separator + "src";
         }
         List<String> files = IOHelper.listFilesInDirectoryRecursive(xmlPath, "*.xml");

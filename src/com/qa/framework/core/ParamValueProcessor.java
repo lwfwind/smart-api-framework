@@ -4,6 +4,7 @@ import com.library.common.DynamicCompileHelper;
 import com.library.common.JsonHelper;
 import com.library.common.ReflectHelper;
 import com.library.common.StringHelper;
+import com.qa.framework.InstanceFactory;
 import com.qa.framework.bean.*;
 import com.qa.framework.cache.JsonPairCache;
 import com.qa.framework.exception.TestCaseParamException;
@@ -97,14 +98,19 @@ public class ParamValueProcessor {
      * @param testCase      the test data
      * @param jsonPairCache the json pair cache
      */
-    public static void processTestCaseParam(TestCase testCase,TestSuite testSuite, JsonPairCache jsonPairCache) {
+    public static void processTestCaseParam(TestCase testCase, TestSuite testSuite, JsonPairCache jsonPairCache) {
         List<Param> paramList = testCase.getParams();
         if (paramList != null) {
             for (Param param : paramList) {
                 executeFunction(param, null, testCase, jsonPairCache);
                 executeSql(param, null, testCase, jsonPairCache);
                 processParamDate(param, null, testCase, jsonPairCache);
-                processParamFromSetupOrBefore(testCase, testSuite, param, jsonPairCache);
+                processParamFromSetupOrBefore(testCase, param, jsonPairCache);
+                processParamFromTestSuite(testSuite, param);
+                processParamFromGlobal(param);
+                if (param.getValue().contains("#") || param.getValue().contains("@")) {
+                    throw new TestCaseParamException(testCase.getName(), param.getName(), param.getValue());
+                }
             }
         }
     }
@@ -144,7 +150,7 @@ public class ParamValueProcessor {
         }
     }
 
-    private static String executeFunction(Function function){
+    private static String executeFunction(Function function) {
         try {
             Object value = null;
             String arguments = function.getArguments();
@@ -178,7 +184,7 @@ public class ParamValueProcessor {
             } else {
                 value = MethodUtils.invokeStaticMethod(Class.forName(function.getClsName()), function.getMethodName());
             }
-            if(value != null) {
+            if (value != null) {
                 function.setValue(value.toString());
                 return value.toString();
             }
@@ -305,30 +311,47 @@ public class ParamValueProcessor {
         return recordInfo;
     }
 
-    public static void processParamFromSetupOrBefore(TestCase testCase,TestSuite testSuite, Param param, JsonPairCache jsonPairCache) {
-        if (testCase.getSetupList() != null || testCase.getBefore() != null || testSuite.getFunctionList() != null) {
+    public static void processParamFromSetupOrBefore(TestCase testCase, Param param, JsonPairCache jsonPairCache) {
+        if (testCase.getSetupList() != null || testCase.getBefore() != null) {
             if (param.getValue().contains("#") || param.getValue().contains("@")) {
                 param.setValue(handleReservedKeyChars(param.getValue(), jsonPairCache));
-                //寻找suite级别的function
-                if(param.getValue().contains("#") || param.getValue().contains("@")) {
-                    if (testSuite.getFunctionList().size() > 0) {
-                        for (Function function : testSuite.getFunctionList()) {
-                            if (function.getName() != null && param.getValue().contains(function.getName())) {
-                                if(function.getValue() != null) {
-                                    param.setValue(handleReservedKeyChars(param.getValue(), function.getName(), function.getValue()));
-                                }
-                                else{
-                                    executeFunction(function);
-                                    param.setValue(handleReservedKeyChars(param.getValue(), function.getName(), function.getValue()));
-                                }
+            }
+        }
+    }
+
+    public static void processParamFromTestSuite(TestSuite testSuite, Param param) {
+        if (testSuite.getFunctionList() != null) {
+            //寻找suite级别的function
+            if (param.getValue().contains("#") || param.getValue().contains("@")) {
+                if (testSuite.getFunctionList().size() > 0) {
+                    for (Function function : testSuite.getFunctionList()) {
+                        if (function.getName() != null && param.getValue().contains(function.getName())) {
+                            if (function.getValue() != null) {
+                                param.setValue(handleReservedKeyChars(param.getValue(), function.getName(), function.getValue()));
+                            } else {
+                                executeFunction(function);
+                                param.setValue(handleReservedKeyChars(param.getValue(), function.getName(), function.getValue()));
                             }
                         }
-                        if(param.getValue().contains("#") || param.getValue().contains("@")){
-                            throw new TestCaseParamException(testCase.getName(),param.getName(),param.getValue());
-                        }
                     }
-                    else{
-                        throw new TestCaseParamException(testCase.getName(),param.getName(),param.getValue());
+                }
+            }
+        }
+    }
+
+
+    public static void processParamFromGlobal(Param param) {
+        if (InstanceFactory.getGlobal().getFunctionList() != null) {
+            //寻找Global级别的function
+            if (param.getValue().contains("#") || param.getValue().contains("@")) {
+                for (Function function : InstanceFactory.getGlobal().getFunctionList()) {
+                    if (function.getName() != null && param.getValue().contains(function.getName())) {
+                        if (function.getValue() != null) {
+                            param.setValue(handleReservedKeyChars(param.getValue(), function.getName(), function.getValue()));
+                        } else {
+                            executeFunction(function);
+                            param.setValue(handleReservedKeyChars(param.getValue(), function.getName(), function.getValue()));
+                        }
                     }
                 }
             }
@@ -623,7 +646,7 @@ public class ParamValueProcessor {
         return oriContent;
     }
 
-    public static String handleReservedKeyChars(String oriContent, String functionName,String functionValue) {
+    public static String handleReservedKeyChars(String oriContent, String functionName, String functionValue) {
         String pattern;
         if (oriContent.contains("#")) {
             pattern = "#.*?#";
@@ -651,7 +674,7 @@ public class ParamValueProcessor {
             for (String str : newList) {
                 if (str.startsWith("#") || str.startsWith("@")) {
                     String reservedChars = str.substring(1, str.length() - 1);
-                    if (reservedChars.contains(functionName)){
+                    if (reservedChars.contains(functionName)) {
                         reservedChars = reservedChars.replace(functionName, functionValue);
                         try {
                             String result = DynamicCompileHelper.eval(reservedChars).toString();
@@ -659,7 +682,7 @@ public class ParamValueProcessor {
                         } catch (Exception e) {
                             logger.error(e.getMessage(), e);
                         }
-                    }else {
+                    } else {
                         finalList.add(str);
                     }
                 } else {

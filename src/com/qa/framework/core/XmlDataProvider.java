@@ -7,13 +7,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * Created by apple on 15/11/18.
- */
 public class XmlDataProvider implements Iterator {
 
 
-    private DataConvertor dataConvertor;
+    private TestSuiteConvertor testSuiteConvertor;
     private Iterator iterator;
     private ParamValueProcessor paramValueProcessor;
     private TestSuite testSuite;
@@ -24,8 +21,9 @@ public class XmlDataProvider implements Iterator {
      * @param xmlPath the xml path
      */
     public XmlDataProvider(String xmlPath) {
-        dataConvertor = new DataConvertor(xmlPath);
-        testSuite = dataConvertor.getTestSuite();
+        new GlobalConvertor();
+        testSuiteConvertor = new TestSuiteConvertor(xmlPath);
+        testSuite = testSuiteConvertor.getTestSuite();
         iterator = testSuite.getTestCaseList().iterator();
     }
 
@@ -36,8 +34,9 @@ public class XmlDataProvider implements Iterator {
      * @param testDataName the test data name
      */
     public XmlDataProvider(String xmlPath, String testDataName) {
-        dataConvertor = new DataConvertor(xmlPath);
-        testSuite = dataConvertor.getTestSuite();
+        new GlobalConvertor();
+        testSuiteConvertor = new TestSuiteConvertor(xmlPath);
+        testSuite = testSuiteConvertor.getTestSuite();
         List<TestCase> testCaseList = new ArrayList<TestCase>();
         for (TestCase testCase : testSuite.getTestCaseList()) {
             if (testCase.getName().equals(testDataName)) {

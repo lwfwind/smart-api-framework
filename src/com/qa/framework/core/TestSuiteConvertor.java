@@ -20,8 +20,8 @@ import java.util.List;
 /**
  * 将xml中的数据转化成对应的bean类
  */
-public class DataConvertor {
-    private static final Logger logger = Logger.getLogger(DataConvertor.class);
+public class TestSuiteConvertor {
+    private static final Logger logger = Logger.getLogger(TestSuiteConvertor.class);
     private TestSuite testSuite;
     private String fileName;
 
@@ -30,7 +30,7 @@ public class DataConvertor {
      *
      * @param filePath the file path
      */
-    public DataConvertor(String filePath) {
+    public TestSuiteConvertor(String filePath) {
         this.fileName = IOHelper.getName(filePath);
         logger.info("convert data from xml-" + this.fileName);
         XmlHelper xmlHelper = new XmlHelper();

@@ -4,6 +4,8 @@ public class Function {
     private String name;
     private String clsName;
     private String methodName;
+    private String value;
+    private String arguments;
 
     public String getValue() {
         return value;
@@ -13,8 +15,6 @@ public class Function {
         this.value = value;
     }
 
-    private String value;
-
     public String getArguments() {
         return arguments;
     }
@@ -22,8 +22,6 @@ public class Function {
     public void setArguments(String arguments) {
         this.arguments = arguments;
     }
-
-    private String arguments;
 
     public String getName() {
         return name;

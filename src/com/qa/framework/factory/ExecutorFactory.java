@@ -46,11 +46,11 @@ public class ExecutorFactory {
     /**
      * Execute object [ ].
      *
-     * @param testCase   the test data
+     * @param testCase the test data
      * @return the object [ ]
      */
     @Factory(dataProviderClass = TestXmlData.class, dataProvider = "xmlFactoryData")
-    public Object[] execute(TestCase testCase,TestSuite testSuite) {
+    public Object[] execute(TestCase testCase, TestSuite testSuite) {
         Object[] tests = new Object[1];
         tests[0] = new Executor(testCase, testSuite);
         return tests;

@@ -45,8 +45,8 @@ public class Pair {
      *
      * @param patter the patter
      */
-    public void setPatternMatch(boolean patter) {
-        this.patternMatch = patter;
+    public void setPatternMatch(String patter) {
+        this.patternMatch = StringHelper.changeString2boolean(patter);
     }
 
     /**
@@ -54,8 +54,8 @@ public class Pair {
      *
      * @param patter the patter
      */
-    public void setPatternMatch(String patter) {
-        this.patternMatch = StringHelper.changeString2boolean(patter);
+    public void setPatternMatch(boolean patter) {
+        this.patternMatch = patter;
     }
 
     /**

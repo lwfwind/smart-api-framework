@@ -1,6 +1,7 @@
 package com.qa.framework;
 
 import com.library.common.ReflectHelper;
+import com.qa.framework.bean.Global;
 import com.qa.framework.classfinder.ClassScanner;
 import com.qa.framework.classfinder.impl.DefaultClassScanner;
 
@@ -17,11 +18,6 @@ public class InstanceFactory {
      */
     private static final Map<String, Object> cache = new ConcurrentHashMap<String, Object>();
 
-    /**
-     * ClassScanner
-     */
-    private static final String CLASS_SCANNER = "class_scanner";
-
 
     /**
      * 获取 ClassScanner
@@ -29,7 +25,11 @@ public class InstanceFactory {
      * @return the class scanner
      */
     public static ClassScanner getClassScanner() {
-        return getInstance(CLASS_SCANNER, DefaultClassScanner.class);
+        return getInstance("class_scanner", DefaultClassScanner.class);
+    }
+
+    public static Global getGlobal() {
+        return getInstance("Global", Global.class);
     }
 
 

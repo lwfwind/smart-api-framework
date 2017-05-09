@@ -21,7 +21,7 @@ public class TestNGEntry {
 
     @Test(dataProviderClass = DataManager.class, dataProvider = "data")
     public void debug(TestCase testCase, TestSuite testSuite) {
-        ParamValueProcessor.processTestCase(testCase,testSuite);
+        ParamValueProcessor.processTestCase(testCase, testSuite);
         String content = HttpMethod.request(testSuite.getUrl(), testCase.getHeaders(), testCase.getParams(), testSuite.getHttpMethod(), testCase.isStoreCookie(), testCase.isUseCookie());
         Verify.verifyResult(testCase, content);
         ParamValueProcessor.processAfter(testCase);
@@ -34,7 +34,7 @@ public class TestNGEntry {
             try {
                 mockServer = (IMockServer) clazz.newInstance();
             } catch (InstantiationException | IllegalAccessException e) {
-                logger.error(e.getMessage(),e);
+                logger.error(e.getMessage(), e);
             }
             mockServer.startServer();
             mockServer.settingRules();
