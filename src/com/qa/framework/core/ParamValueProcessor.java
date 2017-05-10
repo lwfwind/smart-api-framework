@@ -127,8 +127,8 @@ public class ParamValueProcessor {
         List<Function> functionList = param.getFunctions();
         if (functionList != null) {
             for (Function function : functionList) {
-                String value = executeFunction(function);
-                param.setValue(value);
+                Object value = executeFunction(function);
+                param.setValue(value.toString());
                 jsonPairCache.put(param.getName(), param.getValue());
                 jsonPairCache.put(testCase.getName() + "." + param.getName(), param.getValue());
                 if (setup != null) {
@@ -142,15 +142,27 @@ public class ParamValueProcessor {
     public static void executeFunctionList(List<Function> functionList, JsonPairCache jsonPairCache) {
         if (functionList != null) {
             for (Function function : functionList) {
-                String value = executeFunction(function);
+                Object value = executeFunction(function);
                 if (value != null && function.getName() != null && jsonPairCache != null) {
-                    jsonPairCache.put(function.getName(), value);
+                    if (value instanceof Map) {
+                        Map<String, String> valueMap = (Map<String, String>) value;
+                        if (valueMap.size() > 0) {
+                            for (Object o : valueMap.entrySet()) {
+                                Map.Entry entry = (Map.Entry) o;
+                                String key = (String) entry.getKey();
+                                String val = (String) entry.getValue();
+                                jsonPairCache.put(function.getName() + "." + key, val);
+                            }
+                        }
+                    } else {
+                        jsonPairCache.put(function.getName(), value.toString());
+                    }
                 }
             }
         }
     }
 
-    public static String executeFunction(Function function) {
+    public static Object executeFunction(Function function) {
         try {
             Object value = null;
             String arguments = function.getArguments();
@@ -185,8 +197,8 @@ public class ParamValueProcessor {
                 value = MethodUtils.invokeStaticMethod(Class.forName(function.getClsName()), function.getMethodName());
             }
             if (value != null) {
-                function.setValue(value.toString());
-                return value.toString();
+                function.setValue(value);
+                return value;
             }
         } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e.getMessage(), e);
@@ -326,11 +338,38 @@ public class ParamValueProcessor {
                 if (testSuite.getFunctionList().size() > 0) {
                     for (Function function : testSuite.getFunctionList()) {
                         if (function.getName() != null && param.getValue().contains(function.getName())) {
-                            if (function.getValue() != null) {
-                                param.setValue(handleReservedKeyChars(param.getValue(), function.getName(), function.getValue()));
+                            Object value = function.getValue();
+                            if (value != null) {
+                                if (value instanceof Map) {
+                                    Map<String, String> valueMap = (Map<String, String>) value;
+                                    if (valueMap.size() > 0) {
+                                        for (Object o : valueMap.entrySet()) {
+                                            Map.Entry entry = (Map.Entry) o;
+                                            String key = (String) entry.getKey();
+                                            String val = (String) entry.getValue();
+                                            param.setValue(handleReservedKeyChars(param.getValue(), function.getName() + "." + key, val));
+                                        }
+                                    }
+                                } else {
+                                    param.setValue(handleReservedKeyChars(param.getValue(), function.getName(), value.toString()));
+                                }
                             } else {
                                 executeFunction(function);
-                                param.setValue(handleReservedKeyChars(param.getValue(), function.getName(), function.getValue()));
+                                if (function.getValue() != null) {
+                                    if (function.getValue() instanceof Map) {
+                                        Map<String, String> valueMap = (Map<String, String>) function.getValue();
+                                        if (valueMap.size() > 0) {
+                                            for (Object o : valueMap.entrySet()) {
+                                                Map.Entry entry = (Map.Entry) o;
+                                                String key = (String) entry.getKey();
+                                                String val = (String) entry.getValue();
+                                                param.setValue(handleReservedKeyChars(param.getValue(), function.getName() + "." + key, val));
+                                            }
+                                        }
+                                    } else {
+                                        param.setValue(handleReservedKeyChars(param.getValue(), function.getName(), function.getValue().toString()));
+                                    }
+                                }
                             }
                         }
                     }
@@ -346,11 +385,38 @@ public class ParamValueProcessor {
             if (param.getValue().contains("#") || param.getValue().contains("@")) {
                 for (Function function : InstanceFactory.getGlobal().getFunctionList()) {
                     if (function.getName() != null && param.getValue().contains(function.getName())) {
-                        if (function.getValue() != null) {
-                            param.setValue(handleReservedKeyChars(param.getValue(), function.getName(), function.getValue()));
+                        Object value = function.getValue();
+                        if (value != null) {
+                            if (value instanceof Map) {
+                                Map<String, String> valueMap = (Map<String, String>) value;
+                                if (valueMap.size() > 0) {
+                                    for (Object o : valueMap.entrySet()) {
+                                        Map.Entry entry = (Map.Entry) o;
+                                        String key = (String) entry.getKey();
+                                        String val = (String) entry.getValue();
+                                        param.setValue(handleReservedKeyChars(param.getValue(), function.getName() + "." + key, val));
+                                    }
+                                }
+                            } else {
+                                param.setValue(handleReservedKeyChars(param.getValue(), function.getName(), value.toString()));
+                            }
                         } else {
                             executeFunction(function);
-                            param.setValue(handleReservedKeyChars(param.getValue(), function.getName(), function.getValue()));
+                            if (function.getValue() != null) {
+                                if (function.getValue() instanceof Map) {
+                                    Map<String, String> valueMap = (Map<String, String>) function.getValue();
+                                    if (valueMap.size() > 0) {
+                                        for (Object o : valueMap.entrySet()) {
+                                            Map.Entry entry = (Map.Entry) o;
+                                            String key = (String) entry.getKey();
+                                            String val = (String) entry.getValue();
+                                            param.setValue(handleReservedKeyChars(param.getValue(), function.getName() + "." + key, val));
+                                        }
+                                    }
+                                } else {
+                                    param.setValue(handleReservedKeyChars(param.getValue(), function.getName(), function.getValue().toString()));
+                                }
+                            }
                         }
                     }
                 }
