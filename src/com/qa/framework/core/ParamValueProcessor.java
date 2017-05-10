@@ -7,6 +7,7 @@ import com.library.common.StringHelper;
 import com.qa.framework.InstanceFactory;
 import com.qa.framework.bean.*;
 import com.qa.framework.cache.JsonPairCache;
+import com.qa.framework.exception.NoSuchMethodException;
 import com.qa.framework.exception.TestCaseParamException;
 import com.qa.framework.library.database.DBHelper;
 import com.qa.framework.library.httpclient.HttpMethod;
@@ -20,6 +21,7 @@ import org.testng.Assert;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -168,31 +170,86 @@ public class ParamValueProcessor {
             String arguments = function.getArguments();
             if (arguments != null && !arguments.trim().equalsIgnoreCase("")) {
                 String[] argumentsArray = arguments.split(",");
-                Object[] argumentsObjectArray = new Object[argumentsArray.length];
-                for (int i = 0; i < argumentsArray.length; i++) {
-                    if (argumentsArray[i].contains("(") && argumentsArray[i].contains(")")) {
-                        String type = StringHelper.getBetweenString(argumentsArray[i], "(", ")");
-                        String argumentsValue = argumentsArray[i].substring(0, argumentsArray[i].indexOf("("));
-                        if (type.equalsIgnoreCase("int")) {
-                            argumentsObjectArray[i] = Integer.parseInt(argumentsValue);
-                        } else if (type.equalsIgnoreCase("long")) {
-                            argumentsObjectArray[i] = Long.parseLong(argumentsValue);
-                        } else if (type.equalsIgnoreCase("double")) {
-                            argumentsObjectArray[i] = Double.parseDouble(argumentsValue);
-                        } else if (type.equalsIgnoreCase("float")) {
-                            argumentsObjectArray[i] = Float.parseFloat(argumentsValue);
-                        } else if (type.equalsIgnoreCase("short")) {
-                            argumentsObjectArray[i] = Short.parseShort(argumentsValue);
-                        } else if (type.equalsIgnoreCase("boolean")) {
-                            argumentsObjectArray[i] = Boolean.parseBoolean(argumentsValue);
+                int matchedMethodSize = 0;
+                Method matchedMethod = null;
+                final Method[] methods = Class.forName(function.getClsName()).getMethods();
+                for (final Method method : methods) {
+                    if (method.getName().equals(function.getMethodName())) {
+                        matchedMethodSize++;
+                        matchedMethod = method;
+                    }
+                }
+                if (matchedMethodSize == 0) {
+                    throw new NoSuchMethodException(function.getClsName(), function.getMethodName(), function.getArguments());
+                } else if (matchedMethodSize == 1 && !function.getArguments().contains("(")) {
+                    Object[] argumentsObjectArray = new Object[argumentsArray.length];
+                    Class<?>[] parameterTypes = matchedMethod.getParameterTypes();
+                    if(argumentsArray.length != parameterTypes.length){
+                        throw new NoSuchMethodException(function.getClsName(), function.getMethodName(), function.getArguments());
+                    }
+                    for (int i = 0; i < parameterTypes.length; i++) {
+                        Class<?> parameterType = parameterTypes[i];
+                        if (String.class.equals(parameterType)) {
+                            argumentsObjectArray[i] = argumentsArray[i];
+                        } else if (byte.class.equals(parameterType)) {
+                            argumentsObjectArray[i] = Byte.parseByte(argumentsArray[i]);
+                        } else if (Byte.class.equals(parameterType)) {
+                            argumentsObjectArray[i] = Byte.valueOf(argumentsArray[i]);
+                        } else if (boolean.class.equals(parameterType)) {
+                            argumentsObjectArray[i] = Boolean.parseBoolean(argumentsArray[i]);
+                        } else if (Boolean.class.equals(parameterType)) {
+                            argumentsObjectArray[i] = Boolean.valueOf(argumentsArray[i]);
+                        } else if (short.class.equals(parameterType)) {
+                            argumentsObjectArray[i] = Short.parseShort(argumentsArray[i]);
+                        } else if (Short.class.equals(parameterType)) {
+                            argumentsObjectArray[i] = Short.valueOf(argumentsArray[i]);
+                        } else if (int.class.equals(parameterType)) {
+                            argumentsObjectArray[i] = Integer.parseInt(argumentsArray[i]);
+                        } else if (Integer.class.equals(parameterType)) {
+                            argumentsObjectArray[i] = Integer.valueOf(argumentsArray[i]);
+                        } else if (long.class.equals(parameterType)) {
+                            argumentsObjectArray[i] = Long.parseLong(argumentsArray[i]);
+                        } else if (Long.class.equals(parameterType)) {
+                            argumentsObjectArray[i] = Long.valueOf(argumentsArray[i]);
+                        } else if (float.class.equals(parameterType)) {
+                            argumentsObjectArray[i] = Float.parseFloat(argumentsArray[i]);
+                        } else if (Float.class.equals(parameterType)) {
+                            argumentsObjectArray[i] = Float.valueOf(argumentsArray[i]);
+                        } else if (double.class.equals(parameterType)) {
+                            argumentsObjectArray[i] = Double.parseDouble(argumentsArray[i]);
+                        } else if (Double.class.equals(parameterType)) {
+                            argumentsObjectArray[i] = Double.valueOf(argumentsArray[i]);
+                        }
+                    }
+                    value = MethodUtils.invokeStaticMethod(Class.forName(function.getClsName()), function.getMethodName(), argumentsObjectArray);
+
+                } else {
+                    Object[] argumentsObjectArray = new Object[argumentsArray.length];
+                    for (int i = 0; i < argumentsArray.length; i++) {
+                        if (argumentsArray[i].contains("(") && argumentsArray[i].contains(")")) {
+                            String type = StringHelper.getBetweenString(argumentsArray[i], "(", ")");
+                            String argumentsValue = argumentsArray[i].substring(0, argumentsArray[i].indexOf("("));
+                            if (type.equalsIgnoreCase("int")) {
+                                argumentsObjectArray[i] = Integer.parseInt(argumentsValue);
+                            } else if (type.equalsIgnoreCase("long")) {
+                                argumentsObjectArray[i] = Long.parseLong(argumentsValue);
+                            } else if (type.equalsIgnoreCase("double")) {
+                                argumentsObjectArray[i] = Double.parseDouble(argumentsValue);
+                            } else if (type.equalsIgnoreCase("float")) {
+                                argumentsObjectArray[i] = Float.parseFloat(argumentsValue);
+                            } else if (type.equalsIgnoreCase("short")) {
+                                argumentsObjectArray[i] = Short.parseShort(argumentsValue);
+                            } else if (type.equalsIgnoreCase("boolean")) {
+                                argumentsObjectArray[i] = Boolean.parseBoolean(argumentsValue);
+                            } else {
+                                argumentsObjectArray[i] = argumentsArray[i];
+                            }
                         } else {
                             argumentsObjectArray[i] = argumentsArray[i];
                         }
-                    } else {
-                        argumentsObjectArray[i] = argumentsArray[i];
                     }
+                    value = MethodUtils.invokeStaticMethod(Class.forName(function.getClsName()), function.getMethodName(), argumentsObjectArray);
                 }
-                value = MethodUtils.invokeStaticMethod(Class.forName(function.getClsName()), function.getMethodName(), argumentsObjectArray);
             } else {
                 value = MethodUtils.invokeStaticMethod(Class.forName(function.getClsName()), function.getMethodName());
             }
@@ -200,7 +257,7 @@ public class ParamValueProcessor {
                 function.setValue(value);
                 return value;
             }
-        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException | java.lang.NoSuchMethodException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
         return null;
