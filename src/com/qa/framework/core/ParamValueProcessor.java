@@ -150,7 +150,7 @@ public class ParamValueProcessor {
         }
     }
 
-    private static String executeFunction(Function function) {
+    public static String executeFunction(Function function) {
         try {
             Object value = null;
             String arguments = function.getArguments();

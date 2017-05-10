@@ -1,6 +1,9 @@
 package com.qa.framework.testnglistener;
 
 import com.library.common.IOHelper;
+import com.qa.framework.InstanceFactory;
+import com.qa.framework.bean.Function;
+import com.qa.framework.core.ParamValueProcessor;
 import com.qa.framework.factory.Executor;
 import org.apache.log4j.Logger;
 import org.testng.ITestContext;
@@ -165,6 +168,12 @@ public class TestResultListener extends TestListenerAdapter {
     public void onFinish(ITestContext testContext) {
         super.onFinish(testContext);
         logger.info("testContext Finish");
+
+        if(InstanceFactory.getGlobal().getAfter() != null && InstanceFactory.getGlobal().getAfter().getFunctions() != null) {
+            for (Function function : InstanceFactory.getGlobal().getAfter().getFunctions()) {
+                ParamValueProcessor.executeFunction(function);
+            }
+        }
 
         // List of test results which we will delete later
         ArrayList<ITestResult> testsToBeRemoved = new ArrayList<ITestResult>();

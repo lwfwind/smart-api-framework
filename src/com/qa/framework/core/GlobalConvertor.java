@@ -4,6 +4,7 @@ import com.library.common.IOHelper;
 import com.library.common.ReflectHelper;
 import com.library.common.XmlHelper;
 import com.qa.framework.InstanceFactory;
+import com.qa.framework.bean.Function;
 import com.qa.framework.bean.Global;
 import org.apache.log4j.Logger;
 import org.dom4j.Attribute;
@@ -30,6 +31,11 @@ public class GlobalConvertor {
             List elements = document.getRootElement().elements();
             for (Object element : elements) {
                 convert(global, (Element) element);
+            }
+            if(InstanceFactory.getGlobal().getBefore() != null && InstanceFactory.getGlobal().getBefore().getFunctions() != null) {
+                for (Function function : InstanceFactory.getGlobal().getBefore().getFunctions()) {
+                    ParamValueProcessor.executeFunction(function);
+                }
             }
         }
     }
