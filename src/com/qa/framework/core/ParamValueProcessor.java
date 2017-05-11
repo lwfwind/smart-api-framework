@@ -174,7 +174,7 @@ public class ParamValueProcessor {
                 Method matchedMethod = null;
                 final Method[] methods = Class.forName(function.getClsName()).getMethods();
                 for (final Method method : methods) {
-                    if (method.getName().equals(function.getMethodName())) {
+                    if (method.getName().equals(function.getMethodName()) && argumentsArray.length==method.getParameterTypes().length) {
                         matchedMethodSize++;
                         matchedMethod = method;
                     }

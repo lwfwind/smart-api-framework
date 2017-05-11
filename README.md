@@ -19,6 +19,7 @@ Smart-api-framework is a light, common http api automation framework based on [T
 ## XML Structure
 ```xml
 TestSuite -- config test url and httpMethod
+    Function -- shared method for all case in current suite, only init once
     TestCase
         Before -- preset environment such as database
         Setup -- config setup url and httpMethod, such as login action
@@ -34,12 +35,49 @@ TestSuite -- config test url and httpMethod
         After -- reset environment
 ```
 ## Example
+### &nbsp;&nbsp; Support shared function for all case in current suite, only init once
+```xml
+<TestSuite url="V1/Students/login" httpMethod="post">
+<TestSuite url="getMethod?" httpMethod="get">
+    <Function name="suiteFunctionValue" clsName="test.java.LogicHandler" methodName="getSuiteFunctionValue" arguments="7936160"/>
+    <Function name="SuiteFunctionMap" clsName="test.java.LogicHandler" methodName="getSuiteFunctionMap"/>
+    <TestCase name="getMethod" desc="getMethod">
+        <Before>
+            <Function clsName="test.java.LogicHandler" methodName="update" arguments="1,0"/>
+        </Before>
+        <Setup name="setup" url="login" httpMethod="post">
+            <Param name="username" value="13636426195">
+            </Param>
+            <Param name="password" value="bddeaa7037632c856a6b83e4037f314a" />
+        </Setup>
+        <Headers>
+            <Header name="m-appkey" value="4272" />
+            <Cookie name="unb" value="2020967487" />
+        </Headers>
+        <Param name="parameter1" value="#setup.errorCode+1#" />
+        <Param name="parameter2" value="#suiteFunctionValue#" />
+        <Param name="parameter3" value="#SuiteFunctionMap.key#" />
+        <ExpectResults>
+            <Pair>errorCode:#setup.errorCode#或者#setup.errorCode+1#</Pair>
+            <Pair>errorMsg:约课成功</Pair>
+            <Pair>errorMsg:#if(setup.errorCode==200){
+                return "约课成功";
+                }
+                return "约课失败";#</Pair>
+            <Contain>.*errorMsg.*</Contain>
+        </ExpectResults>
+        <After>
+            <Function clsName="test.java.LogicHandler" methodName="reset"/>
+        </After>
+    </TestCase>
+</TestSuite>
+```
 ### &nbsp;&nbsp; Support function/sql action in before/after
 ```xml
 <TestSuite url="V1/Students/login" httpMethod="post">
     <TestCase name="data1" desc="更改手机号登录">
         <Before>
-            <Function clsName="test.java.LogicHandler" methodName="changeStudentsMobile" arguments="1(int)"/>
+            <Function clsName="test.java.LogicHandler" methodName="changeStudentsMobile" arguments="1"/>
             <Sql>update ebk_students set mobile=18078788787 where id=123456;</Sql>
         </Before>
         <Param name="username" value="#sql1.mobile#">
