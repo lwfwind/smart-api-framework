@@ -1,12 +1,14 @@
 package com.qa.framework.config;
 
 
+import com.library.common.IOHelper;
 import com.library.common.ReflectHelper;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Properties;
 
 public class PropConfig {
@@ -57,23 +59,27 @@ public class PropConfig {
 
     private static Properties getProperties() {
         Properties props = new Properties();
-        File file = new File(System.getProperty("user.dir") + File.separator + "config.properties");
-        FileReader fileReader = null;
-        try {
-            fileReader = new FileReader(file);
-            props.load(fileReader);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
+        List<String> configPathList = IOHelper.listFilesInDirectory(System.getProperty("user.dir"),"config.properties");
+        if(configPathList.size() > 0) {
+            File file = new File(configPathList.get(0));
+            FileReader fileReader = null;
             try {
-                if (fileReader != null) {
-                    fileReader.close();
-                }
+                fileReader = new FileReader(file);
+                props.load(fileReader);
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                try {
+                    if (fileReader != null) {
+                        fileReader.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
+            return props;
         }
-        return props;
+        return null;
     }
 
     /**
