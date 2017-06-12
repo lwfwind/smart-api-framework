@@ -164,7 +164,7 @@ public class ParamValueProcessor {
         }
     }
 
-    public static Object executeFunction(Function function) {
+    public static synchronized Object executeFunction(Function function) {
         try {
             Object value = null;
             String arguments = function.getArguments();
