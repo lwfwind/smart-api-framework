@@ -148,7 +148,7 @@ public class DBHelper {
             Connection conn = getConnection();
             result = queryRunner.query(conn, sql, new MapListHandler(), params);
         } catch (Exception e) {
-            logger.error("execute query failure", e);
+            logger.error("execute query failure:"+sql, e);
             throw new RuntimeException(e);
         }
         return result;
@@ -160,7 +160,7 @@ public class DBHelper {
             Connection conn = getConnection(poolName);
             result = queryRunner.query(conn, sql, new MapListHandler(), params);
         } catch (Exception e) {
-            logger.error("execute query failure", e);
+            logger.error("execute query failure:"+sql, e);
             throw new RuntimeException(e);
         }
         return result;
@@ -245,7 +245,7 @@ public class DBHelper {
             Connection conn = getConnection();
             rows = queryRunner.update(conn, sql, params);
         } catch (SQLException e) {
-            logger.error("execute update failure", e);
+            logger.error("execute update failure:"+sql, e);
             throw new RuntimeException(e);
         }
         return rows;
@@ -257,7 +257,7 @@ public class DBHelper {
             Connection conn = getConnection(poolName);
             rows = queryRunner.update(conn, sql, params);
         } catch (SQLException e) {
-            logger.error("execute update failure", e);
+            logger.error("execute update failure:"+sql, e);
             throw new RuntimeException(e);
         }
         return rows;
@@ -278,7 +278,7 @@ public class DBHelper {
             Connection conn = getConnection();
             entityList = queryRunner.query(conn, sql, new BeanListHandler<T>(entityClass), params);
         } catch (SQLException e) {
-            logger.error("query entity list failure", e);
+            logger.error("query entity list failure:"+sql, e);
             throw new RuntimeException(e);
         }
         return entityList;
@@ -290,7 +290,7 @@ public class DBHelper {
             Connection conn = getConnection(poolName);
             entityList = queryRunner.query(conn, sql, new BeanListHandler<T>(entityClass), params);
         } catch (SQLException e) {
-            logger.error("query entity list failure", e);
+            logger.error("query entity list failure:"+sql, e);
             throw new RuntimeException(e);
         }
         return entityList;
@@ -311,7 +311,7 @@ public class DBHelper {
             Connection conn = getConnection();
             entity = queryRunner.query(conn, sql, new BeanHandler<T>(entityClass), params);
         } catch (SQLException e) {
-            logger.error("query entity failure", e);
+            logger.error("query entity failure:"+sql, e);
             throw new RuntimeException(e);
         }
         return entity;
@@ -407,7 +407,7 @@ public class DBHelper {
             Connection conn = getConnection();
             result = queryRunner.query(conn, sql, new ScalarHandler<Long>("count(*)"), params);
         } catch (SQLException e) {
-            logger.error("查询出错！", e);
+            logger.error("查询出错::"+sql, e);
             throw new RuntimeException(e);
         }
         return result;
