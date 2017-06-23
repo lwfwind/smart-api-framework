@@ -37,7 +37,6 @@ TestSuite -- config test url and httpMethod
 ## Example
 ### &nbsp;&nbsp; Support shared function for all case in current suite, only init once
 ```xml
-<TestSuite url="V1/Students/login" httpMethod="post">
 <TestSuite url="getMethod?" httpMethod="get">
     <Function name="suiteFunctionValue" clsName="test.java.LogicHandler" methodName="getSuiteFunctionValue" arguments="7936160"/>
     <Function name="SuiteFunctionMap" clsName="test.java.LogicHandler" methodName="getSuiteFunctionMap"/>
