@@ -128,16 +128,7 @@ public class ParamValueProcessor {
     public static void executeFunction(Param param, Setup setup, TestCase testCase, JsonPairCache jsonPairCache) {
         List<Function> functionList = param.getFunctions();
         if (functionList != null) {
-            for (Function function : functionList) {
-                Object value = executeFunction(function);
-                param.setValue(value.toString());
-                jsonPairCache.put(param.getName(), param.getValue());
-                jsonPairCache.put(testCase.getName() + "." + param.getName(), param.getValue());
-                if (setup != null) {
-                    jsonPairCache.put(setup.getName() + "." + param.getName(), param.getValue());
-                    jsonPairCache.put(testCase.getName() + "." + setup.getName() + "." + param.getName(), param.getValue());
-                }
-            }
+            executeFunctionList(functionList,jsonPairCache);
         }
     }
 
